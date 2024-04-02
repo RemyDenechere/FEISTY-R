@@ -1,6 +1,6 @@
 #'
 #' 
-#' @docType package
+#' @docType _PACKAGE
 #' 
 #' @name FEISTY
 #' 
@@ -86,14 +86,10 @@
 #' 
 #' \code{\link{derivativesFEISTYR}} The derivative function of FEISTY
 #' 
-#' @importFrom grDevices dev.off pdf
-#' @importFrom graphics axis box image legend lines mtext par points polygon
-#' @importFrom stats na.omit simulate
 #' @importFrom pracma erf size linspace isempty
-#' @importFrom latex2exp TeX
 #' @importFrom deSolve ode DLLfunc
-#' @import shiny
-#' @import shinyjs
+#' @importFrom scales trans_breaks trans_format math_format
+#' @importFrom cowplot get_legend align_plots plot_grid
 #' @useDynLib FEISTY, .registration = TRUE
 #' 
 NULL # This 'NULL' is important in R package documentation file when using roxygen2.
