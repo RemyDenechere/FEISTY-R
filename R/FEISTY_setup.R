@@ -383,6 +383,7 @@ setupBasic2 = function(szprod = 100, # small zoo production?
   # Pelagic fish do not feed on benthic resources
   param$theta[ixSmall, 3:4] = 0
   param$theta[ixLarge, 3:4] = 0
+  param$theta[ixSmallSizeDem, 3:4] = 0
   
   # ... or on medium-sized demersal fish:
   param$theta[ixSmall, ixMediumSizeDem] = 0
