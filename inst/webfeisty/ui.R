@@ -5,7 +5,7 @@
 #===============================================================================
 
 ui <- fluidPage(
-  useShinyjs(),
+  shinyjs::useShinyjs(),
   # Application title
   titlePanel("FEISTY"),
   
@@ -133,7 +133,7 @@ ui <- fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       tabsetPanel(
-        tabPanel("Rates", plotOutput(outputId = "plotSimulation", height="600px")),
+        tabPanel("General", plotOutput(outputId = "plotSimulationShiny", height="600px")),
         
         tabPanel("Network", plotOutput(outputId = "plotNetwork", height="600px")),
         

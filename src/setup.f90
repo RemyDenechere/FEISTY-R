@@ -351,14 +351,26 @@ contains
       ! Demersals
       do i = 1, group(3)%spec%n
 
-         if (group(3)%spec%m(i) > mMedium .AND. &
-             group(3)%spec%m(i) < mLarge) then
-            theta(ixStart(3) + i - 1, 1:2) = 0.d0          ! Medium demersals has not feeding on zooplankton
-            theta(ixStart(3) + i - 1, idxF:nGrid) = 0.d0   ! Medium demersals has not feeding on all fish (only eat benthos)
+        ! small
+         if (group(3)%spec%m(i) .le. mMedium) then
+            theta(ixStart(3) + i - 1, 3:4) = 0.d0          ! Small demersals has no feeding on benthos
          end if
 
+        ! medium
+         if (group(3)%spec%m(i) > mMedium .AND. &
+             group(3)%spec%m(i) < mLarge) then
+            theta(ixStart(3) + i - 1, 1:2) = 0.d0          ! Medium demersals has no feeding on zooplankton
 
-      ! Large demersals feed have reduced feeding efficiency on pelagic species:
+            theta(ixStart(3) + i - 1, ixStart(1):ixEnd(2)) = 0.d0   ! Medium demersals only eat benthos and do cannibalism
+            do j = 1, group(3)%spec%n
+                if (group(3)%spec%m(j) .le. mMedium .OR. &
+                      group(3)%spec%m(j) .ge. mLarge) then
+                    theta(ixStart(3) + i - 1, ixStart(3) + j - 1) = 0.d0
+                end if
+            end do
+         end if
+
+        ! Large demersals feed have reduced feeding efficiency on pelagic species:
          if (group(3)%spec%m(i) .ge. mLarge) then
            if(depth .lt. 200) then
       theta(ixStart(3) + i - 1, ixStart(1):ixEnd(1)) = thetaA*thetaD*theta(ixStart(3) + i - 1, ixStart(1):ixEnd(1))

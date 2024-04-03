@@ -1,126 +1,29 @@
 #===============================================================================
-# Global routines for the Shiny web application. 
-# You can run the application by clicking  the 'Run App' button above, OR:.
-# use webFEISTY() to trigger it from anywhere (if the FEISTY R package is loaded)
+# Plotting routines for FEISTY
 #===============================================================================
 
-#-------------------------------------------------------------------------------
-# Background tools for plotting
-#-------------------------------------------------------------------------------
-
-singlewidth <- 8/2.54 # panel width in cm
-doublewidth <- 13/2.54
-height <- 8/1.6/2.54 + 2.5*0.138889
-
-if(.Platform$OS.type=="windows") {
-  quartz<-function(width, height) 
-    windows(width=width, height=height)
-}
-
-# Base R plotting tools =====================================================
-
-TeX <- function(...) latex2exp::TeX(...)
-bottom <- 1
-left <- 2
-top <- 3
-right <- 4
-
-ticklength <- 0.2 # tick mark length
-omargin <- 0.7 # outer margins
-cex <- 1#0.9
-cexaxis <- 1#0.8 # Scaling of size of numbers on axes
-axis.lwd <- 0.8
-
-iPlot <- 1 # Static variable used for labels on plots
-
-solid = 1
-thick = 2
-dashed <- 2
-dotted <- 3
-dashdotted = 4
-dots <- 16
-triangles <- 17
-squares <- 15
-stdgrey <- grey(0.4)
-darkgrey <- grey(0.15)
-lightgrey <- grey(0.7)
-black <- grey(0)
-
-
-#===============================================================================
-# Global routines for the Shiny web application. 
-# You can run the application by clicking  the 'Run App' button above, OR:.
-# use webFEISTY() to trigger it from anywhere (if the FEISTY R package is loaded)
-#===============================================================================
-
-calcDerivativesF = function(t, y, p, FullOutput, ...) 
-  simulateFEISTY(p=p, times=NA, yini=y, USEdll=TRUE, ...)
-  
-calcDerivativesR = function(t, y, p, FullOutput, ...) 
-  simulateFEISTY(p=p, times=NA, yini=y, USEdll=FALSE, ...)
-
-#-------------------------------------------------------------------------------
-# A plot of the Biomass of all functional groups
-# as a function time.
-#-------------------------------------------------------------------------------
-plotBiomasstime = function(sim, bPlot=TRUE) {
-  if (bPlot)
-    defaultplot()
-  p = sim$p
-  
-  Btime = matrix(nrow=sim$nTime, ncol=p$nGroups)
-  for(i in 1:p$nGroups)
-    Btime[,i]=rowSums( sim$B[,p$ix[[i]]-p$nResources] )
-  
-  semilogypanel(xlim=sim$t, ylim=c(1E-3,max(max(sim$SSB)*10,max(sim$R)*10)),
-                xlab="Time (yr)", ylab = "Biomass (gww  m-2)")
-  
-  colnames(Btime)=p$groupnames[-p$ixR]
-  #
-  # Plot fish
-  #
-  for (i in 1:p$nGroups)
-    lines(sim$t, Btime[,i], col= sim$p$my_palette[attr(sim$p$my_palette,"name") %in% sim$p$groupnames[-sim$p$ixR]] [i],lwd = 3)
-  #
-  # Plot resources:
-  #
-  for (i in p$ixR)
-    lines(sim$t, sim$R[,i], col=sim$p$my_palette[attr(sim$p$my_palette,"name") %in% sim$p$groupnames[sim$p$ixR]] [i],lwd = 3)
-  
-  # legend(x='bottomright',
-  #        legend=c('Resources','Fish'),
-  #        lty=c(1,1),
-  #        col=c('blue','black'),
-  #        bty='n')
-  
-  legend(x='bottom',
-         legend=sim$p$my_names[attr(sim$p$my_names,"names") %in% sim$p$groupnames],
-         lty=c(1,1),
-         col=sim$p$my_palette[attr(sim$p$my_palette,"names") %in% sim$p$groupnames],
-         bty='n',
-         ncol = 6, cex = 1,
-         lwd = 3)
-  
-}
+# tools and generic sizes
+lwd_def     <- 1 # line thickness for time series, rates and spectra plots
+min_bio     <- 1E-2 # minimum biomass or SSB in time series plots
+min_bspec   <- 1E-3 # minimum biomass in spectra plot
+min_g       <- 1E-1 # minimum growth rate in plotRates growth
+min_mort    <- 1E-2 # minimum mortality in plotRates mortality
 
 #' Spawning stock biomass plot
 #' 
-#' Make a plot of the adult biomass (SSB) of all functional groups
-#' as a function of the whole simulation time.
+#' Makes a time series of spawning stock biomass (SSB) for each functional group
 #' 
 #' @details X-axis is time. Y-axis is the SSB data in log10 scale.
-#' @author Yixin Zhao
+#' 
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
-#' @usage plotSSBtime(sim, bPlot=TRUE)
+#' @usage plotSSBtime(sim)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
-#' @param bPlot Boolean option determining whether to create a new plot panel. \cr 
-#' If TRUE, create a new independent plot. \cr 
-#' If FALSE, users need to define the subplot layout first by \code{defaultplot(mfcol=c(x,y))}. See an example \code{\link{plotSimulation}} in FEISTY_plotting.R.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
-#' plotSSBtime(sim, bPlot=TRUE)
+#' plotSSBtime(sim)
 #' 
 #' @aliases plotSSBtime
 #' 
@@ -131,209 +34,163 @@ plotBiomasstime = function(sim, bPlot=TRUE) {
 #' @export
 #' 
 
-plotSSBtime = function(sim, bPlot=TRUE) {
-  if (bPlot)
-    defaultplot()
-  p = sim$p
+plotSSBtime = function(sim) {
+  p <- sim$p
+  fish <- c((p$nResources+1):(p$nResources+p$nGroups))
+# extract existing fish types according to initial values
+  inival=p$u0[-p$ixR][grep("_1", names(p$u0[-p$ixR]))]
+  names(inival)=p$groupnames[fish]
+  fishexistname=names(inival[inival!=0])
+ 
+  series <- getTimeseries(sim)
+  series <- subset(series, series$group %in% fishexistname)
   
-  semilogypanel(xlim=sim$t, ylim=c(1E-3,max(max(sim$SSB)*10,max(sim$R)*10)),
-                xlab="Time (yr)", ylab = "SSB (gww  m-2)")
-  #
-  # Plot fish
-  #
-  for (i in 1:p$nGroups)
-    lines(sim$t, sim$SSB[,i],col= sim$p$my_palette[attr(sim$p$my_palette,"name") %in% sim$p$groupnames[-sim$p$ixR]] [i],lwd = 3)
-  #
-  # Plot resources:
-  #
-  for (i in p$ixR)
-    lines(sim$t, sim$R[,i], col=sim$p$my_palette[attr(sim$p$my_palette,"name") %in% sim$p$groupnames[sim$p$ixR]] [i],lwd = 3)
-
-  # legend(x='bottomright',
-  #        legend=c('Resources','Fish'),
-  #        lty=c(1,1),
-  #        col=c('blue','black'),
-  #        bty='n')
+# convert zeros of SSB to a very small number (only for plotting purposes)
+  series$SSB <- ifelse(series$SSB == 0, 1E-16,series$SSB) 
   
-  # legend(x='bottom',
-  #        legend=sim$p$my_names[attr(sim$p$my_names,"names") %in% sim$p$groupnames],
-  #        lty=c(1,1),
-  #        col=sim$p$my_palette[attr(sim$p$my_palette,"names") %in% sim$p$groupnames],
-  #        bty='n',
-  #        ncol = 4, cex = 1,
-  #        lwd = 3)
-  
+  plots <- defaultplot() + 
+    geom_line(data = series, 
+              aes(x = t, y = SSB, group = group, color = group),
+              linewidth=lwd_def) + 
+    scale_color_manual(name = "Groups", 
+                       values = p$my_palette[fishexistname],
+                       breaks = fishexistname,
+                       labels = p$my_names[fishexistname]) +
+    annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
+    coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$SSB)*5))) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    xlab("Time (yr)") + ylab(expression("SSB (gWW m"^"-2"*")"))
+    
+  return(plots)
 }
-
-
-#-------------------------------------------------------------------------------
-# Makes a basic plot of the Yield of all functional groups
-# as a function time.
-#-------------------------------------------------------------------------------
-
-plotYieldtime = function(sim, bPlot=TRUE) {
-  if (bPlot)
-    defaultplot()
-  p = sim$p
-  colnames(sim$yield)=p$groupnames[-p$ixR]
-  semilogypanel(xlim=sim$t, ylim=c(1E-3,max(max(sim$yiled)*10,max(sim$R)*10)),
-                xlab="Time (yr)", ylab = "Yield (gww  m-2)")
-  #
-  # Plot fish
-  #
-  for (i in 1:p$nGroups)
-    lines(sim$t, sim$yield[,i], col= sim$p$my_palette[attr(sim$p$my_palette,"name") %in% sim$p$groupnames[-sim$p$ixR]] [i],lwd = 3)
   
-  # legend(x='bottomright',
-  #        legend=c('Resources','Fish'),
-  #        lty=c(1,1),
-  #        col=c('blue','black'),
-  #        bty='n')
-  
-  legend(x='bottom',
-         legend=sim$p$my_names[attr(sim$p$my_names,"names") %in% sim$p$groupnames],
-         lty=c(1,1),
-         col=sim$p$my_palette[attr(sim$p$my_palette,"names") %in% sim$p$groupnames],
-         bty='n',
-         ncol = 6, cex = 1,
-         lwd = 3)
-  
-}
-
-#' Plots for growth rate, mortality, and feeding level 
+#' Fishing Yield plot
 #' 
-#' Plot growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
+#' Makes a time series of the fishing yield for each functional group
 #' 
-#' @details
-#' There are two approaches for rate calculation:
-#' \itemize{
-#' \item Averaged values of rate data at each selected time points (Default last 40% simulation time).
-#' This method is preferred.
-#' \item Running the derivative function once to get rate data based on the biomass vector input.
-#' }
+#' @details X-axis is time. Y-axis is the fishing yield data.
 #' 
-#' @author Yixin Zhao
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
-#' @usage plotRates(sim, avg=TRUE, y=p$u0, bPlot=TRUE)
+#' @usage plotYieldtime(sim)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
-#' @param avg Logistic flag. Default TRUE. \cr 
-#' TRUE: Rates are averaged values of selected time points. \cr 
-#' FALSE: Running the derivative function once to get rates based on biomass \code{y} input.
-#' @param y The state variable vector, only works when `avg=FALSE`. For example, \code{sim$u[,sim$nTime]}. This means the biomass data in the last time point is used for rate calculation.
-#' The time-averaged biomass data might be preferred, \code{colMeans(sim$u[,round(0.6*iTime):sim$nTime])}.
-#' @param bPlot Boolean option determining whether to create a new plot panel. \cr 
-#' If TRUE, create a new independent plot. \cr 
-#' If FALSE, users need to define the subplot layout first by \code{defaultplot(mfcol=c(x,y))}. See an example \code{\link{plotSimulation}} in FEISTY_plotting.R.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
-#' # averaged rate data of last 40%  simulation time
-#' plotRates(sim=sim, avg=TRUE, y=sim$u[,sim$nTime], bPlot=TRUE)
-#' # rate data based on last time point biomass
-#' plotRates(sim=sim, avg=FALSE, y=sim$u[,sim$nTime], bPlot=TRUE)
+#' plotYieldtime(sim)
 #' 
-#' @aliases plotRates
+#' @aliases plotYieldtime
 #' 
 #' @seealso 
 #' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{derivativesFEISTYR}} The derivative function of FEISTY
+#' \code{\link{calcYield}} Fishing yield calculation
 #' 
 #' @export
 #' 
 
-plotRates = function(sim, avg=TRUE, y=p$u0, bPlot=TRUE) {
+plotYieldtime = function(sim) {
+  p <- sim$p
+  fish <- c((p$nResources+1):(p$nResources+p$nGroups))
+# extract existing fish types according to initial values
+  inival=p$u0[-p$ixR][grep("_1", names(p$u0[-p$ixR]))]
+  names(inival)=p$groupnames[fish]
+  fishexistname=names(inival[inival!=0])
   
-  p = sim$p
-  etaTime=0.4
-  ixTime = which(sim$t>=((1-etaTime)*sim$t[sim$nTime]))
-  rates=list()
-  rates$g =        colMeans(sim$g[ixTime,])
-  rates$mortpred = colMeans(sim$mortpred[ixTime,])
-  rates$f =        colMeans(sim$f[ixTime,])
+  series <- getTimeseries(sim)
+  series <- subset(series, series$group %in% fishexistname)
   
-  if (!avg) {
-#  if (p$USEdll) {
-#    rates = calcDerivativesF(0, y, p, FullOutput = TRUE)[[2]]
-#  }else{
-    rates = calcDerivativesR(0, y, p, FullOutput = TRUE)
-#  }
-  }
-    
-  if (bPlot)
-    defaultplot(mfcol=c(3,1))
-  xlim = range(p$mc[p$ixFish])
-  
-  #
-  # Growth rate
-  # 
-  loglogpanel(xlim = xlim, ylim=c(1e-1,max(rates$g)*10),
-                ylab="Growth rate (1/year)", xlab="-", xaxis = FALSE)
-  for (i in 1:p$nGroups) {
-    lines(p$mc[p$ix[[i]]], rates$g[p$ix[[i]]-length(p$ixR)], lwd=i,
-          col=p$my_palette[attr(p$my_palette,"name") %in% p$groupnames[-p$ixR]] [i])
-  }
+  plots <- defaultplot() + 
+    geom_line(data = series, 
+              aes(x = t, y = yield, group = group, color = group),
+              linewidth=lwd_def) + 
+    scale_color_manual(name = "Groups", 
+                       values = p$my_palette[fishexistname],
+                       breaks = fishexistname,
+                       labels = p$my_names[fishexistname]) +
+    annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
+    coord_cartesian(ylim = c(0,max(1,max(series$yield)*1.2))) + 
+    xlab("Time (yr)") + ylab(expression("Yield (gWW m"^"-2"*" yr"^"-1"*")"))
 
-  #
-  # Mortalities:
-  #
-  loglogpanel(xlim=xlim, ylim=c(1E-2,max(rates$mortpred)+10),
-              xlab="-", ylab="mort (1/year)", xaxis = FALSE)
-  for (i in 1:p$nGroups) {
-    lines(p$mc[p$ix[[i]]], rates$mortpred[p$ix[[i]]], lwd=i, lty="solid", col=p$my_palette[attr(p$my_palette,"name") %in% p$groupnames[-p$ixR]] [i])
-    lines(p$mc[p$ix[[i]]], p$mortF[p$ix[[i]]], lwd=i, lty="dashed", col=p$my_palette[attr(p$my_palette,"name") %in% p$groupnames[-p$ixR]] [i])
-  }
-  hline(p$mort0[p$ix[[i]]][1])
-  
-  legend(x='bottomleft',
-         legend=c('Predation','Fishing','Background'),
-         lty=c("solid","dashed","dotted"),
-         col=c('black','black','black'),
-         bty='n',
-         cex=0.9)
-  #
-  # Feeding level
-  # 
-  semilogxpanel(xlim = xlim, ylim=c(0,1),
-                ylab="Feeding level, f", xlab="Mass (gww)")
-  for (i in 1:p$nGroups) {
-    ix = p$ix[[i]]
-    lines(p$mc[ix], rates$f[ix-p$nResources], lwd=i,
-          col=p$my_palette[attr(p$my_palette,"name") %in% p$groupnames[-p$ixR]] [i])
-    #lines(p$mc[ix], p$metabolism[ix]/(p$epsAssim*p$Cmax[ix]), lwd=i, lty=dotted) # Critical feeding level
-  }
-  
-  i = which.max(sapply(p$ix,"length"))
-  ix = p$ix[[i]]
-  lines(p$mc[ix], p$metabolism[ix]/(p$epsAssim*p$Cmax[ix]), lwd=1, lty=dotted) # Critical feeding level
-  
-  legend(x='bottomright',
-         legend=c('Critical feeding level'),
-         lty=c(dotted),
-         col=c('black'),
-         bty='n')
-  
-  return(rates)
+  return(plots)
 }
 
-#' Biomass plot
+#' Total biomass plot
 #' 
-#' Make a plot of the biomass of all functional groups over the size spectrum.
-#' Data is averaged data over the last 40\% simulation time.
+#' Makes a time series of total biomass for each fish functional group and zooplankton
+#' and benthic resource
 #' 
-#' @details The X-axis is time. The Y-axis is the biomass data in the log10 scale.
-#' @author Yixin Zhao
+#' @details X-axis is time. Y-axis is the biomass data in log10 scale.
+#' 
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
-#' @usage plotSpectra(sim, bPlot=TRUE)
+#' @usage plotBiomasstime(sim)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
-#' @param bPlot Boolean option determining whether to create a new plot panel. \cr 
-#' If TRUE, create a new independent plot. \cr 
-#' If FALSE, users need to define the subplot layout first by \code{defaultplot(mfcol=c(x,y))}. See an example \code{\link{plotSimulation}} in FEISTY_plotting.R.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
-#' plotSpectra(sim, bPlot=TRUE)
+#' plotBiomasstime(sim)
+#' 
+#' @aliases plotBiomasstime
+#' 
+#' @seealso 
+#' \code{\link{simulateFEISTY}} Run FEISTY model simulations
+#' 
+#' @export
+#' 
+
+plotBiomasstime = function(sim) {
+  p <- sim$p
+  fish <- c((p$nResources+1):(p$nResources+p$nGroups))
+  all  <- c(p$ixR,fish)
+  
+# extract existing resources and fish types according to initial values
+  inival=c( p$u0[p$ixR], p$u0[-p$ixR][grep("_1", names(p$u0[-p$ixR]))] )
+  names(inival)=p$groupnames
+  allexistname=names(inival[inival!=0])
+  
+  series <- getTimeseries(sim)
+  series <- subset(series, series$group %in% allexistname)
+  
+# convert zeros of biomass to a very small number (only for plotting purposes)
+  series$bio <- ifelse(series$bio == 0, 1E-16,series$bio) 
+  
+  plots <- defaultplot() + 
+    geom_line(data = series, 
+              aes(x = t, y = bio, group = group, color = group),
+              linewidth=lwd_def) + 
+    scale_color_manual(name = "Groups", 
+                       values = p$my_palette[allexistname],
+                       breaks = allexistname,
+                       labels = p$my_names[allexistname]) +
+    annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
+    coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$bio)*5))) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    xlab("Time (yr)") + ylab(expression("Biomass (gWW m"^"-2"*")"))
+  
+  return(plots)
+}
+
+#' Biomass spectra plot
+#' 
+#' Makes a plot of the biomass of all functional groups over the size spectrum.
+#' Data is averaged over the last 40\% simulation time.
+#' 
+#' @details The X-axis is individual weight on a log10 scale. The Y-axis is 
+#' biomass on a log10 scale.
+#' 
+#' @author P. Daniël van Denderen, Yixin Zhao
+#'
+#' @usage plotSpectra(sim)
+#' 
+#' @param sim The data frame of FEISTY simulation results.
+#' 
+#' @examples 
+#' sim=simulateFEISTY()
+#' plotSpectra(sim)
 #' 
 #' @aliases plotSpectra
 #' 
@@ -343,460 +200,75 @@ plotRates = function(sim, avg=TRUE, y=p$u0, bPlot=TRUE) {
 #' @export
 #' 
 
-plotSpectra = function(sim, bPlot=TRUE) {
-  if (bPlot)
-    defaultplot()
-  p = sim$p
-  Bpositive=sim$B
-  Bpositive[Bpositive<0]=0
-  iTime=sim$nTime
-  loglogpanel(xlim=p$mc[p$ixFish], ylim=c(1e-3,max(colMeans(Bpositive[round(0.6*iTime):iTime,])*10)),
-               ylab="Biomass (gww m-2)", xlab="-", xaxis = FALSE)
+plotSpectra = function(sim) {
+  p <- sim$p
+  Bpositive <- sim$B
+  Bpositive[Bpositive<0] <- 0
+  iTime <- sim$nTime
+  fish <- c((p$nResources+1):(p$nResources+p$nGroups))
+  i     <- which.max(sapply(p$ix,"length"))
+  ix    <- p$ix[[i]]
   
-  # Total biomass spectra
-  totBspec= matrix(nrow=1, ncol=max(sapply(p$ix, length)),data=0)
-  totBMin=totBspec
-  totBMax=totBspec
-  totBtime= matrix(nrow=iTime, ncol=max(sapply(p$ix, length)),data=0)
+  
+# get all biomass spectra
+  spec = matrix(nrow=p$nGroups, ncol=max(sapply(p$ix, length)),data=0)
   for (i in 1:p$nGroups) {
-    totBspec[1:length(p$ix[[i]])] = totBspec[1:length(p$ix[[i]])] + colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1])
-    totBtime[,1:length(p$ix[[i]])] = totBtime[,1:length(p$ix[[i]])] + Bpositive[,p$ix[[i]]-p$ixFish[1]+1]
+    spec[i,1:length(p$ix[[i]])] = colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1])
   }
-  
-  totBMin = apply((totBtime[round(0.6*iTime):iTime,]),2,min)
-  totBMax = apply((totBtime[round(0.6*iTime):iTime,]),2,max)
-  # plot shade
-  ribbon (p$mc[p$ix[[which.max(sapply(p$ix, length))]]],ymin=totBMin,ymax=totBMax,col="#ececec") 
-  # plot totBspec
-  lines(p$mc[p$ix[[which.max(sapply(p$ix, length))]]], totBspec,
-        col=black,
-        lwd=3)
-  
-  # mean biomass of last 40% of simulation time  
-  for (i in 1:p$nGroups) {
-    lines(p$mc[p$ix[[i]]], colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1]),
-          col=sim$p$my_palette[attr(sim$p$my_palette,"name") %in% sim$p$groupnames[-sim$p$ixR]] [i],
-          lwd=i)
-  }
-  
-}
+  spec <- rbind(colSums(spec,na.rm=T),spec)
+  spec <- data.frame(group = rep(c("total",p$groupnames[fish]),each = max(sapply(p$ix, length))),
+             bio   = as.vector(t(spec)),
+             mc    = rep(p$mc[ix],(p$nGroups+1)))
+# correct small fish size numbers (biomass are 0)
+  spec <- subset(spec, !(spec$group %in% c("smallPel","mesoPel") & spec$bio ==0))
 
-#-------------------------------------------------------------------------------
-# Add legends in an independent plot panel
-#-------------------------------------------------------------------------------
-addLegends=function(sim){
-  defaultpanel(xlim=c(0,10),ylim=c(0,10),xlab='', ylab='',
-             xaxis=FALSE, yaxis=FALSE, label=FALSE,bty="n")
+# extract existing fish types according to initial values
+  inival=p$u0[-p$ixR][grep("_1", names(p$u0[-p$ixR]))]
+  names(inival)=p$groupnames[fish]
+  fishexistname=names(inival[inival!=0])
   
-  legend(x='top',
-         legend=sim$p$my_names[attr(sim$p$my_names,"names") %in% sim$p$groupnames],
-         lty=1,
-         col=sim$p$my_palette[attr(sim$p$my_palette,"names") %in% sim$p$groupnames],
-         bty='n',
-         ncol = 4, cex = 1.2,
-         lwd = 3) 
-}
+  spec <- subset(spec, spec$group %in% c("total",fishexistname))
+  
+# convert zeros of yield to a very small number (only for plotting purposes)
+  spec$bio <- ifelse(spec$bio == 0, 1E-16,spec$bio)     
+  
+  plots <- defaultplot() +
+    geom_line(data = spec, 
+             aes(x = mc, y = bio, group = group, color = group),
+             linewidth=lwd_def) + 
+    scale_color_manual(name = "Groups", 
+                       values = c("total" = "black", p$my_palette[fishexistname]),
+                       breaks = c("total",fishexistname),
+                       labels = c("total"= "Total", p$my_names[fishexistname])) +
+    annotation_logticks(sides = "bl",size = 0.2,colour = "darkgrey") +
+    coord_cartesian(ylim = c(min_bspec,max(min_bspec*100,max(spec$bio)*10))) + 
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    xlab("Weight (gWW)") + ylab(expression("Biomass (gWW m"^"-2"*")"))
 
-
-#' Plot simulation results
-#' 
-#' Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, \code{\link{plotSpectra}}, and \code{\link{plotRates}}.
-#' 
-#' @details This function is designed to give a quick visualization of a simulation output. \cr 
-#' There is a function \code{addLegends} in FEISTY_plotting.R to add legends. \cr
-#' Users may need to define their new scripts for adding legends according to the function \code{addLegends}.
-#' @author Yixin Zhao
-#'
-#' @usage plotSimulation(sim)
-#' 
-#' @param sim The data frame of FEISTY simulation results.
-#' 
-#' @examples 
-#' sim=simulateFEISTY()
-#' plotSimulation(sim)
-#' 
-#' @aliases plotSimulation
-#' 
-#' @seealso 
-#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
-#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{plotSSBtime}} Spawning stock biomass plot \cr
-#' \code{\link{plotSpectra}} Biomass plot \cr
-#' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level
-#' 
-#' @export
-#' 
-
-plotSimulation = function(sim) {
-  defaultplot(mfcol=c(6,1))
-  plotSSBtime(sim,bPlot=FALSE)
-  plotSpectra(sim, bPlot=FALSE)
-  rates = plotRates(sim, avg=TRUE, y=NA, bPlot=FALSE)
-  addLegends(sim)
-  return(rates)
-}
-
-#-------------------------------------------------------------------------------
-# Plot the interaction matrix:
-#-------------------------------------------------------------------------------
-
-plotTheta = function(p) {
-  par(mfcol=c(1,1))
-
-  image( t(p$theta[p$ixFish,]), 
-         x = seq(1,max(p$ixFish)), 
-         y = seq(1, length(p$ixFish)),
-         xlab="Prey group", ylab="Predator group" )
-  #
-  # Add a line for the resource groups
-  #
-  y = c(0,max(p$ixFish))
-  lines(x = 0.5+c(1,1)*max(p$ixR), y = y, col="red")
-  #
-  # Add a line for each fish group:
-  #
-  for (iGroup in 1:p$nGroups) {
-    lines(x = 0.5+c(1,1)*max(p$ix[[iGroup]]), y-max(p$ixR))
-    lines(x=y, y=c(1,1)*max(p$ix[[iGroup]])-max(p$ixR)+0.5)
-  }
-}
-
-
-#' Plot simulation results from FEISTY paper Fig. 2
-#' 
-#' Make a plot combo for the simulation results, including \code{\link{PlotSpectraGgplot}}, \code{\link{TimeSeriesGgplot}}, and \code{\link{plotNetwork}.
-#' 
-#' @details This function gives a quick visualization of the outputs simulated by FEISTY. \cr 
-#' This function uses its own legend based on \code{\link{plotNetwork} \cr
-#' The exact position of the panels has been optimize for paper submission, \cr 
-#' user may have to redefine it if used with different setup or parameters \cr
-#' 
-#' @author who ever think they should be authors
-#'
-#' @usage plotSimulationPaper(sim)
-#' 
-#' @param sim The data frame of FEISTY simulation results.
-#' 
-#' @examples 
-#' sim=simulateFEISTY()
-#' plotSimulation(sim)
-#' 
-#' @aliases plotSimulationPaper
-#' 
-#' @seealso 
-#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
-#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{PlotSpectraGgplot}} Plot Biomass, mortality, and feeding levels  \cr
-#' \code{\link{plotTimeSeries}} Plot Time series \cr
-#' \code{\link{plotNetwork}} Food web plot 
-#' 
-#' @export
-#' 
-plotSimulationPaper = function(sim, 
-                               print_fig = TRUE){
-  
-  # Generate the plots: --------------------------------------------------------
-  ## plot Biomass, mortality, and feeding level spectrums: 
-  Spectrum_plot = PlotSpectraGgplot(sim)
-  
-  ## plot timeseries:
-  TimeSeries_plot = plotTimeSeries(sim)
-
-  ## plot FEISTY structure: 
-  Network_plot = plotNetwork(sim)
-  Network_plot = Network_plot +
-                  guides(color = guide_legend(override.aes = list(size=5), nrow = 2)) + 
-                  labs(title = "d")+
-                  force_panelsizes(col = unit(19.5, 'cm'))+
-                  theme_base(base_size = unit(20, 'pt'))+
-                  theme(legend.position = "bottom", 
-                        axis.text.y = element_text(angle=90, vjust = 1, hjust=unit(0.35, 'cm')),
-                        axis.ticks.y = element_blank())
-  
-  ## get legend from plotNetwork
-  legend = get_legend(Network_plot)
-  
-  ## Turn legend off for later external plotting 
-  Network_plot = Network_plot + theme(legend.position="none",
-                                      plot.background = element_rect(color = NA))
-  
-  ## Combining all the plots: 
-  Fig2 = ggdraw()+
-    draw_plot(Spectrum_plot[[1]], 0-0.0025        ,5/7        ,  .45  , 2/7) +
-    draw_plot(Spectrum_plot[[2]], 0+0.005         ,3/7+0.0175 ,  .45  , 2/7) +
-    draw_plot(Spectrum_plot[[3]], 0,               1/7        ,  .45  , 2/7) +
-    draw_plot(TimeSeries_plot   , 0.45,            1/7 -0.0175,  .55  , 2/7) +
-    draw_plot(Network_plot      , 0.45,            3/7        ,  .55  , 4/7) +
-    draw_plot(legend            , 0,               0          ,    1  , 1/7) 
-  # draw_plot(figure,           x start position, Y start pos , width , hight) +
-  
-  
-  # save in pdf format: --------------------------------------------------------
-  if (print_fig) {
-    if (file.exists("../Fig/") == FALSE) { dir.create(file.path("../Fig/")) }
-    ggsave("../Fig/Fig_2_FEISTY_output.pdf", Fig2, width = unit(16, 'cm'), height = unit(10, 'cm'))
-  }
-  
-  return(Fig2)
-}
-
-
-#' Plot Spectra with Ggplot 
-#' 
-#' Create spectrum plot used in \code{\link{plotSimulationPaper}}.
-#' 
-#' @details This function produces 3 pannels a. biomass, b. mortality and c. feeding level simulated by FEISTY for each group and size
-#' 
-#' @author who ever think they should be authors R.D.
-#'
-#' @usage PlotSpectraGgplot(sim)
-#' 
-#' @param sim The data frame of FEISTY simulation results.
-#' 
-#' @examples 
-#' sim=simulateFEISTY()
-#' PlotSpectraGgplot(sim)
-#' 
-#' @aliases PlotSpectraGgplot
-#' 
-#' @seealso 
-#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
-#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{plotSimulationPaper}} Plot Fig.2 from publication  \cr
-#' \code{\link{plotTimeSeries}} Plot Time series \cr
-#' \code{\link{plotNetwork}} Food web plot 
-#' 
-#' @export
-#' 
-PlotSpectraGgplot = function(sim, 
-                             avg=TRUE, 
-                             y=p$u0, 
-                             print_fig = FALSE) {
-  
-  # Define specific plotting parameters: ---------------------------------------
-  p = sim$p
-  
-  p$colors <- c('#DDCC77', '#999933', '#662506', '#662506',   # Ressources 
-                '#EE6677', '#AA4499',                         # Small Fish
-                '#33BBEE', '#004488', '#228833')              # Large Fish 
-  p$size <- c(0.5, 0.5, 0.5, 0.5, 
-                  1, 1, 
-                  2, 2, 2)*0.75
-  p$functional_grp_level =  c('smallPel',  'mesoPel', 'bathyPel', 'largePel', 'demersals' )
-  
-  
-  p$panel_height = 5.4
-  p$panel_length = 14
-  
-  # Processing outputs (average for the last etaTime % values: -----------------
-  etaTime=0.4
-  ixTime = which(sim$t>=((1-etaTime)*sim$t[sim$nTime]))
-  rates=list()
-  rates$g =        colMeans(sim$g[ixTime,])
-  rates$mortpred = colMeans(sim$mortpred[ixTime,])
-  rates$f =        colMeans(sim$f[ixTime,])
-  Bpositive =      colMeans(sim$B[ixTime,])
-  Bpositive[Bpositive<0] = 0
-  
-  if (!avg) {
-    rates = calcDerivativesR(0, y, p, FullOutput = TRUE)
-  }
-  
-  # Create list of name, color, and size: --------------------------------------
-  # (This can be optimized)
-  List_group = NA#vector(0, length=p$nStages)
-  Size = NA#vector(0, length=p$nStages)
-  Color = NA#vector(0, length=p$nStages)
-  for (i in (1:p$nResources)) {
-    List_group[i] = p$groupnames[i]
-    Color[i] = p$colors[i]
-    Size[i] = p$size[i]
-  }
-  for (i in (1:p$nGroups)) {
-    for (j in (min(p$ix[[i]]):max(p$ix[[i]]))) {
-      List_group[j] = p$groupnames[i+p$nResources]
-      Color[j] = p$colors[i+p$nResources]
-      Size[j] = p$size[i+p$nResources]
-    }
-  }
-  
-  # Build up data frame for plotting: ------------------------------------------
-  data_plot <- data.frame(mc = p$mc[p$ixFish],
-                          mortpred = rates$mortpred[p$ixFish],
-                          f = rates$f,
-                          Bpositive = Bpositive,
-                          Funct_group = List_group[p$ixFish], 
-                          Size = Size[p$ixFish],
-                          Color = Color[p$ixFish])
-  
-  ## Give proper levels to the factor type: 
-  data_plot$Funct_group = factor(data_plot$Funct_group, levels = p$functional_grp_level)
-  
-  ## reorganize data for ggplot: 
-  data_plot2 = gather(data_plot, key = "Key", value = "Value", mortpred, f, Bpositive)
-  
-  
-  # Create plots using ggplot2: ------------------------------------------------
-  ## Biomass: 
-  Biomass_plot <- ggplot(data_plot, aes(x = mc, y = Bpositive)) +
-    geom_line(aes(color = Funct_group), size = data_plot$Size) +
-    scale_color_manual(values = unique(data_plot$Color)) +
-    labs(x = NULL, y = "Biomass (g WW)", title = "a") +
-    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                  labels = trans_format("log10", math_format(10^.x)))+
-    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                  labels = trans_format("log10", math_format(10^.x)))+
-  #  force_panelsizes(row = unit(p$panel_height, 'cm'), 
-  #                   col = unit(p$panel_length, 'cm'))+
-    theme_base(base_size = unit(20, 'pt')) + 
-    theme(legend.position = "none",
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          plot.background = element_rect(color = NA))
-  
-  
-  ## Mortality
-  mort_plot <- ggplot(data_plot, aes(x = mc, y = mortpred)) +
-    geom_line(aes(color = Funct_group), size = data_plot$Size) +
-    scale_color_manual(values = p$colors[(p$nResources+1):(p$nGroups+p$nResources)]) +
-    labs(x = NULL, y = "mort (1/year)", title = "b") +
-    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                  labels = trans_format("log10", math_format(10^.x)))+
-  #  force_panelsizes(row = unit(p$panel_height, 'cm'), 
-  #                   col = unit(p$panel_length, 'cm'))+
-    theme_base(base_size = unit(20, 'pt')) + 
-    theme(legend.position = "none", 
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(), 
-          plot.background = element_rect(color = NA))
-  
-  
-  ## Feeding level
-  feeding_plot <- ggplot(data_plot, aes(x = mc, y = f)) +
-    geom_line(aes(color = Funct_group), size = data_plot$Size) +
-    scale_color_manual(values = p$colors[(p$nResources+1):(p$nGroups+p$nResources)]) +
-    labs(x = "Weight (grams)", y = "Feeding level, f", title = "c") +
-    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                  labels = trans_format("log10", math_format(10^.x)))+
-    scale_y_continuous(limits = c(0, 1)) +
-    geom_hline(yintercept = 0.2, linetype = "dotted") +
-    force_panelsizes(row = unit(p$panel_height, 'cm'), 
-                     col = unit(p$panel_length, 'cm'))+
-    theme_base(base_size = unit(20, 'pt'))+
-    theme(legend.position = "none", plot.background = element_rect(color = NA))
-  
-  # Print figure: --------------------------------------------------------------
-  if (print_fig){
-    # print output: combine in one figure 
-    plots = ggarrange(Biomass_plot, mort_plot, feeding_plot, ncol = 1)
-    # save in pdf format: 
-    if (file.exists("../Fig/") == FALSE) { dir.create(file.path("../Fig/")) }
-    ggsave("../Fig/Plot_Bio_Mort_f_Spectra.pdf", plots, width = unit(8, 'cm'), height = unit(10, 'cm'))
-    
-  } else { 
-    # Combine plots in list
-    plots <- list(Biomass_plot, mort_plot, feeding_plot)
-  }
   
   return(plots)
 }
 
-
-
-#' Plot Time series with ggplot2
-#' 
-#' Create time series plot used in \code{\link{PlotSpectraGgplot}}.
-#' 
-#' @details This function producesa plot of the biomass for each time simulated by FEISTY and for each fish functional group \cr
-#' size of the output should be adjusted by the user
-#' @author who ever think they should be authors R.D.
-#'
-#' @usage plotTimeSeries(sim)
-#' 
-#' @param sim The data frame of FEISTY simulation results.
-#' 
-#' @examples 
-#' sim=simulateFEISTY()
-#' plotTimeSeries(sim)
-#' 
-#' @aliases plotTimeSeries
-#' 
-#' @seealso 
-#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
-#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{plotSimulationPaper}} Plot Fig.2 from publication  \cr
-#' \code{\link{plotNetwork}} Food web plot 
-#' 
-#' @export
-#' 
-plotTimeSeries = function(sim,
-                          print_fig = FALSE) {
-  
-  # Define plotting parameters: ------------------------------------------------
-  sim$p$colors <- c('#DDCC77', '#999933', '#662506', '#662506',   # Ressources 
-                    '#EE6677', '#AA4499',                         # Small Fish
-                    '#33BBEE', '#004488', '#228833')              # Large Fish 
-  sim$p$size <- c(0.5, 0.5, 0.5, 0.5, 
-                  1, 1, 
-                  2, 2, 2)*0.75
-  
-  sim$p$functional_grp_level =  c('smallPel',  'mesoPel', 'bathyPel', 'largePel', 'demersals' )
-  
-  p = sim$p
-  TimeSeries = matrix(0, sim$nTime, p$nGroups)
-  Size = c()
-  
-  # Calc mean Biomass per group
-  for (i in 1:p$nGroups){
-    TimeSeries[, i] = rowMeans(sim$B[, p$ix[[i]]-4])
-    Size = c(Size, repmat(p$size[i+4], 101, 1))
-  }
-    
-  TimeSeries = cbind(TimeSeries, sim$t)
-  colnames(TimeSeries) = c(p$functional_grp_level, "time")
-  TimeSeries = as.data.frame(TimeSeries)
-  TimeSeries = gather(TimeSeries, key = "Key", value = "Biomass",
-                      smallPel, mesoPel, bathyPel, largePel, demersals)
-  TimeSeries$key = factor(TimeSeries$Key, levels = p$functional_grp_level)
-  TimeSeries = cbind(TimeSeries, Size)
-  
-  # Plot time series
-  TimeSeriesPlot = ggplot(TimeSeries, aes(x = time, y = Biomass), group = key)+
-    geom_line(aes(color = Key), linewidth = Size)+
-    scale_color_manual(values = p$colors[(p$nResources+1):(p$nGroups+p$nResources)]) +
-    labs(x = "time (year)", y = "Biomass (g WW)", title = "e") +
-    #scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-    #               labels = trans_format("log10", math_format(10^.x)))+
-    force_panelsizes(row = unit(5, 'cm'),
-                     col = unit(19.5, 'cm'))+
-    theme_base(base_size = unit(20, 'pt'))+
-    theme(legend.position = "none", plot.background = element_rect(color = NA))
-  
-  
-  # save in pdf format: 
-  if (print_fig) {
-    if (file.exists("../Fig/") == FALSE) { dir.create(file.path("../Fig/")) }
-    ggsave("../Fig/Plot_TimeSeries.pdf", TimeSeriesPlot, width = unit(10, 'cm'), height = unit(5, 'cm'))
-  }
-  
-  return(TimeSeriesPlot)
-}
-
-
-
 #' Food web plot
 #' 
-#' Revised Based on the work of Daniel Ottmann Riera and Solenne Roux.
-#' This function only works on four prepared setups or revised versions based on these four setups.
-#' If customized setups by users have massive differences e.g., more resources and fish functional types, this plot function may not work.
-#' Users may need to update scripts based on source codes.
+#' Makes a plot with all feeding interactions of fish functional groups and 
+#' resources. The size of the biomass circles and feeding fluxes are divided by 
+#' the maximum biomass or flux and re-scaled with the cube root.
+#' The function works on the four prepared setups or revised 
+#' versions based on these four setups. If customized setups by users have 
+#' more resources and/or fish functional types, this plot function may need to be updated.
 #' 
-# @details
-#' @author Yixin Zhao
+#' @details
+#' To be added.
+#' 
+#' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotNetwork(sim)
 #' 
-#' @param sim The data frame of FEISTY simulation results.
+#' @param sim The dataframe of FEISTY simulation results.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
@@ -809,12 +281,14 @@ plotTimeSeries = function(sim,
 #' 
 #' @export
 #'
+
 plotNetwork <- function(sim) {
-  p=sim$p
-  u=sim$u
+  p <- sim$p
+  u <- sim$u
+  
   # Number of groups and biomass:
-  ngroup <- p$ix[[length(p$ix)]][length(p$ix[[length(p$ix)]])] #ressources (4) + fish 
-  biomass <-u
+  ngroup <- p$ix[[length(p$ix)]][length(p$ix[[length(p$ix)]])] #resources (4) + fish 
+  biomass <- u
   
   #Average of the biomass : 
   Bi <- colMeans(biomass[round(0.6*nrow(biomass), digits = 0):nrow(biomass),]) # mean value of the last 40% time 
@@ -887,64 +361,59 @@ plotNetwork <- function(sim) {
     yaxis <- c("Surface   ", "     Bottom")
   }
   
-  # Marker size depends on biomass:
-  # Using real biomass yields bubles with too many orders of magnitude difference
-  # Thus we apply a cubic square:
+  # Marker size depends on biomass following a cubic square transformation
   Msize <- Bi / max(Bi)
   Msize[Msize == 0] <- NA
   Msize <- Msize^(1/3)
   
   # Create line width: 
-  Mat <- Bi
-  Theta <- t(t(p$theta) * Bi) * Mat
-  Theta <- c(Theta) 
-  threshold <- 0.05 # min(tail(sort(Theta), 100)) # Alternatively, use 100 strongest relations regardless of absolute value of the threshold
-  indx <- which(Theta >= threshold) # takes the x highest values of theta
+  Flux <- getFeeding(sim)
+  Flux <- c(Flux) 
+  threshold <- 0.05 
+  indx <- which(Flux >= threshold) # takes the x highest values of theta
   
-  # Set values of each coordinate and put them together:
+  # Set values of each coordinate (i.e. size and water column position) and put together:
   coord_1 <- data.frame(index = 1:p$nStages^2,
                         mc = rep(p$mc[1:p$nStages], p$nStages), 
                         depth = rep(Av_depth[1:p$nStages], p$nStages), 
                         SpId = rep(SpId, p$nStages),
                         Msize = rep(Msize, p$nStages), 
-                        LineWdth = (Theta/max(Theta))^(1/3) / 15,
-                        Alpha = (Theta/max(Theta))^(1/3))
+                        LineWdth = (Flux/max(Flux))^(1/3),
+                        Alpha = (Flux/max(Flux))^(1/3))
   
-  coord_2 <- data.frame(index = 1:p$nStages^2, # Notice that here repetition ys grouped by "each" to change order
+  coord_2 <- data.frame(index = 1:p$nStages^2, # Notice repetition of ys grouped by "each" to change order
                         mc = rep(p$mc[1:p$nStages], each = p$nStages), 
                         depth = rep(Av_depth[1:p$nStages], each = p$nStages), 
                         SpId = rep(SpId, each = p$nStages),
                         Msize = rep(Msize, each = p$nStages),
-                        LineWdth = (Theta/max(Theta))^(1/3) / 15,
-                        Alpha = (Theta/max(Theta))^(1/3))
+                        LineWdth = (Flux/max(Flux))^(1/3),
+                        Alpha = (Flux/max(Flux))^(1/3))
   
   # Combine in a data frame:
   df <- rbind(coord_1, coord_2)
-  
-  df <- df %>% 
-    arrange(desc(Msize)) %>%
-    filter(!is.na(Msize))
-  
-  df2 <- df %>% filter(index %in% indx) %>%
-    arrange(desc(Msize))
+  df <- df[order(-df$Msize),]   
+  df <- subset(df,!(is.na(df$Msize))) 
+  df2 <- subset(df,df$index %in% indx)
+  df2 <- df2[order(-df2$Msize),]
   
   # Generate plot:
-  plot <- ggplot() +
-    geom_line(data = df2, aes(x = mc, y = depth, group = index, size = LineWdth, color = SpId, alpha = Alpha), show.legend = F) +
+  plot <- defaultplot() +
+    geom_line(data = df2, aes(x = mc, y = depth, group = index, color = SpId, alpha = Alpha),
+              show.legend = F, linewidth = df2$LineWdth*3) +
     geom_point(data = df, aes(x = mc, y = depth, color = SpId, size = Msize), stroke = 0, shape = 16) +
     scale_color_manual(values = p$my_palette[attr(p$my_palette, "names") %in% df$SpId], 
                        labels = p$my_names[attr(p$my_palette, "names") %in% df$SpId]) +
-    scale_radius(limits = c(0, NA), range = c(0, (8))) +
+    scale_radius(limits = c(0, NA), range = c(0, 10)) +
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_continuous(breaks = seq(0, round(-p$bottom - 1), by = -p$bottom), labels = yaxis) +
-    annotation_logticks(sides = "b") +
-    labs(x ="Weight (grams)", y = "", color = "Group") +
-    theme_base() + 
+    annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") +
+    labs(x ="Weight (gWW)", y = "", color = "Group") +
     guides(size = "none") +
-    theme(legend.position = "bottom",
+    theme(legend.position = "bottom",legend.key = element_rect(fill = NA),
           axis.title.y = element_blank(),
-          axis.text.y = element_text(angle = 90, hjust = .5, margin = margin(r = 0)),
+          axis.text.x = element_text(size=12),
+          axis.text.y = element_text(angle = 90, hjust = .5, margin = margin(r = 0), size=12),
           axis.ticks.y = element_blank())
   
   return(plot)
@@ -952,13 +421,15 @@ plotNetwork <- function(sim) {
 
 #' Diet plot
 #' 
-#' Revised Based on the work of Daniel Ottmann Riera and Solenne Roux.
-#' This function only works on four prepared setups or revised versions based on these four setups.
-#' If customized setups by users have massive differences e.g., more resources and fish functional types, this plot function may not work.
-#' Users may need to update scripts based on source codes.
+#' Makes a plot of prey groups in the stomach of each fish functional type and size class. 
+#' The function only works on the four prepared setups or revised versions 
+#' based on these four setups. If customized setups by users have more resources 
+#' and/or fish functional types, this plot function needs to be updated.
 #' 
-# @details
-#' @author Yixin Zhao
+#' @details
+#' To be added.
+#' 
+#' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotDiet(sim)
 #' 
@@ -977,24 +448,24 @@ plotNetwork <- function(sim) {
 #'
 
 plotDiet <- function(sim) {
-  p=sim$p
-  u=sim$u
+  p <- sim$p
+  u <- sim$u
   p$nstage <-lengths <- max(sapply(p$ix, length)) #maximum number of stages for one group
-  biomass <- u#sim [,2:(p$ix[[length(p$ix)]][length(p$ix[[length(p$ix)]])]+1)]
+  fish <- c((p$nResources+1):(p$nResources+p$nGroups)) # get the fish
+  biomass <- u 
   Bin <- round(0.6 * nrow(biomass), digits = 0) 
-  biomassend <- colMeans(biomass[Bin:nrow(biomass),]) # mean value of the last 40% time 
+  biomassend   <- colMeans(biomass[Bin:nrow(biomass),]) # mean value of the last 40% time 
   biomassstage <- p$ixFish[length(p$ixFish)]
   biomasssmall <- p$nstage - round(2/3*p$nstage, digits = 0)
   Enc = p$V * (p$theta %*% biomassend)
   f   = Enc / (p$Cmax + Enc)
   f[is.na(f)] = 0  
-  #f <- calcEncounter(biomassend, p)$f
   
   bom <- t(t(p$theta[5:biomassstage, ]) * colMeans(biomass[Bin:nrow(biomass),])) 
   fbom <- f[5:biomassstage] / rowSums(bom)
   output <- bom * fbom
-  
-  if (length(p$ix)==5){
+
+  if(length(p$ix)==5){
     
     p$SpId <- c('smallPel','mesoPel','largePel', 'bathyPel', 'demersals')
     SpId <- c("smallZoo", "largeZoo", "benthos", "largeBenthos", 
@@ -1004,7 +475,7 @@ plotDiet <- function(sim) {
               rep(p$SpId[4], length(p$ix[[4]])),
               rep(p$SpId[5], length(p$ix[[5]])))
     
-    p$RSpName <- c("Small zooplankton", "Big zooplankton", "Benthos", "Small pelagics",
+    p$RSpName <- c("Small mesozooplankton", "Large mesozooplankton", "Benthos", "Small pelagics",
                    "Mesopelagics", "Large pelagics", "Bathypelagics", "Demersals")
     
   } else {
@@ -1015,124 +486,118 @@ plotDiet <- function(sim) {
               rep(p$SpId[2], length(p$ix[[2]])),
               rep(p$SpId[3], length(p$ix[[3]])))
     
-    p$RSpName <- c("Small zooplankton", "Large zooplankton", "Benthos", "Small pelagics",
+    p$RSpName <- c("Small mesozooplankton", "Large mesozooplankton", "Benthos", "Small pelagics",
                    "Large pelagics", "Demersals")   
     
   }
   
-  
-  # small pelagics: ---------------------------------------------------------
+  # small pelagics: ----
   small_pel <- output[(p$ix[[1]][1] - length(p$ixR)):(p$ix[[1]][length(p$ix[[1]])] - length(p$ixR)), ] 
   small_pel <- t(rbind(small_pel, matrix(0, biomasssmall, biomassstage)))
   small_pel <- data.frame(val = c(small_pel), 
                           stage = rep(1:p$nstage, each = nrow(small_pel)), 
                           SpId = as.factor(rep(SpId, p$nstage)))
   
-  p1 <- ggplot(data = small_pel) +
-    geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
-    scale_fill_manual(values = p$my_palette) +
-    theme_base() +
-    labs(x = "", y = "Fraction of stomach", fill = "Prey group", title = p$RSpName[4]) +
-    theme(legend.position = "none")
-  
+  p1 <- defaultplot_nl() + 
+    geom_bar(data=small_pel, aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    scale_fill_manual(values = p$my_palette) + 
+    scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+    labs(x = "", y = "Fraction in stomach", fill = "Prey group", title = p$RSpName[4])
   
   if (length(p$ix)==5){
     
-    # Large pelagics: --------------------------------------------------------- 
+    # Large pelagics: ----
     large_pel <- t(output[(p$ix[[3]][1] - length(p$ixR)):(p$ix[[3]][length(p$ix[[3]])] - length(p$ixR)), ])
     large_pel <- data.frame(val = c(large_pel), 
                             stage = rep(1:p$nstage, each = nrow(large_pel)), 
                             SpId = as.factor(rep(SpId, p$nstage)))
     
-    p2 <- ggplot(data = large_pel) +
-      geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    p2 <- defaultplot_nl() +
+      geom_bar(data = large_pel, aes(x = stage, y = val, fill = SpId), stat = "identity") +
       scale_fill_manual(values = p$my_palette) +
-      theme_base() +
-      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[6]) +
-      theme(legend.position = "none") 
+      scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[6])
     
     
-    # Demersal: ---------------------------------------------------------------
+    # Demersal: ----
     demers <- t(output[(p$ix[[5]][1] - length(p$ixR)):(p$ix[[5]][length(p$ix[[5]])] - length(p$ixR)), ])
     demers <- data.frame(val = c(demers), 
                          stage = rep(1:p$nstage, each = nrow(demers)), 
                          SpId = as.factor(rep(SpId, p$nstage)))
     
-    p3 <- ggplot(data = demers) +
-      geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    p3 <- defaultplot_nl() +
+      geom_bar(data = demers, aes(x = stage, y = val, fill = SpId), stat = "identity") +
       scale_fill_manual(values = p$my_palette) +
-      theme_base() +
-      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[8]) +
-      theme(legend.position = "none")
+      scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[8])
     
     
-    # Mesopelagics: ----------------------------------------------------------- 
+    # Mesopelagics: ----
     meso_pel <- output[(p$ix[[2]][1] - length(p$ixR)):(p$ix[[2]][length(p$ix[[2]])] - length(p$ixR)), ]
     meso_pel <- t(rbind(meso_pel, matrix(0, biomasssmall, biomassstage)))
     meso_pel <- data.frame(val = c(meso_pel), 
                            stage = rep(1:p$nstage, each = nrow(meso_pel)), 
                            SpId = as.factor(rep(SpId, p$nstage)))
     
-    p5 <- ggplot(data = meso_pel) +
-      geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    p5 <- defaultplot_nl() +
+      geom_bar(data = meso_pel, aes(x = stage, y = val, fill = SpId), stat = "identity") +
       scale_fill_manual(values = p$my_palette) +
-      theme_base() +
-      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[5]) +
-      theme(legend.position = "none") 
+      scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+      labs(x ="size-class", y = "Fraction in stomach", fill = "Prey group", title = p$RSpName[5])
     
-    # Bathypelagics: ---------------------------------------------------------- 
+    # Bathypelagics: ----
     bathy_pel <- t(output[(p$ix[[4]][1] - length(p$ixR)):(p$ix[[4]][length(p$ix[[4]])] - length(p$ixR)), ])
     bathy_pel <- data.frame(val = c(bathy_pel), 
                             stage = rep(1:p$nstage, each = nrow(bathy_pel)), 
                             SpId = as.factor(rep(SpId, p$nstage)))
     
-    p6 <- ggplot(data = bathy_pel) +
-      geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    p6 <- defaultplot_nl() +
+      geom_bar(data = bathy_pel, aes(x = stage, y = val, fill = SpId), stat = "identity") +
       scale_fill_manual(values = p$my_palette) +
-      theme_base() +
-      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[7]) +
-      theme(legend.position = "none") 
-    
+      scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[7])
     
   } else {
     
-    # Large pelagics: --------------------------------------------------------- 
+  # Large pelagics: ----
     large_pel <- t(output[(p$ix[[2]][1] - length(p$ixR)):(p$ix[[2]][length(p$ix[[2]])] - length(p$ixR)), ])
     large_pel <- data.frame(val = c(large_pel), 
                             stage = rep(1:p$nstage, each = nrow(large_pel)), 
                             SpId = as.factor(rep(SpId, p$nstage)))
     
-    p2 <- ggplot(data = large_pel) +
-      geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    p2 <- defaultplot_nl() +
+      geom_bar(data = large_pel,aes(x = stage, y = val, fill = SpId), stat = "identity") +
       scale_fill_manual(values = p$my_palette) +
-      theme_base() +
-      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[5]) +
-      theme(legend.position = "none") 
-    
-    
-    # Demersal: ---------------------------------------------------------------
+      scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[5])
+
+    # Demersal: ----
     demers <- t(output[(p$ix[[3]][1] - length(p$ixR)):(p$ix[[3]][length(p$ix[[3]])] - length(p$ixR)), ])
     demers <- data.frame(val = c(demers), 
                          stage = rep(1:p$nstage, each = nrow(demers)), 
                          SpId = as.factor(rep(SpId, p$nstage)))
     
-    p3 <- ggplot(data = demers) +
-      geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
+    p3 <- defaultplot_nl() +
+      geom_bar(data = demers, aes(x = stage, y = val, fill = SpId), stat = "identity") +
       scale_fill_manual(values = p$my_palette) +
-      theme_base() +
-      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[6]) +
-      theme(legend.position = "none")
-    
-  }
+      scale_x_continuous(breaks = seq(0,p$nstage,length.out=4)) +
+      labs(x ="size-class", y = "", fill = "Prey group", title = p$RSpName[6])
+    } 
   
-  
-  # Legend: ----------------------------------------------------------------- 
+  # Legend: ----
   legend_colors <- data.frame(val = 0, stage = 0, SpId = unique(large_pel$SpId))
+  scale_color_manual(name = "Groups", 
+                     values = c("total" = "black", p$my_palette[p$groupnames[fish]]),
+                     breaks = c("total",p$groupnames[fish]),
+                     labels = c("total"= "Total", p$my_names[p$groupnames[fish]]))
+  
   
   p7 <- ggplot(data = legend_colors) +
     geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
-    scale_fill_manual(values = p$my_palette[attr(p$my_palette, "names") %in% legend_colors$SpId]) +
-    labs(fill = "Prey group") +
+    scale_fill_manual(name = "Prey group",
+                      values = p$my_palette[attr(p$my_palette, "names") %in% legend_colors$SpId],
+                      breaks = attr(p$my_palette, "names"),
+                      labels = attr(p$my_palette, "names"))+
     theme_void() +
     theme(legend.position = c(.45,.4),
           legend.direction = "horizontal",
@@ -1143,278 +608,373 @@ plotDiet <- function(sim) {
       title.position = "top",  
     ))
   
-  
   # Put all panels together:
-  
   if (length(p$ix)==5){
-    
     if(p$bottom > p$mesop) {
-    plots <- p1 + p2 + p3 + p5 + p6 +p7 & 
-      theme(plot.background = element_blank())
+      plots <- plot_grid(p1,p2,p3,p5,p6,p7,nrow=2)
     }else{
-    plots <- p1 + p2 + p3 +p7 & 
-      theme(plot.background = element_blank())
+      plots <- plot_grid(p1,p2,p3,p7,nrow=2)
     }
-    
   } else {
-    
-    plots <- p1 + p2 + p3 +p7 & 
-      theme(plot.background = element_blank())
+    plots <- plot_grid(p1,p2,p3,p7,nrow=2)
   }
+  return(plots)
+}
+
+#' Plots for growth rate, mortality, and feeding level 
+#' 
+#' Plots growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
+#' 
+#' @details
+#' Rate calculation:
+#' \itemize{
+#' \item Averaged values of rate data are estimated over a selected time period 
+#' (default last 40% simulation time).
+#' }
+#' 
+#' @author P. Daniël van Denderen, Yixin Zhao
+#'
+#' @usage plotRates(sim)
+#' 
+#' @param sim The data frame of FEISTY simulation results.
+#' 
+#' @examples 
+#' sim=simulateFEISTY()
+#' # averaged rate data of last 40%  simulation time
+#' plotRates(sim=sim)
+#' 
+#' @aliases plotRates
+#' 
+#' @seealso 
+#' \code{\link{simulateFEISTY}} Run FEISTY model simulations
+#' 
+#' @export
+#' 
+
+plotRates = function(sim) {
+  p_rates <- getRates(sim)
+  plots <- align_plots(p_rates[[1]],p_rates[[2]],p_rates[[3]], align = 'v')
+  plots <- plot_grid(plots[[1]], plots[[2]], plots[[3]],ncol=1,rel_heights = c(1,1,1.6))
+  return(plots)
+}
+
+#' Plot simulation results
+#' 
+#' Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, 
+#' \code{\link{plotSpectra}}, \code{\link{plotNetwork}} and \code{\link{plotRates}}.
+#' 
+#' @details This function is designed to give a quick visualization of a simulation output. 
+#' 
+#' @author P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
+#'
+#' @usage plotSimulation(sim)
+#' 
+#' @param sim The dataframe of FEISTY simulation results.
+#' 
+#' @examples 
+#' sim=simulateFEISTY()
+#' plotSimulation(sim)
+#' 
+#' @aliases plotSimulation
+#' 
+#' @seealso 
+#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
+#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
+#' \code{\link{plotSSBtime}} Timeseries of spawning stock biomass \cr
+#' \code{\link{plotSpectra}} Biomass spectra plot \cr
+#' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
+#' \code{\link{plotNetwork}} Plot with all feeding interactions
+#' 
+#' @export
+#' 
+
+plotSimulation = function(sim) {
+  p_biomasstime     <- plotBiomasstime(sim)
+  p_rates   <- getRates(sim)
+  p_spectra <- plotSpectra(sim)
+  p_network <- plotNetwork(sim)
   
+  ## get legend from plotNetwork
+  legend = get_legend(p_network)
   
+  ## Turn legend off for later external plotting 
+  # subpanel a
+  
+  # create a fake line for legend 
+  text_loc <- data.frame(x=c(1,2,3,4,5,6),y=rep(1E-16,6),
+                         group=c("total"))
+  p_spectra     = p_spectra + labs(title = "a")+
+    #fake line
+    geom_line(data=text_loc,aes(x=x,y=y,linetype=group),linewidth=lwd_def) + 
+    scale_linetype_manual(values=c(1),name = "") + guides(color = "none") +
+    theme(legend.position=c(1,1),legend.justification=c("right"),
+          legend.background = element_rect(colour = NA, fill = NA),
+          axis.text.x=element_blank(),
+          axis.title.x = element_blank(),
+          legend.spacing.x = unit(.1, 'cm'))
+  
+  # subpanel b-d
+  p_rates[[1]]  = p_rates[[1]] + labs(title = "b")
+  p_rates[[2]]  = p_rates[[2]] + labs(title = "c")
+  p_rates[[3]]  = p_rates[[3]] + labs(title = "d") + 
+                   theme(legend.position="none",
+                        plot.background = element_rect(color = NA))
+  
+  # subpanel e
+  p_network = p_network + labs(title = "e") + 
+               theme(legend.position="none",
+                    plot.background = element_rect(color = NA))
+  
+  # subpanel f - set new scale to make y-scale "cleaner"
+  p_biomasstime     = p_biomasstime + labs(title = "f") +
+               theme(legend.position="none",
+                    plot.background = element_rect(color = NA)) #+
+               # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x,n=3), 
+               #    labels = trans_format("log10", math_format(10^.x)))
+              
+  # create left and right and bottom 
+  left  <- align_plots(p_spectra,p_rates[[1]],p_rates[[2]],p_rates[[3]],align="v")
+  left  <- plot_grid(left[[1]],left[[2]],left[[3]],left[[4]],rel_heights = c(1,1.1,1.1,1.3),ncol=1)
+  right <- align_plots(p_network,p_biomasstime,align = 'v')
+  right <- plot_grid(right[[1]],right[[2]],ncol=1,rel_heights = c(3.2,1.3))
+  plots <- plot_grid(left,right,nrow=1,rel_widths = c(1,1.4))  
+  plots <- plot_grid(plots,legend,ncol=1,rel_heights = c(10,1))
+
+  return(plots)
+}
+
+# Only for Shiny
+#' @export
+plotSimulationShiny = function(sim) {
+  p_biomasstime   <- plotBiomasstime(sim)+theme(legend.position = "bottom")
+  p_spectra       <- plotSpectra(sim)
+  p_rates         <- getRates(sim)  
+  
+  ## get legend from plotNetwork
+  legend = get_legend(p_biomasstime)
+  
+  ## Turn legend off for later external plotting 
+  # subpanel a
+  
+  # create a fake line for legend 
+  text_loc <- data.frame(x=c(1,2,3,4,5,6),y=rep(1E-16,6),
+                         group=c("total"))
+  p_spectra     = p_spectra + 
+    #fake line
+    geom_line(data=text_loc,aes(x=x,y=y,linetype=group),linewidth=lwd_def) + 
+    scale_linetype_manual(values=c(1),name = "") + guides(color = "none") +
+    theme(legend.position=c(1,1),legend.justification=c("right"),
+          legend.background = element_rect(colour = NA, fill = NA),
+          axis.text.x=element_blank(),
+          axis.title.x = element_blank(),
+          legend.spacing.x = unit(.1, 'cm'))
+  
+  # subpanel b-d
+  #p_rates[[1]]  = p_rates[[1]] + labs(title = "b")
+  #p_rates[[2]]  = p_rates[[2]] + labs(title = "c")
+  p_rates[[3]]  = p_rates[[3]]  + 
+    theme(legend.position="none",
+          plot.background = element_rect(color = NA))
+  
+  # subpanel f - set new scale to make y-scale "cleaner"
+  p_biomasstime     = p_biomasstime  +
+    theme(legend.position="none",
+          plot.background = element_rect(color = NA)) #+
+    # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x,n=3), 
+    #               labels = trans_format("log10", math_format(10^.x)))
+  
+  # create left and right and bottom 
+  plots  <- align_plots(p_biomasstime,p_spectra,p_rates[[1]],p_rates[[2]],p_rates[[3]],align="v")
+  plots  <- plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]],plots[[5]],rel_heights = c(1.1,1,1,1,1),ncol=1)
+  plots  <- plot_grid(plots,legend,ncol=1,rel_heights = c(10,1))
   
   return(plots)
 }
 
-
-#-------------------------------------------------------------------------------
-# Make a basic run:
-#-------------------------------------------------------------------------------
-
-baserun = function(USEdll=TRUE) {
-  p = setupBasic()
-  sim = simulate(p,tEnd = 100,USEdll)
-  plotSimulation(sim)
-  return(sim)
+# Support functions: -----
+ 
+# creates empty ggplot as default
+defaultplot = function() {
+  ggplot() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = "black"),
+          legend.key = element_rect(fill = NA))
 }
 
-
-defaultplot <- function(
-  mfcol=c(1,1), 
-  oma=c(0, 0.4, omargin, omargin), # Outer margins (bottom, left, top, right)
-  mar=c(2.1,2.3,0,0), # Margins
-  ps=10, # Point size
-  tcl=ticklength, # Tick mark length
-  mgp=c(1.1,0,0), ...)  # Margins for axis title, axis labels, and axis line
-{
-  par(ps=ps)
-  par(mfcol=mfcol, oma=oma, mar=mar, tcl=tcl, mgp=mgp, cex=cex, cex.axis=cexaxis, ...) 
-  assign("iPlot", 1, envir = .GlobalEnv)
+# creates empty ggplot with no legend
+defaultplot_nl = function() {
+  defaultplot() + theme(legend.position = "none")
 }
 
-defaultplothorizontal <- function(
-  nPanels=1,
-  mfcol=c(1,nPanels), 
-  oma=c(2.1, 2.7, omargin, omargin), # Outer margins (bottom, left, top, right)
-  mar=c(0,0,0,0.3), # Margins
-#  oma=c(0,0.4, omargin, omargin), # Outer margins (bottom, left, top, right)
-#  mar=c(2.7,2.5,0,0.3), # Margins
-  ps=10, # Point size
-  tcl=ticklength, # Tick mark length
-  mgp=c(1.1,0,0), ...)  # Margins for axis title, axis labels, and axis line
-{
-  par(mfcol=mfcol, oma=oma, mar=mar, ps=ps, tcl=tcl, mgp=mgp, cex=cex, cex.axis=cexaxis, ...) 
-  assign("iPlot", 1, envir = .GlobalEnv)
+# creates dataframe for time series plots
+getTimeseries = function(sim) {
+  dat <- data.frame(t     = rep(sim$t,(sim$p$nResources + sim$p$nGroups)),
+                    SSB   = c(as.vector(sim$R*NA), as.vector(sim$SSB)),
+                    bio   = c(as.vector(sim$R), as.vector(sim$totBiomass)),
+                    yield = c(as.vector(sim$R*0), as.vector(sim$yield)),
+                    group = as.factor(rep(sim$p$groupnames, each = length(sim$t))))
+  return(dat)
 }
 
-defaultplotvertical <- function(
-  nPanels=1,
-  mfcol=c(nPanels,1), 
-  oma=c(2.1, 2.5, omargin, omargin), # Outer margins (bottom, left, top, right)
-  mar=c(0.3,0,0,0), # Margins
-  ps=10, # Point size
-  tcl=ticklength, # Tick mark length
-  mgp=c(2,0,0), ...)  # Margins for axis title, axis labels, and axis line
-{
-  par(mfcol=mfcol, oma=oma, mar=mar, ps=ps, tcl=tcl, mgp=mgp, cex=cex, cex.axis=cexaxis, ...) 
-  assign("iPlot", 1, envir = .GlobalEnv)
-}
-
-test <- function() {
-  defaultplot()
-  defaultpanel(xlab="x", ylab="y",xlim=c(0.1,10), ylim=c(0.1,10))
-  points(1,1)
+# creates feeding flux from prey to predator
+getFeeding = function(sim) {
+  p <- sim$p
+  u <- sim$u
   
-  defaultplot()
-  loglogpanel(xlab="x", ylab="y",xlim=c(0.1,10), ylim=c(0.1,10))
-  points(1,1)
-
-  defaultplothorizontal(nPanels = 3)
-  loglogpanel(xlab="x", ylab="y",xlim=c(0.1,10), ylim=c(0.1,10))
-  points(1,1)
-  loglogpanel(xlab="x", ylab="",xlim=c(0.1,10), ylim=c(0.1,10), yaxis = FALSE)
-  points(1,1)
-  loglogpanel(xlab="x", ylab="",xlim=c(0.1,10), ylim=c(0.1,10), yaxis = FALSE)
-  points(1,1)
+  # get last 40% of timeseries
+  etaTime <- 0.4 
+  ixTime  <- which(sim$t>=((1-etaTime)*sim$t[sim$nTime]))
   
-  defaultplothorizontal(nPanels = 2)
-  defaultpanel(xlab="x", ylab="y",xlim=c(0.1,10), ylim=c(0.1,10))
-  points(1,1)
-  defaultpanel(xlab="x", ylab="",xlim=c(0.1,10), ylim=c(0.1,10), yaxis = FALSE)
-  points(1,1)
+  # Number of groups and biomass:
+  ngroup <- p$ix[[length(p$ix)]][length(p$ix[[length(p$ix)]])] #resources (4) + fish 
+  biomass <- u
   
-  defaultplotvertical(nPanels = 2)
-  loglogpanel(xlab="", ylab="y",xlim=c(0.1,10), ylim=c(0.1,10), xaxis=FALSE)
-  points(1,1)
-  loglogpanel(xlab="x", ylab="y",xlim=c(0.1,10), ylim=c(0.1,10))
-  points(1,1)
+  #Average of the biomass : 
+  prey     <- colMeans(biomass[ixTime,]) # mean value of the last 40% time 
+  predator <- colMeans(biomass[ixTime,]) # mean value of the last 40% time 
   
-}
-
-defaultpanel <- function(xlim, ylim, 
-                         xlab='', ylab='', 
-                         xaxis=TRUE, yaxis=TRUE, label=FALSE, new=FALSE,
-                         bty="o", xaxs="r",
-                         main="") {
-  plot(1, type='n', 
-       ylim=range(ylim[!is.na(ylim)]), 
-       xlim=range(xlim[!is.na(xlim)]), axes=FALSE, xlab='', ylab='', par(new=new),
-       bty=bty, xaxs=xaxs, main=main)
-  if (xaxis)
-    mtext(side=bottom, line=1, TeX(xlab), cex=par()$cex)
-  if (yaxis)
-    mtext(side=left, line=1, TeX(ylab), cex=par()$cex)
-  if (label) 
-    makepanellabel()
-  if (xaxis)
-    axis(bottom, labels=xaxis, cex.axis=par()$cex.axis, lwd=axis.lwd, lwd.ticks=axis.lwd)
-  if (yaxis)
-    axis(left, labels=yaxis, cex.axis=par()$cex.axis, lwd=axis.lwd, lwd.ticks=axis.lwd)
-  if (bty == "o")
-    box(lwd=axis.lwd)
-
-}
-
-semilogxpanel <- function(xlim, ylim, xlab='', ylab='', 
-                          xaxis=TRUE, yaxis=TRUE, label=FALSE, new=FALSE, 
-                          bty="o", xaxs="r") {
-  ylim <- range(na.omit(ylim))
-  xlim <- range(na.omit(xlim))
-  plot(1, type='n', log='x',
-       ylim=ylim, 
-       xlim=xlim, axes=FALSE, xlab='',ylab='', xaxs=xaxs, par(new=new),
-       xaxs="i", yaxs="i")
-
-  if (xaxis)
-    mtext(side=bottom, line=1, TeX(xlab))
-  if (yaxis)
-    mtext(side=left, line=1, TeX(ylab))
-  if (label) 
-    makepanellabel()
-#  if (xaxis)
-  logaxes(bottom, lim=xlim, labels=xaxis)
-#  if (yaxis)
-  axis(left, labels=yaxis, lwd=axis.lwd, lwd.ticks=axis.lwd)
-  if (bty=="o")
-    box(lwd=axis.lwd)
-}
-
-semilogypanel <- function(xlim, ylim, xlab='', ylab='', 
-                          xaxis=TRUE, yaxis=TRUE, label=FALSE,
-                          bty="o") {
-  plot(1, type='n', log='y',
-       ylim=range(ylim[!is.na(ylim)]), 
-       xlim=range(xlim[!is.na(xlim)]), axes=FALSE, xlab='',ylab='',yaxs="i",
-       bty=bty)
-  if (xaxis)
-    mtext(side=bottom, line=1, TeX(xlab))
-  if (yaxis) 
-    mtext(side=left, line=1.5, TeX(ylab))
-  if (label) 
-    makepanellabel()
-  if (xaxis)
-    axis(bottom, labels=xaxis, lwd=axis.lwd, lwd.ticks=axis.lwd)
-  logaxes(left, lim=ylim, labels=yaxis, drawaxis=yaxis)
-  if (bty=="o")
-    box(lwd=axis.lwd)
-}
-
-loglogpanel <- function(xlim, ylim, xlab='', ylab='', 
-                        xaxis=TRUE, yaxis=TRUE, label=FALSE,
-                        bExponential=TRUE, new=FALSE, powx=NA, powy=NA, xaxs="r") {
-  ylim <- range(na.omit(ylim))
-  xlim <- range(na.omit(xlim))
-  plot(1, type='n', log='xy',
-       ylim=ylim, 
-       xlim=xlim, axes=FALSE, xlab='',ylab='', par(new=new), xaxs=xaxs,
-       xaxs="i",yaxs="i")
-  mtext(side=bottom, line=1.1, TeX(xlab))
-  mtext(side=left, line=1.5, TeX(ylab))
-  if (label) 
-    makepanellabel()
-  logaxes(bottom, lim=xlim, bExponential = bExponential, labels=xaxis, pow=powx)
-  logaxes(left, lim=ylim, bExponential = bExponential, labels=yaxis, pow=powy)
-  box(lwd=axis.lwd)
-}
-
-
-## side:  1 for x-axis, 2 for y-axis (3, 4 secondary x and y axes)
-## labels: logical, if TRUE, adds them
-## las: integer in [0,1,2,3] see ?par
-logaxes <- function(side = bottom, 
-                    lim, pow = NA, drawaxis=TRUE,
-                    labels=TRUE, las = 1, col = 1, bExponential=TRUE) {
-  poww <- pow
-  if (is.na(pow[1]))
-    poww = ceiling(min(log10(lim))):floor(max(log10(lim)))
-  
-  #axis(side, at = 10^poww, lwd=0, labels = FALSE, tcl=ticklength, lwd.ticks = axis.lwd, col = col)
-
-  if (labels) 
-    axis(side, at = 10^poww, lwd=0, labels = FALSE, tcl=-0., lwd.ticks = axis.lwd)
-
-  if (side==bottom)
-    line <- 0.2/(par()$oma[bottom] + par()$mar[bottom])
-  else
-    line <- 0.6/(par()$oma[left] + par()$mar[left])
-  
-  if (labels) {
-    for(i in poww) {
-      if (bExponential)
-        mtext(side = side, at = 10^i, text=bquote(10^.(i)), line = line, 
-              las = las, cex=cexaxis)
-      else
-        mtext(side = side, at = 10^i, text=10^i, line = 0.2, 
-              las = las, cex=par()$cex.axis)
-    }
+  # estimate encounters
+  Enc <- p$V[1] * p$theta[1,] * prey 
+  for (i in 2:length(predator)){
+    Enc <- rbind(Enc, p$V[i] * p$theta[i,] * prey)
   }
-  # Minor ticks:
-  if ((is.na(pow[1])) & drawaxis) {
-    at <- as.vector(sapply(seq(range(poww)[1]-1, range(poww)[2]), function(p) (2:9)*10^p))
-    axis(side, at = at, labels = FALSE, tcl=0.5*ticklength, lwd=0, lwd.ticks=axis.lwd, col = col)
+  
+  # estimate encounters per predator
+  Encspecies = rowSums(Enc)
+  
+  # estimate the mortality generated
+  mortpr <-  p$Cmax[1] * p$V[1] * p$theta[1,] / (p$Cmax[1]+ Encspecies[1]) * predator[1]
+  for (i in 2:length(predator)){
+    mortpr <- rbind(mortpr,p$Cmax[i] * p$V[i] * p$theta[i,] / (p$Cmax[i]+ Encspecies[i]) * predator[i])
   }
-} 
-
-makepanellabel <- function(line=-1.1) {
-  mtext(letters[iPlot], side=top, line=line, adj=0.05)
-  assign("iPlot", iPlot+1, envir = .GlobalEnv)
+  
+  # estimate the flux from prey to predator
+  mortpr <- ifelse(is.na(mortpr),0,mortpr)
+  flux_prey_to_pred <- t(t(mortpr)*prey)
+  rownames(flux_prey_to_pred) <- paste("pred",colnames(p$theta),sep="_")
+  colnames(flux_prey_to_pred) <- paste("prey",colnames(p$theta),sep="_")
+  return(flux_prey_to_pred)
 }
 
-hline <- function(y=0, lty='dotted', lwd=1) {
-  if (par("xlog"))
-    lines(x=10^par("usr")[1:2], y=y*c(1,1), lty=lty, lwd=lwd)
-  else
-    lines(x=par("usr")[1:2], y=y*c(1,1), lty=lty, lwd=lwd)
-}
+# creates individual outputs for combined rates plot
+getRates = function(sim) {
+  p <- sim$p
+  
+  # get last 40% of timeseries
+  etaTime <- 0.4 
+  ixTime  <- which(sim$t>=((1-etaTime)*sim$t[sim$nTime]))
 
-vline <- function(x=0, lty='dotted', col="black") {
-  if (par("ylog"))
-    lines(x=x*c(1,1), y=10^par("usr")[3:4], lty=lty, col=col)
-  else
-    lines(x=x*c(1,1), y=par("usr")[3:4], lty=lty, col=col)
-}
+    # estimate rates
+  fish <- c((p$nResources+1):(p$nResources+p$nGroups))
+  rates <- data.frame(group    = rep(p$groupnames[fish],sapply(p$ix,length)),
+                      mc       = p$mc[p$ixFish],
+                      g        = as.numeric(colMeans(sim$g[ixTime,])),
+                      mortpred = as.numeric(colMeans(sim$mortpred[ixTime,p$ixFish])),
+                      mortF    = as.numeric(p$mortF[p$ixFish]),
+                      f        = as.numeric(colMeans(sim$f[ixTime,])))
+  x_lim  <- range(p$mc[p$ixFish])
+  
+# extract existing fish types according to initial values
+  inival=p$u0[-p$ixR][grep("_1", names(p$u0[-p$ixR]))]
+  names(inival)=p$groupnames[fish]
+  fishexistname=names(inival[inival!=0])
+  
+  rates <- subset(rates, rates$group %in% fishexistname)
+  
+# convert zeros of data to a very small number (only for plotting purposes)
+  rates$g <- ifelse(rates$g == 0, 1E-16,rates$g)
+  rates$mortpred <- ifelse(rates$mortpred == 0, 1E-16,rates$mortpred) 
+  rates$mortF <- ifelse(rates$mortF == 0, 1E-16,rates$mortF) 
+  rates$f <- ifelse(rates$f == 0, 1E-16,rates$f) 
+  
+  # growth rates: ----
+  growth <- defaultplot_nl() +
+    geom_line(data = rates, 
+              aes(x = mc, y = g, group = group, color = group),
+              linewidth=lwd_def) + 
+    scale_color_manual(name = "Groups", 
+                       values = p$my_palette[p$groupnames[fish]],
+                       breaks = p$groupnames[fish],
+                       labels = p$my_names[p$groupnames[fish]]) +
+    coord_cartesian(ylim = c(min_g,max(min_g*100,max(rates$g)*5)),xlim=x_lim) + 
+    annotation_logticks(sides = "bl",size = 0.2,colour = "darkgrey") +
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x)))+
+    xlab("") + ylab(expression("Growth rate (yr"^"-1"*")")) + theme(axis.text.x=element_blank())
+  
+  # mortality rates: ----
+  
+  # add background mortality
+  mort0_line  <- data.frame(mort0 = rep(p$mort0[p$ixFish][1],2), mc = range(p$mc[p$ixFish]))
+  
+  # convert zeros of fishing to a very small number (only for plotting purposes)
+  rates$mortF <- ifelse(rates$mortF == 0, 1E-16,rates$mortF) 
+  
+  # add labels for legend 
+  text_loc <- data.frame(x=c(1,2,3,4,5,6),y=rep(1E-5,6),
+                         group=rep(c("backgr.","predation","fishing"),2))
+  
+  mort <- defaultplot() +
+    geom_line(data = rates, 
+              aes(x = mc, y = mortpred, group = group, color = group),
+              linewidth=lwd_def) + 
+    geom_line(data = rates, 
+              aes(x = mc, y = mortF, group = group, color = group),
+              linewidth=lwd_def,linetype="dashed") +
+    scale_color_manual(name = "Groups", 
+                       values = p$my_palette[p$groupnames[fish]],
+                       breaks = p$groupnames[fish],
+                       labels = p$my_names[p$groupnames[fish]]) +
+    coord_cartesian(ylim = c(min_mort,max(min_mort*100,max(rates$mortpred)*5)),xlim=x_lim) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x)))+
+    annotation_logticks(sides = "bl",size = 0.2,colour = "darkgrey") + 
+    xlab("") + ylab(expression("Mortality (yr"^"-1"*")")) +
+    geom_line(data = mort0_line,
+              aes(x = mc, y = mort0, color = "darkgrey"),
+              linewidth=1,linetype = "dotted") +
+    geom_line(data=text_loc,aes(x=x,y=y,linetype=group)) + 
+    scale_linetype_manual(values=c(3,2,1),name = "") + guides(color = "none") +
+    theme(legend.position=c(1,1),legend.justification=c("right"),
+          legend.background = element_rect(colour = NA, fill = NA),
+          axis.text.x=element_blank(),legend.spacing.x = unit(.1, 'cm')) +
+    guides(linetype = guide_legend(nrow = 1))
+  
+  # feeding levels: ----
+  
+  # estimate critical feeding level
+  i     <- which.max(sapply(p$ix,"length"))
+  ix    <- p$ix[[i]]
+  fcrit <- data.frame(fc = p$metabolism[ix]/(p$epsAssim*p$Cmax[ix]), # Critical feeding level
+                      mc = p$mc[ix])
+  
+  flevel <- defaultplot() +
+    geom_line(data = rates, 
+              aes(x = mc, y = f, group = group, color = group),
+              linewidth=lwd_def)  +
+    scale_color_manual(name = "Groups", 
+                       values = p$my_palette[p$groupnames[fish]],
+                       breaks = p$groupnames[fish],
+                       labels = p$my_names[p$groupnames[fish]]) +
+    coord_cartesian(ylim = c(0,1),xlim=x_lim) + 
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
+    annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") + 
+    xlab("Weight (gWW)") + ylab("Feeding level, f") +
+    geom_line(data = fcrit,
+              aes(x = mc, y = fc, color = "darkgrey"),
+              linewidth=1,linetype = "dotted") + 
+    theme(legend.position = "bottom") +  
+    guides(color = guide_legend(nrow = 2)) +
+    annotate("text", x=fcrit$mc[2],y=fcrit$fc[1]-0.02,label="crit. f",
+             color = "darkgrey")
+  
+  return(list(growth,mort,flevel)) 
+}  
 
-pdfplot <- function(filename, FUN, ..., width=singlewidth, height=height) {
-  pdf(filename, width=width, height=height, useDingbats=FALSE)
-  FUN(...)
-  dev.off()  
-}
-
-addEpsPicture <- function(sName, x, y, width=1) {
-  # Convert the picture
-  sOutName = paste(sName,'.xml',sep='')
-  PostScriptTrace(sName, sOutName)
-  # Add it
-  grid.picture(readPicture(sOutName), x=x, y=y, width=width)
-}
-
-ribbon <- function(x,ymin=NA,ymax,col=lightgrey) {
-  x <- c(x, x[seq(length(x),1,by = -1)])
-  polygon(x, c(ymin, ymax[seq(length(ymax),1,by = -1)]),
-          col=col, border=NA)
-}
-
-tightaxes <- function() {
-  par(xaxs="i", yaxs="i")
-}
