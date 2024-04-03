@@ -394,9 +394,9 @@ setupBasic2 = function(szprod = 100, # small zoo production?
   # ... and do not feed on medium-sized demersal:
   param$theta[ixLarge, ixMediumSizeDem ] = 0
   
-  # Medium-sized large demersals feed only on benthos:
+  # Medium-size large demersals only feed on benthos and do cannibalism:
   param$theta[ixMediumSizeDem, 1:2] = 0 
-  param$theta[ixMediumSizeDem, param$ixFish] = 0 
+  param$theta[ixMediumSizeDem, param$ixFish[!(param$ixFish %in% ixMediumSizeDem)]] = 0 
   
   # Large demersal fish have reduced feeding preference on all small pelagic fish and all large pelagic fish in shallow water
   if(param$depth<200){
