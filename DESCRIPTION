@@ -5,7 +5,7 @@ Author: Ken Haste Andersen <khand@dtu.dk>
         Karline Soetaert <karline.soetaert@nioz.nl>
         Yixin Zhao
 Maintainer: Yixin Zhao <yixzh@aqua.dtu.dk>
-Depends: R (>= 3.5.0), ggplot2, shiny
+Depends: R (>= 3.5.0), ggplot2 (<= 3.4.3), shiny
 Imports: pracma, deSolve, scales, cowplot
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
