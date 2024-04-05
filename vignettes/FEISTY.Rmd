@@ -112,7 +112,7 @@ m_{i} =  \exp ( \ln(m_{l,i}) + 0.5(\ln(z)) ), \hspace{2.2cm}  i\in[1,n]
 which will be comprehensively used for calculations, for instance,
 physiological rates and size-based feeding preference.\
 The size spectrum generation is done by calling the function
-`paramAddGroup()`. Also see source code of `makeGrid()`.
+`paramAddGroup()`. Also, see the source code of `makeGrid()`.
 
 ## Biomass dynamics
 
@@ -174,7 +174,7 @@ which can be set in `paramAddResource()` function.
 
 ## Physiological rate
 
-In FEISTY model, there are three main biological rates based on the
+In the FEISTY model, there are three main biological rates based on the
 allometric scaling relationship of the body size (ref?). The
 mass-specific maximum consumption rate $C_{max,i}$ ($year^{-1}$), the
 mass-specific clearance rate $V_{i}$ ($m^{2}~gWW^{-1}~year^{-1}$), and the
@@ -196,7 +196,7 @@ biological rate, respectively; $b_{c}$, $b_{e}$, $b_{m}$ are exponents.
 These biological rates determine the energy gained from predation and
 costs due to basal metabolism (see Section **Energy budget**).\
 In code implementation, these basic biological rates of fish (without
-temperature effects) are assigned by `paramAddPhysiology()` function.
+temperature effects) are assigned by the `paramAddPhysiology()` function.
 The temperature effects on biological rates are added subsequently (see
 Section **Temperature effects**).
 
@@ -216,9 +216,9 @@ to 1:
 \begin{equation}
 f_{i} = \frac{E_{i}}{E_{i}+C_{max,i}}
 \end{equation}
-Therefore, the mass-specific consumption rate $f_i C_{max,i}$ is based on a type II
-functional response. A feeding behavior of a predator is a consequence
-of encountering a prey. The mass-specific encounter rate ($year^{-1}$)
+Therefore, the mass-specific consumption rate $f_i C_{max,i}$ is based on type II
+functional response. The feeding behavior of a predator is a consequence
+of encountering prey. The mass-specific encounter rate ($year^{-1}$)
 $E_{i}$ of a predator $i$ is:
 \begin{equation}
 E_{i} = V_{i}  \sum_{j} \theta_{i,j} B_j,
@@ -280,12 +280,12 @@ background mortality rate ($\mu_{p,i}$), and fishing mortality rate
 \mu_i = \mu_{p,i}+\mu_{b,i}+\mu_{f,i}
 \end{equation}
 All size classes of fish a same background mortality rate value within a
-functional group and the default value is 0.1 $year^{-1}$. The detail of
-predation and fishing are in sections below.
+functional group and the default value is 0.1 $year^{-1}$. The details of
+predation and fishing are in the sections below.
 
 # Predation
 
-In non-vertical distribution version (setupBasic and setupBasic2)
+In the non-vertical distribution version (setupBasic and setupBasic2)
 $\theta_{i,j}$ refers to the feeding preference based on the size
 preference. The value of $\theta_{i,j}$ can be assigned manually
 (setupBasic, see Table 2 in [@petrik2019bottom]). It also can be
@@ -316,7 +316,7 @@ size-based preference ($\theta_{s,i,j}$) and vertical overlap ($\theta_{v,i,j}$)
 \begin{equation}
 \theta_{i,j} = \theta_{s,i,j} \cdot\theta_{v,i,j} 
 \end{equation}
-The calculation of $\theta_{s,i,j}$ follows Eq. \ref{eq:lognormalpreference} in setupVertical and Eq. \ref{eq:errorpreference} in setupVertical2. The detail description of $\theta_{v,i,j}$ in the Section **Vertical overlap**.
+The calculation of $\theta_{s,i,j}$ follows Eq. \ref{eq:lognormalpreference} in setupVertical and Eq. \ref{eq:errorpreference} in setupVertical2. The detailed description of $\theta_{v,i,j}$ in the Section **Vertical overlap**.
 
 Once the feeding preference is ready, the predation mortality of a prey
 $j$ can be calculated:
@@ -324,16 +324,27 @@ $j$ can be calculated:
 \mu_{p,j} = \sum_i  \frac{V_i \theta_{i,j}  B_i}{E_i+C_{max,i}} C_{max,i}
 \end{equation}
 
-In practical, the feeding preference setting is more complex, since it plays a vital role in coexistence of various functional types. when the feeding preference $\theta_{i,j}$ is initially calculated a function (e.g., Eq. \ref{eq:lognormalpreference}), sometimes it needs to be revised or corrected manually according to specific rules, such as cannibalism, habitats, feeding habits, and visibility. Here I introduce how the feeding preference $\theta_{i,j}$ is processed in setupBasic2.
+In practice, the feeding preference setting is more complex, since it plays a vital role in the coexistence of various functional types. when the feeding preference $\theta_{i,j}$ is initially calculated as a function (e.g., Eq. \ref{eq:lognormalpreference}), sometimes it needs to be revised or corrected manually according to specific rules, such as cannibalism, habitats, feeding habits, and visibility. Here I introduce how the feeding preference $\theta_{i,j}$ is further processed in setupBasic2.
 
+Forage fish and large pelagic fish live in the pelagic zone during their whole lifetime. Demersal fish habitats are different in terms of their sizes and water depth. Small demersal fish are pelagic status while medium demersal fish are benthic-living. Pelagic-living organisms do not interact with benthic-living organisms and vice versa.
 
+**Forage fish**\
+The feeding preference from forage fish and large pelagic fish to benthic resources and medium demersal fish are corrected to 0.
 
-$\theta_A$
-$\theta_D$
+**Large pelagic fish**\
+The feeding preference from large pelagic fish to benthic resources and medium demersal fish is corrected to 0.
+Large pelagic fish have reduced feeding preference on forage fish ($\theta_A \cdot \theta_{i,j}$).
+
+**Demersal fish**\
+The feeding preference from small demersal fish to benthic resources is corrected to 0.\
+Medium demersal fish only feed on benthos and themselves (cannibalism). Therefore, their feeding preference on zooplankton and all fish excluding themselves is corrected to 0.\
+In shallow water ($<~200 m$), large demersal fish swim over the water column, meaning they can eat both pelagic and benthic organisms. Their feeding preference on forage fish was down-regulated: $\theta_A \cdot \theta_D \cdot \theta_{i,j}$. Their feeding preference on large pelagic fish was down-regulated: $\theta_D \cdot \theta_{i,j}$.\
+When water is deep ($>~200 m$), large demersal fish is fully benthic-living. So the feeding preference of large demersals on all pelagic prey is corrected to 0, including forage fish, large pelagic fish, zooplankton, and small demersal fish. They only can feed on benthos, medium demersals, and themselves.
+
 
 # Vertical overlap
 
-
+**To be done...**
 
 
 
@@ -364,7 +375,7 @@ The general equation for the temperature scaling factor $k$ is:
 k = Q_{10}^{\frac{T-T_{ref}}{10}} \label{eq:Tscfac}
 \end{equation}
 where $T_{ref}$ is the reference temperature and $T$ is the environment temperature.
-According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_p$ (e.g., all forage fish); for fish always in the benthic zone $T=T_b$ (e.g., medium-size demersal fish). $k_{T}$ is temperature scaling factor for $C_{max,i}$ and $V_{i}$; $k_{TM}$ is temperature scaling factor for $M_i$. To calculate them, different $Q_{10}$ factors are required (Table xx). The temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on on non-vertical distribution setups, i.e., setupBasic and setupBasic2. Technically, it also can be used in customized setups.
+According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_p$ (e.g., all forage fish); for fish always in the benthic zone $T=T_b$ (e.g., medium-size demersal fish). $k_{T}$ is temperature scaling factor for $C_{max,i}$ and $V_{i}$; $k_{TM}$ is temperature scaling factor for $M_i$. To calculate them, different $Q_{10}$ factors are required (Table xx). The temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., setupBasic and setupBasic2. Technically, it also can be used in customized setups.
 
 In setupBasic and setupBasic2, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_p$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_p$). Medium demersals live at the bottom ($T_b$). Large demersals also stay in the bottom if the water is deep ($>~200 m$). However, in shallow water ($<~200 m$), due to their better swimming abilities, the large demersals migrate over the water column for feeding. To better describe the temperature effects on large demersals, the effective temperature is introduced (see
 Section **Effective temperature**).
@@ -372,14 +383,13 @@ Section **Effective temperature**).
 In setupVertical, fish have a new trait axis of vertical distribution.
 
 T profile
-The implementation is hard coded, embedded in the function `setupVertical()`
+The implementation is hard-coded, embedded in the function `setupVertical()`
 
-
-To simplify the temperature input, three temperature input ($T_p$, $T_m$, $T_b$) are required rather than the water column temperature profile in setupVertical2. 
+To simplify the temperature input, three temperature inputs ($T_p$, $T_m$, $T_b$) are required rather than the water column temperature profile in setupVertical2. 
 
 The implementation is hard coded in the function `setupVertical2()`
 
-
+**To be done...**
 
 ## Effective temperature
 Following [@petrik2019bottom], in shallow water ($<~200 m$) the large demersal fish ($m_{c,i}>250~gWW$ as default)
@@ -388,7 +398,7 @@ migrate vertically within a day rather than staying at the bottom constantly. Th
 \lambda = \frac{B_{pelprey}}{B_{allprey}}
 \end{equation}
 where $B_{pelprey}$ denotes the total biomass of pelagic prey for large demersal fish, $B_{allprey}$ is the total biomass of all prey for large demersal fish. A simple case can be found in Eq. 15 in [@petrik2019bottom].\
-Therefore, the temperature for large demersals is defined based on the their time spent in pelagic zone and benthic zone, which is called effective temperature:
+Therefore, the temperature for large demersals is defined based on their time spent in the pelagic zone and benthic zone, which is called effective temperature:
 \begin{equation} 
 T_e = T_p \cdot \lambda + T_b \cdot (1 - \lambda)
 \end{equation}
