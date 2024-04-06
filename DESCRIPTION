@@ -5,8 +5,8 @@ Author: Ken Haste Andersen <khand@dtu.dk>
         Karline Soetaert <karline.soetaert@nioz.nl>
         Yixin Zhao
 Maintainer: Yixin Zhao <yixzh@aqua.dtu.dk>
-Depends: R (>= 3.5.0), ggplot2 (<= 3.4.3), shiny, shinyjs
-Imports: pracma, deSolve, scales, cowplot
+Depends: R (>= 3.5.0)
+Imports: deSolve, ggplot2 (<= 3.4.3), pracma, scales, cowplot, shiny, shinyjs
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 Description: A size- and trait-based model of higher trophic level dynamics.

@@ -86,6 +86,7 @@
 #' 
 #' \code{\link{derivativesFEISTYR}} The derivative function of FEISTY
 #' 
+#' @import ggplot2
 #' @importFrom pracma erf size linspace isempty
 #' @importFrom deSolve ode DLLfunc
 #' @importFrom scales trans_breaks trans_format math_format

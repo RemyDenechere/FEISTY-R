@@ -51,4 +51,4 @@
 ## ====================================================================
 
 webFEISTY <- function(...)
- runApp(system.file('webfeisty', package = 'FEISTY'))
+ shiny::runApp(system.file('webfeisty', package = 'FEISTY'))
