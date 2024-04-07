@@ -363,9 +363,12 @@ a sigmoid function:
 \begin{equation}
 \psi_{f,i} = \left(1+\left(\frac{m_{c,i}}{m_{fishing}}\right)^{-3} \right)^{-1}
 \end{equation}
-where $m_{fishing}$ indicates the fish with this size is under 50%
-harvesting rate. The fishing mortality rate can be assigned by the
-function `setFishing()`.
+where $m_{fishing}$ indicates the fish with this size is under 50% harvesting rate.
+\begin{equation}
+m_{fishing}=\eta_{F} w_{max}
+\end{equation}
+where $\eta_{F}$ controls the weight of fish with 50% harvesting rate relative to the max weight of the functional type.
+The fishing mortality rate can be assigned by the function `setFishing()`.
 
 # Temperature effects
 The temperature effects on the mass-specific maximum consumption rate $C_{max,i}$, the mass-specific clearance rate $V_{i}$, and the mass-specific metabolic rate $M_i$ (Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}) are based on the use of $Q_{10}$ coefficient, which describes the exponential variation of rates every 10\textdegree{}C.
@@ -407,16 +410,6 @@ $T_e$ is updated each time step during the time integration, along with the temp
 
 # Default parameters
 
-| Symbol       | Explaination | Value| | | | Unit |
-|--------------|----------------------------------------------------|--|--|--|--|------|
-|              |                                                    |w|e|r|f|          |
-|   $a_c$   |Intercept for mass-specific maximum consumption rate| 10    |aaa|aaa|
-|   $b_c$   |Exponent for mass-specific maximum consumption rate | 20    |aaa|aaa|
-|   $a_e$   |Intercept for mass-specific clearance rate||
-|   $b_e$   |Exponent for mass-specific clearance rate||
-|   $a_m$   |Intercept for mass-specific metabolism rate||
-|   $b_m$   |Exponent for mass-specific metabolism rate| 30    |aaa|aaa|
-
 \begin{table}[htbp]
 
 \centering
@@ -426,27 +419,33 @@ $T_e$ is updated each time step during the time integration, along with the temp
 \hline
 Symbol & Description & \multicolumn{4}{c}{Value} & Unit \\
                          \cline{3-6}
-       &             & B1 & B2 & V1 & V2         &  \\
+       &             & \multicolumn{1}{c}{B1} & \multicolumn{1}{c}{B2} & \multicolumn{1}{c}{V1} & \multicolumn{1}{c}{V2} & \\
 \hline
-Parameter 1 & xxx & \multicolumn{4}{c}{value123} & aaa \\
-$a_c$ & Intercept for mass-specific maximum consumption rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$b_c$ & Exponent for mass-specific maximum consumption rate & \\
-$a_e$ & Intercept for mass-specific clearance rate &  &  & & & $m^2 g^{-b_{e}}yr^{-1}$ \\
-$b_e$ & Exponent for mass-specific clearance rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$a_m$ & Intercept for mass-specific metabolism rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$b_m$ & Exponent for mass-specific metabolism rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$a_c$ & Intercept for mass-specific maximum consumption rate & \multicolumn{4}{c}{20} & $g^{-b_{c}}yr^{-1}$ \\
+$b_c$ & Exponent for mass-specific maximum consumption rate & \multicolumn{4}{c}{-0.25} & / \\
+$a_e$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & $m^2 g^{-b_{e}}yr^{-1}$ \\
+$b_e$ & Exponent for mass-specific clearance rate & \multicolumn{4}{c}{-0.2} & / \\
+$a_m$ & Intercept for mass-specific metabolism rate & \multicolumn{2}{c}{4.015} & \multicolumn{2}{c}{0.2*$a_c$} & $g^{-b_{m}}yr^{-1}$ \\
+$b_m$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}{-0.175} & / \\
+$\epsilon_{\alpha}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
+$\epsilon_{r}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\
+$\mu_b$ & Background mortality & \multicolumn{4}{c}{0.1} & $yr^{-1}$ \\
+$F$ & Baseline fishing mortality rate & constant$^e$ & \multicolumn{4}{c}{0} & $yr^{-1}$ \\
+$\eta_{mature}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
+$\eta_{fishing}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
+$\theta_A$ & Large fish preference on forage fish$^b$ & \multicolumn{2}{c}{0.5} & / & / & / \\
+$\theta_D$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
 $aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$T_{ref}$ & reference temperature & \multicolumn{4}{c}{10} & \textdegree{}C \\
+$Q10$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
 $aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$\beta$ & Preferred predator:prey mass ratio & / & \multicolumn{3}{c}{400} & / \\
+$\sigma$ & Width of size preference for feeding & / & \multicolumn{3}{c}{1.3} & / \\
+
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ B1: setupBasic1, B2: setupBasic2, V1: setupVertcal1, V2: setupVertcal2.} \\
-\multicolumn{7}{l}{value123}
+\multicolumn{7}{l}{\footnotesize $^b$ In B1, $\theta_A$ only poses on medium forage fish (the second size class).
+                                      In B2, $\theta_A$ works on all forage fish.} \\
 \end{tabular}
 \end{table}
 
