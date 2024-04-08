@@ -60,7 +60,8 @@ plotSSBtime = function(sim) {
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$SSB)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Time (yr)") + ylab(expression("SSB (gWW m"^"-2"*")"))
+    xlab("Time (yr)") + ylab(expression("SSB (gWW m"^"-2"*")"))+
+    theme(legend.key = element_blank())
     
   return(plots)
 }
@@ -111,7 +112,8 @@ plotYieldtime = function(sim) {
                        labels = p$my_names[fishexistname]) +
     annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
     coord_cartesian(ylim = c(0,max(1,max(series$yield)*1.2))) + 
-    xlab("Time (yr)") + ylab(expression("Yield (gWW m"^"-2"*" yr"^"-1"*")"))
+    xlab("Time (yr)") + ylab(expression("Yield (gWW m"^"-2"*" yr"^"-1"*")"))+
+    theme(legend.key = element_blank())
 
   return(plots)
 }
@@ -169,7 +171,8 @@ plotBiomasstime = function(sim) {
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$bio)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Time (yr)") + ylab(expression("Biomass (gWW m"^"-2"*")"))
+    xlab("Time (yr)") + ylab(expression("Biomass (gWW m"^"-2"*")"))+
+    theme(legend.key = element_blank())
   
   return(plots)
 }
@@ -246,7 +249,8 @@ plotSpectra = function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Weight (gWW)") + ylab(expression("Biomass (gWW m"^"-2"*")"))
+    xlab("Weight (gWW)") + ylab(expression("Biomass (gWW m"^"-2"*")"))+
+    theme(legend.key = element_blank())
 
   
   return(plots)
@@ -410,7 +414,7 @@ plotNetwork <- function(sim) {
     annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") +
     labs(x ="Weight (gWW)", y = "", color = "Group") +
     guides(size = "none") +
-    theme(legend.position = "bottom",legend.key = element_rect(fill = NA),
+    theme(legend.position = "bottom",legend.key = element_blank(),
           axis.title.y = element_blank(),
           axis.text.x = element_text(size=12),
           axis.text.y = element_text(angle = 90, hjust = .5, margin = margin(r = 0), size=12),
@@ -695,7 +699,7 @@ plotSimulation = function(sim) {
   p_network <- plotNetwork(sim)
   
   ## get legend from plotNetwork
-  legend = get_legend(p_network)
+  legend = get_legend_new(p_network)
 
   ## Turn legend off for later external plotting 
   # subpanel a
@@ -711,7 +715,8 @@ plotSimulation = function(sim) {
           legend.background = element_rect(colour = NA, fill = NA),
           axis.text.x=element_blank(),
           axis.title.x = element_blank(),
-          legend.spacing.x = unit(.1, 'cm'))
+          legend.spacing.x = unit(.1, 'cm'),
+          legend.key = element_blank())
   
   # subpanel b-d
   p_rates[[1]]  = p_rates[[1]] + labs(title = "b")
@@ -751,7 +756,7 @@ plotSimulationShiny = function(sim) {
   p_rates         <- getRates(sim)  
   
   ## get legend from plotNetwork
-  legend = get_legend(p_biomasstime)
+  legend = get_legend_new(p_biomasstime)
   
   ## Turn legend off for later external plotting 
   # subpanel a
@@ -767,7 +772,8 @@ plotSimulationShiny = function(sim) {
           legend.background = element_rect(colour = NA, fill = NA),
           axis.text.x=element_blank(),
           axis.title.x = element_blank(),
-          legend.spacing.x = unit(.1, 'cm'))
+          legend.spacing.x = unit(.1, 'cm'),
+          legend.key = element_blank())
   
   # subpanel b-d
   #p_rates[[1]]  = p_rates[[1]] + labs(title = "b")
@@ -904,7 +910,8 @@ getRates = function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                   labels = trans_format("log10", math_format(10^.x)))+
-    xlab("") + ylab(expression("Growth rate (yr"^"-1"*")")) + theme(axis.text.x=element_blank())
+    xlab("") + ylab(expression("Growth rate (yr"^"-1"*")")) + 
+    theme(axis.text.x=element_blank())
   
   # mortality rates: ----
   
@@ -943,6 +950,7 @@ getRates = function(sim) {
     scale_linetype_manual(values=c(3,2,1),name = "") + guides(color = "none") +
     theme(legend.position=c(1,1),legend.justification=c("right"),
           legend.background = element_rect(colour = NA, fill = NA),
+          legend.key = element_blank(),
           axis.text.x=element_blank(),legend.spacing.x = unit(.1, 'cm')) +
     guides(linetype = guide_legend(nrow = 1))
   
@@ -970,7 +978,7 @@ getRates = function(sim) {
     geom_line(data = fcrit,
               aes(x = mc, y = fc, color = "darkgrey"),
               linewidth=1,linetype = "dotted") + 
-    theme(legend.position = "bottom") +  
+    theme(legend.position = "bottom",legend.key = element_blank()) +  
     guides(color = guide_legend(nrow = 2)) +
     annotate("text", x=fcrit$mc[2],y=fcrit$fc[1]-0.02,label="crit. f",
              color = "darkgrey")
@@ -978,3 +986,28 @@ getRates = function(sim) {
   return(list(growth,mort,flevel)) 
 }  
 
+# Replace get_legend() from 'cowplot' package for temporary, 
+# because get_legend() does not work with 'ggplot2' 3.5.0. Check the new version later.
+get_legend_new <- function(plot, legend = NULL) {
+  
+  gt <- ggplotGrob(plot)
+  
+  pattern <- "guide-box"
+  if (!is.null(legend)) {
+    pattern <- paste0(pattern, "-", legend)
+  }
+  
+  indices <- grep(pattern, gt$layout$name)
+  
+  not_empty <- !vapply(
+    gt$grobs[indices], 
+    inherits, what = "zeroGrob", 
+    FUN.VALUE = logical(1)
+  )
+  indices <- indices[not_empty]
+  
+  if (length(indices) > 0) {
+    return(gt$grobs[[indices[1]]])
+  }
+  return(NULL)
+}
