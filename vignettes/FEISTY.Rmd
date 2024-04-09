@@ -399,12 +399,34 @@ Note this $T_e$ is different from the one in the Section **Real-time effective t
 **Small pelagics**
 They always stay in the pelagic water ($T_p$).
 
-**Mesopelagics**
-dvm
-($T_{day}=T_p$)
-During night time, they are in the pelagci water ($T_{night}=T_p$).
+**Mesopelagics**\
+At daytime, where mesopelagic fish stay depends on the water column depth and photic conditions:
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     T_b, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $}      
+  \end{cases}
+\label{eq:xxxxxxxx}
+\end{equation}
+During night time, they are in the pelagic water ($T_{night}=T_p$).
 
-**Large pelagics**
+**Large pelagics**\
+The large pelagic fish in large-size classes are split into two groups: half of them are always in the pelagic zone, and the habitat of the other half depends on the water column conditions. So their daytime temperature could be the average of two environmental temperatures. If the water column does not support the existence of dvm they all stay in the pelagic zone. 
+
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     \frac{T_{m}+T_{p}}{2}, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     \frac{T_{b}+T_{p}}{2}, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $}      
+  \end{cases}
+\label{eq:xxxxxxx}
+\end{equation}
+
+All the large pelagics in non-large sizes (small and medium) are in pelagic water the during daytime ($T_{day}=T_p$).\
+During night time, all of them regardless of size are in the pelagic water ($T_{night}=T_p$).
 
 **Bathypelagics**
 
@@ -443,7 +465,7 @@ Symbol & Description & \multicolumn{4}{c}{Value} & Unit \\
 \hline
 $a_c$ & Intercept for mass-specific maximum consumption rate & \multicolumn{4}{c}{20} & $g^{-b_{c}}yr^{-1}$ \\
 $b_c$ & Exponent for mass-specific maximum consumption rate & \multicolumn{4}{c}{-0.25} & / \\
-$a_e$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & $m^2 g^{-b_{e}}yr^{-1}$ \\
+$a_e$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & $m^2 g^{-b_{e}-1}yr^{-1}$ \\
 $b_e$ & Exponent for mass-specific clearance rate & \multicolumn{4}{c}{-0.2} & / \\
 $a_m$ & Intercept for mass-specific metabolism rate & \multicolumn{2}{c}{4.015} & \multicolumn{2}{c}{0.2*$a_c$} & $g^{-b_{m}}yr^{-1}$ \\
 $b_m$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}{-0.175} & / \\
@@ -457,17 +479,19 @@ $\theta_A$ & Large fish preference on forage fish$^b$ & \multicolumn{2}{c}{0.5} 
 $\theta_D$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
 $aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
 $T_{ref}$ & reference temperature & \multicolumn{4}{c}{10} & \textdegree{}C \\
-$Q_{10}$ & Rate of change with a 10\textdegree{}C increase & \multicolumn{4}{c}{1.88} & / \\
-$Q_{10m}$ & Rate of change with a 10\textdegree{}C increase & \multicolumn{2}{c}{2.35} & \multicolumn{2}{c}{1.88} & / \\
+$Q_{10}$ & Rate of change for every 10\textdegree{}C increase for clearance rate and maximum consumption & \multicolumn{4}{c}{1.88} & / \\
+$Q_{10m}$ & Rate of change for every 10\textdegree{}C increase for metabolism & \multicolumn{2}{c}{2.35} & \multicolumn{2}{c}{1.88} & / \\
 $aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
 $\beta$ & Preferred predator:prey mass ratio & / & \multicolumn{3}{c}{400} & / \\
 $\sigma$ & Width of size preference for feeding & / & \multicolumn{3}{c}{1.3} & / \\
+$aaa$ & Continental shelf depth & / & / & \multicolumn{2}{c}{250} & m \\
+$aaa$ & Photic zone depth & / & / & \multicolumn{2}{c}{150} & m \\
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ B1: setupBasic1, B2: setupBasic2, V1: setupVertcal1, V2: setupVertcal2.} \\
 \multicolumn{7}{l}{\footnotesize $^b$ In B1, $\theta_A$ only poses on medium forage fish (the second size class).
                                       In B2, $\theta_A$ works on all forage fish.} \\
-\multicolumn{7}{l}{\footnotesize $^e$ In B1, Eq. \ref{eq:fishing} does not apply. $\mu_{f,i}$ are constant values. Small fish: 0 $yr^{-1}$. Medium fish: 0.03 $yr^{-1}$. Large fish: 0.3 $yr^{-1}$.}\\
+\multicolumn{7}{l}{\footnotesize $^e$ In B1, Eq. \ref{eq:fishing} does not apply. $\mu_{f,i}$ are constant values: Small fish 0 $yr^{-1}$, Medium fish 0.03 $yr^{-1}$, Large fish 0.3 $yr^{-1}$.}\\
 
 \end{tabular}
 \end{table}
