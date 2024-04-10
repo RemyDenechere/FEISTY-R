@@ -1260,8 +1260,13 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   # demersals    
   ix = param$ix[[5]]
   # nighttime
-  Tnightsmall = param$Tp # small at surface
-  Tnightnonsmall = param$Tb # non-small at bottom  
+  Tnightsmall  = param$Tp # small at surface
+  Tnightmedium = param$Tb # medium at bottom
+  Tnightlarge  = param$Tb # large at bottom if water is deep enough
+  # if the water is very shallow large demersals migrate over the whole water column both day and night
+  if (param$bottom <= param$photic) {
+    Tnightlarge = (param$Tp + param$Tb)/2
+    }
   # daytime
   Tdaysmall = param$Tp # small at surface
   Tdaymedium = param$Tb # medium at bottom
@@ -1271,13 +1276,11 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   # if the water is very shallow large demersals migrate over the whole water column both day and night
   if (param$bottom <= param$photic) {
     Tdaylarge = (param$Tp + param$Tb)/2
-    Tnightlarge = Tdaylarge
-  }
+    }
   
   Teff[ix[-(ixmedium:length(ix))]] = (Tdaysmall+Tnightsmall)/2 # small
-  Teff[ix[ixmedium:(ixlarge-1)]] = (Tdaymedium+Tnightnonsmall)/2 # medium
-  Teff[ix[ixlarge:length(ix)]]  = (Tdaylarge+Tnightnonsmall)/2  # large
-  if (param$bottom <= param$photic) Teff[ix[ixlarge:length(ix)]] = (Tdaylarge+Tnightlarge)/2
+  Teff[ix[ixmedium:(ixlarge-1)]] = (Tdaymedium+Tnightmedium)/2 # medium
+  Teff[ix[ixlarge:length(ix)]]  = (Tdaylarge+Tnightlarge)/2    # large
   
   scTemp =  Q10^((Teff-10)/10)
   scTempm =  Q10m^((Teff-10)/10)
