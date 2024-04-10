@@ -891,8 +891,8 @@ contains
 !      real(dp),allocatable :: sizes(:)
       integer :: iGroup, i, j, ixmedium, ixlarge!, nsize, matstageS, matstageL
       real(dp), allocatable :: Teff (:)
-      real(dp) :: Tday, Tnight, Tdaysmall, Tdaymedium, Tdaylarge, Tdaynonlarge, &
-                  Tnightsmall, Tnightnonsmall, Tnightlarge, Tnightnonlarge
+      real(dp) :: Tday, Tnight, Tdaylarge, Tdaynonlarge, &
+                  Tsmall, Tmedium, Tnightlarge, Tnightnonlarge
 
 
       call read_namelist_setupvertical()
@@ -1327,25 +1327,27 @@ contains
       deallocate (ix)
       allocate (ix(ixEnd(5) - ixStart(5) + 1))
       ix = [(i, i=ixStart(5), ixEnd(5))]
-      ! nighttime
-      Tnightsmall = Tp ! small at surface
-      Tnightnonsmall = Tb ! non-small at bottom
+      Tsmall = Tp ! small always at surface
+      Tmedium = Tb ! medium always at bottom
+      ! large
       ! daytime
-      Tdaysmall = Tp ! small at surface
-      Tdaymedium = Tb ! medium at bottom
       Tdaylarge = Tm ! large at middle
       ! if the water is very deep large demersals always stay at the bottom
       if ((bottom - dvm) >= 1500) Tdaylarge = Tb
       ! if the water is very shallow large demersals migrate over the whole water column both day and night
       if (bottom <= photic) then
         Tdaylarge = (Tp + Tb) / 2
-        Tnightlarge = Tdaylarge
+      end if
+      ! nighttime
+      Tnightlarge = Tb ! large at bottom if water is deep enough
+      ! if the water is very shallow large demersals migrate over the whole water column both day and night
+      if (bottom <= photic) then
+        Tnightlarge = (Tp + Tb) / 2
       end if
 
-      Teff(ix(1:ixmedium-1)) = (Tdaysmall + Tnightsmall) / 2 ! small
-      Teff(ix(ixmedium:ixlarge-1)) = (Tdaymedium + Tnightnonsmall) / 2 ! medium
-      Teff(ix(ixlarge:size(ix))) = (Tdaylarge + Tnightnonsmall) / 2 ! large
-      if (bottom <= photic) Teff(ix(ixlarge:size(ix))) = (Tdaylarge + Tnightlarge) / 2
+      Teff(ix(1:ixmedium-1)) = Tsmall ! small
+      Teff(ix(ixmedium:ixlarge-1)) = Tmedium ! medium
+      Teff(ix(ixlarge:size(ix))) = (Tdaylarge + Tnightlarge) / 2 ! large
 
       fTempV = Q10**((Teff - 10.d0) / 10.d0)
       fTempmV = Q10m**((Teff - 10.d0) / 10.d0)
