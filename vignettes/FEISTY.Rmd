@@ -389,6 +389,8 @@ In setupVertical, fish have a new trait axis of vertical distribution.
 T profile
 The implementation is hard-coded, embedded in the function `setupVertical()`
 
+**To be done...**
+
 To simplify the temperature input, three temperature inputs ($T_p$, $T_m$, $T_b$) are required rather than the water column temperature profile in setupVertical2. Effective temperature of different size classes of each functional type are the averaged values of temperatures of their approximate vertical positions of day ($T_{day}$) and night ($T_{night}$).
 \begin{equation}
 T_e = \frac{T_{day}+T_{night}}{2}
@@ -396,8 +398,8 @@ T_e = \frac{T_{day}+T_{night}}{2}
 
 Note this $T_e$ is different from the one in the Section **Real-time effective temperature**. The implementation is hard coded in the function `setupVertical2()`. 
 
-**Small pelagics**
-They always stay in the pelagic water ($T_p$).
+**Small pelagics**\
+They always stay in the pelagic water ($T_{day}=T_{night}=T_p$).
 
 **Mesopelagics**\
 At daytime, where mesopelagic fish stay depends on the water column depth and photic conditions:
@@ -413,7 +415,7 @@ At daytime, where mesopelagic fish stay depends on the water column depth and ph
 During night time, they are in the pelagic water ($T_{night}=T_p$).
 
 **Large pelagics**\
-The large pelagic fish in large-size classes are split into two groups: half of them are always in the pelagic zone, and the habitat of the other half depends on the water column conditions. So their daytime temperature could be the average of two environmental temperatures. If the water column does not support the existence of dvm they all stay in the pelagic zone. 
+The large-size classes of large pelagic fish are split into two groups: half of them are always in the pelagic zone, and the habitat of the other half depends on the water column conditions. So their daytime temperature could be the average of two environmental temperatures. If the water column does not support the existence of dvm they all stay in the pelagic zone. 
 
 \begin{equation}
  T_{day} =
@@ -428,13 +430,53 @@ The large pelagic fish in large-size classes are split into two groups: half of 
 All the large pelagics in non-large sizes (small and medium) are in pelagic water the during daytime ($T_{day}=T_p$).\
 During night time, all of them regardless of size are in the pelagic water ($T_{night}=T_p$).
 
-**Bathypelagics**
+**Bathypelagics**\
+Bathypelagic fish stay at the dvm depth, bottom or pelagic zone, depending on the water column depth and photic conditions at daytime:
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     T_b, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $} 
+  \end{cases}
+\label{eq:xxxxxxx2}
+\end{equation}
 
-**Demersals**
+At night, small and medium bathypelagics are in the pelagic water ($T_{night}=T_p$), but the habitats of large bathypelagics varies with water column conditions: 
+\begin{equation}
+ T_{night} =
+  \begin{cases}
+     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     T_b, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $}  
+  \end{cases}
+\label{eq:xxxxxx}
+\end{equation}
+
+**Demersals**\
+Small demersals are pelagic-living ($T_{day}=T_{night}=T_p$); medium demersals are benthic-living ($T_{day}=T_{night}=T_b$).
+Large demersal fish habitats varies according to the water column conditions.
+
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     T_m, & \text{$ (bottom - dvm) < 1500 $ and $ bottom \geq photic $} \\
+     T_b, & \text{$ (bottom - dvm) \geq 1500 $ } \\
+     \frac{T_{b}+T_{p}}{2}, & \text{$ bottom < photic $} 
+  \end{cases}
+\label{eq:xxxxxx2}
+\end{equation}
+
+\begin{equation}
+ T_{night} =
+  \begin{cases}
+     T_b, & \text{$ bottom \geq photic $}  \\
+     \frac{T_{b}+T_{p}}{2}, & \text{$ bottom < photic $} 
+  \end{cases}
+\label{eq:xxxxxx3}
+\end{equation}
 
 
-
-**To be done...**
 
 ## Real-time effective temperature
 Following [@petrik2019bottom], in shallow water ($<~200 m$) the large demersal fish ($m_{c,i}>250~gWW$ as default)
