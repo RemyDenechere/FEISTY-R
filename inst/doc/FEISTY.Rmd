@@ -356,6 +356,7 @@ fish $i$ can be either determined by constant values or by a fishing
 selectivity function ??????: 
 \begin{equation}
 \mu_{f,i}=\psi_{f,i}F
+\label{eq:fishing}
 \end{equation}
 where $F$ is the baseline fishing mortality rate ($year^{-1}$) of a functional type of
 fish. $\psi_{f,i}$ denotes the size-based fishing selectivity following
@@ -363,9 +364,12 @@ a sigmoid function:
 \begin{equation}
 \psi_{f,i} = \left(1+\left(\frac{m_{c,i}}{m_{fishing}}\right)^{-3} \right)^{-1}
 \end{equation}
-where $m_{fishing}$ indicates the fish with this size is under 50%
-harvesting rate. The fishing mortality rate can be assigned by the
-function `setFishing()`.
+where $m_{fishing}$ indicates the fish with this size is under 50% harvesting rate.
+\begin{equation}
+m_{fishing}=\eta_{F} w_{max}
+\end{equation}
+where $\eta_{F}$ controls the weight of fish with 50% harvesting rate relative to the max weight of the functional type.
+The fishing mortality rate can be assigned by the function `setFishing()`.
 
 # Temperature effects
 The temperature effects on the mass-specific maximum consumption rate $C_{max,i}$, the mass-specific clearance rate $V_{i}$, and the mass-specific metabolic rate $M_i$ (Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}) are based on the use of $Q_{10}$ coefficient, which describes the exponential variation of rates every 10\textdegree{}C.
@@ -378,20 +382,103 @@ where $T_{ref}$ is the reference temperature and $T$ is the environment temperat
 According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_p$ (e.g., all forage fish); for fish always in the benthic zone $T=T_b$ (e.g., medium-size demersal fish). $k_{T}$ is temperature scaling factor for $C_{max,i}$ and $V_{i}$; $k_{TM}$ is temperature scaling factor for $M_i$. To calculate them, different $Q_{10}$ factors are required (Table xx). The temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., setupBasic and setupBasic2. Technically, it also can be used in customized setups.
 
 In setupBasic and setupBasic2, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_p$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_p$). Medium demersals live at the bottom ($T_b$). Large demersals also stay in the bottom if the water is deep ($>~200 m$). However, in shallow water ($<~200 m$), due to their better swimming abilities, the large demersals migrate over the water column for feeding. To better describe the temperature effects on large demersals, the effective temperature is introduced (see
-Section **Effective temperature**).
+Section (**Real-time effective temperature**).
 
 In setupVertical, fish have a new trait axis of vertical distribution.
 
 T profile
 The implementation is hard-coded, embedded in the function `setupVertical()`
 
-To simplify the temperature input, three temperature inputs ($T_p$, $T_m$, $T_b$) are required rather than the water column temperature profile in setupVertical2. 
-
-The implementation is hard coded in the function `setupVertical2()`
-
 **To be done...**
 
-## Effective temperature
+To simplify the temperature input, three temperature inputs ($T_p$, $T_m$, $T_b$) are required rather than the water column temperature profile in setupVertical2. Effective temperature of different size classes of each functional type are the averaged values of temperatures of their approximate vertical positions of day ($T_{day}$) and night ($T_{night}$).
+\begin{equation}
+T_e = \frac{T_{day}+T_{night}}{2}
+\end{equation}
+
+Note this $T_e$ is different from the one in the Section **Real-time effective temperature**. The implementation is hard coded in the function `setupVertical2()`. 
+
+**Small pelagics**\
+They always stay in the pelagic water ($T_{day}=T_{night}=T_p$).
+
+**Mesopelagics**\
+At daytime, where mesopelagic fish stay depends on the water column depth and photic conditions:
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     T_b, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $}      
+  \end{cases}
+\label{eq:xxxxxxxx}
+\end{equation}
+During night time, they are in the pelagic water ($T_{night}=T_p$).
+
+**Large pelagics**\
+The large-size classes of large pelagic fish are split into two groups: half of them are always in the pelagic zone, and the habitat of the other half depends on the water column conditions. So their daytime temperature could be the average of two environmental temperatures. If the water column does not support the existence of dvm they all stay in the pelagic zone. 
+
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     \frac{T_{m}+T_{p}}{2}, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     \frac{T_{b}+T_{p}}{2}, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $}      
+  \end{cases}
+\label{eq:xxxxxxx}
+\end{equation}
+
+All the large pelagics in non-large sizes (small and medium) are in pelagic water the during daytime ($T_{day}=T_p$).\
+During night time, all of them regardless of size are in the pelagic water ($T_{night}=T_p$).
+
+**Bathypelagics**\
+Bathypelagic fish stay at the dvm depth, bottom or pelagic zone, depending on the water column depth and photic conditions at daytime:
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     T_b, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $} 
+  \end{cases}
+\label{eq:xxxxxxx2}
+\end{equation}
+
+At night, small and medium bathypelagics are in the pelagic water ($T_{night}=T_p$), but the habitats of large bathypelagics varies with water column conditions: 
+\begin{equation}
+ T_{night} =
+  \begin{cases}
+     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
+     T_b, & \text{$ dvm = bottom $} \\
+     T_p, & \text{$ dvm = 0 $}  
+  \end{cases}
+\label{eq:xxxxxx}
+\end{equation}
+
+**Demersals**\
+Small demersals are pelagic-living ($T_{day}=T_{night}=T_p$); medium demersals are benthic-living ($T_{day}=T_{night}=T_b$).
+Large demersal fish habitats varies according to the water column conditions.
+
+\begin{equation}
+ T_{day} =
+  \begin{cases}
+     T_m, & \text{$ (bottom - dvm) < 1500 $ and $ bottom \geq photic $} \\
+     T_b, & \text{$ (bottom - dvm) \geq 1500 $ } \\
+     \frac{T_{b}+T_{p}}{2}, & \text{$ bottom < photic $} 
+  \end{cases}
+\label{eq:xxxxxx2}
+\end{equation}
+
+\begin{equation}
+ T_{night} =
+  \begin{cases}
+     T_b, & \text{$ bottom \geq photic $}  \\
+     \frac{T_{b}+T_{p}}{2}, & \text{$ bottom < photic $} 
+  \end{cases}
+\label{eq:xxxxxx3}
+\end{equation}
+
+
+
+## Real-time effective temperature
 Following [@petrik2019bottom], in shallow water ($<~200 m$) the large demersal fish ($m_{c,i}>250~gWW$ as default)
 migrate vertically within a day rather than staying at the bottom constantly. They are assumed to spend a fraction of time $\lambda$ in the pelagic zone and the rest of time $1-\lambda$ at the bottom according to the abundance of prey in these two zones.
 \begin{equation}
@@ -407,16 +494,6 @@ $T_e$ is updated each time step during the time integration, along with the temp
 
 # Default parameters
 
-| Symbol       | Explaination | Value| | | | Unit |
-|--------------|----------------------------------------------------|--|--|--|--|------|
-|              |                                                    |w|e|r|f|          |
-|   $a_c$   |Intercept for mass-specific maximum consumption rate| 10    |aaa|aaa|
-|   $b_c$   |Exponent for mass-specific maximum consumption rate | 20    |aaa|aaa|
-|   $a_e$   |Intercept for mass-specific clearance rate||
-|   $b_e$   |Exponent for mass-specific clearance rate||
-|   $a_m$   |Intercept for mass-specific metabolism rate||
-|   $b_m$   |Exponent for mass-specific metabolism rate| 30    |aaa|aaa|
-
 \begin{table}[htbp]
 
 \centering
@@ -426,27 +503,38 @@ $T_e$ is updated each time step during the time integration, along with the temp
 \hline
 Symbol & Description & \multicolumn{4}{c}{Value} & Unit \\
                          \cline{3-6}
-       &             & B1 & B2 & V1 & V2         &  \\
+       &             & \multicolumn{1}{c}{B1} & \multicolumn{1}{c}{B2} & \multicolumn{1}{c}{V1} & \multicolumn{1}{c}{V2} & \\
 \hline
-Parameter 1 & xxx & \multicolumn{4}{c}{value123} & aaa \\
-$a_c$ & Intercept for mass-specific maximum consumption rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$b_c$ & Exponent for mass-specific maximum consumption rate & \\
-$a_e$ & Intercept for mass-specific clearance rate &  &  & & & $m^2 g^{-b_{e}}yr^{-1}$ \\
-$b_e$ & Exponent for mass-specific clearance rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$a_m$ & Intercept for mass-specific metabolism rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$b_m$ & Exponent for mass-specific metabolism rate & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$a_c$ & Intercept for mass-specific maximum consumption rate & \multicolumn{4}{c}{20} & $g^{-b_{c}}yr^{-1}$ \\
+$b_c$ & Exponent for mass-specific maximum consumption rate & \multicolumn{4}{c}{-0.25} & / \\
+$a_e$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & $m^2 g^{-b_{e}-1}yr^{-1}$ \\
+$b_e$ & Exponent for mass-specific clearance rate & \multicolumn{4}{c}{-0.2} & / \\
+$a_m$ & Intercept for mass-specific metabolism rate & \multicolumn{2}{c}{4.015} & \multicolumn{2}{c}{0.2*$a_c$} & $g^{-b_{m}}yr^{-1}$ \\
+$b_m$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}{-0.175} & / \\
+$\epsilon_{\alpha}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
+$\epsilon_{r}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\
+$\mu_b$ & Background mortality & \multicolumn{4}{c}{0.1} & $yr^{-1}$ \\
+$F$ & Baseline fishing mortality rate & /$^e$ & \multicolumn{3}{c}{0} & $yr^{-1}$ \\
+$\eta_{mature}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
+$\eta_{fishing}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
+$\theta_A$ & Large fish preference on forage fish$^b$ & \multicolumn{2}{c}{0.5} & / & / & / \\
+$\theta_D$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
 $aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$T_{ref}$ & reference temperature & \multicolumn{4}{c}{10} & \textdegree{}C \\
+$Q_{10}$ & Rate of change for every 10\textdegree{}C increase for clearance rate and maximum consumption & \multicolumn{4}{c}{1.88} & / \\
+$Q_{10m}$ & Rate of change for every 10\textdegree{}C increase for metabolism & \multicolumn{2}{c}{2.35} & \multicolumn{2}{c}{1.88} & / \\
 $aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$\beta$ & Preferred predator:prey mass ratio & / & \multicolumn{3}{c}{400} & / \\
+$\sigma$ & Width of size preference for feeding & / & \multicolumn{3}{c}{1.3} & / \\
+$aaa$ & Continental shelf depth & / & / & \multicolumn{2}{c}{250} & m \\
+$aaa$ & Photic zone depth & / & / & \multicolumn{2}{c}{150} & m \\
+
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ B1: setupBasic1, B2: setupBasic2, V1: setupVertcal1, V2: setupVertcal2.} \\
-\multicolumn{7}{l}{value123}
+\multicolumn{7}{l}{\footnotesize $^b$ In B1, $\theta_A$ only poses on medium forage fish (the second size class).
+                                      In B2, $\theta_A$ works on all forage fish.} \\
+\multicolumn{7}{l}{\footnotesize $^e$ In B1, Eq. \ref{eq:fishing} does not apply. $\mu_{f,i}$ are constant values: Small fish 0 $yr^{-1}$, Medium fish 0.03 $yr^{-1}$, Large fish 0.3 $yr^{-1}$.}\\
+
 \end{tabular}
 \end{table}
 
