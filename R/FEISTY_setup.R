@@ -930,11 +930,11 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
                           bprodin  = NA, # benthos production
                           dfbot  = NA, # detrital flux reaching the bottom
                           dfpho  = NA, # detrital flux out of photic zone
-                          nStages=6, # No. of size groups
+                          nStages=9, # No. of size groups
                           Tp = NA, # Average T of top 100 m (up to 100 m). Default 10 Celsius.
                           Tm = NA, # Average T of 500 - 1500 m (up to 1500 m). Default 10 Celsius. Keep it as NA, if no Tm data. Tm = Tb.
                           Tb = NA, # Bottom T (last layer value). Default 10 Celsius.
-                          depth=1500, # Bottom depth
+                          depth=700, # Bottom depth
                           photic=150, # Photic zone depth
                           mesopelagic=250, # mesopelagic depth
                           visual=1.5,# >1 visual predation primarily during the day, = 1 equal day and night
