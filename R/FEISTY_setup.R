@@ -532,7 +532,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
   etaMature=0.002
   
   param = paramInit(bottom=depth, szprod=szprod, lzprod=lzprod, photic=photic,
-                    mesop=250, visual=1.5, bprodin=bprodin, dfbot=dfbot, dfpho=dfpho, bprod=bprod,
+                    shelfdepth=250, visual=1.5, bprodin=bprodin, dfbot=dfbot, dfpho=dfpho, bprod=bprod,
                     etaMature=etaMature,region=region)
   
   #------------------  
@@ -560,7 +560,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
                         mortF=0,      nStages=nSmall, name="smallPel")
   
   u0M = u0  # initial condition = 0 if no mesopelagic zone
-  if (param$bottom <= param$mesop) u0M <- 0
+  if (param$bottom <= param$shelfdepth) u0M <- 0
   
   param = paramAddGroup(param, mMin=0.001, mMax=   250, mMature=etaMature*250, u0=u0M,
                         mortF=0,   nStages=nSmall, name="mesoPel")
@@ -616,7 +616,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
   if (param$bottom < (param$photic + 500)) 
     param$dvm = param$bottom   # migration to bottom in intermediate habitats
   
-  if (param$bottom <= param$mesop) 
+  if (param$bottom <= param$shelfdepth) 
     param$dvm = 0              # no migration in shallow habitats
   
   ixmedium = which.min(abs(sizes-0.5))# - etaMature*250)) # -0.5))
@@ -936,7 +936,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
                           Tb = NA, # Bottom T (last layer value). Default 10 Celsius.
                           depth=700, # Bottom depth
                           photic=150, # Photic zone depth
-                          mesopelagic=250, # mesopelagic depth
+                          shelfdepth=250, # shelf region depth
                           visual=1.5,# >1 visual predation primarily during the day, = 1 equal day and night
                           etaMature = 0.25, # Size of matureation relative to
                           # asymptotic size. Different from
@@ -966,7 +966,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   #------------------  
   
   param = paramInit(bottom=depth, szprod=szprod, lzprod=lzprod, photic=photic,
-                    mesop=mesopelagic, visual=visual, bprodin=bprodin, dfbot=dfbot, dfpho=dfpho, bprod=bprod,
+                    shelfdepth=shelfdepth, visual=visual, bprodin=bprodin, dfbot=dfbot, dfpho=dfpho, bprod=bprod,
                     etaMature=etaMature, Tp=Tp, Tm=Tm, Tb=Tb)
   
   #------------------  
@@ -994,7 +994,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   
   
   u0M = u0  # initial condition = 0 if no mesopelagic zone
-  if (param$bottom <= param$mesop) u0M <- 0
+  if (param$bottom <= param$shelfdepth) u0M <- 0
   
   param = paramAddGroup(param, mMin=0.001, mMax=   250, mMature=etaMature*250, u0=u0M,
                         mortF=0,   nStages=nSmall, name="mesoPel")
@@ -1042,7 +1042,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   if (param$bottom < (param$photic + 500)) 
     param$dvm = param$bottom   # migration to bottom in intermediate habitats
   
-  if (param$bottom <= param$mesop) 
+  if (param$bottom <= param$shelfdepth) 
     param$dvm = 0              # no migration in shallow habitats
   
   ixmedium = which.min(abs(param$mLower[param$ix[[5]]] - 0.5))# which.min(abs(param$mLower[param$ix[[5]]] - etaMature*250))
@@ -1221,7 +1221,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   if (param$dvm == param$bottom) { # when param$bottom < (param$photic + 500)
     Tday = (param$Tp + param$Tb)/2
   }
-  if (param$dvm == 0) Tday = param$Tp # when param$bottom <= param$mesop
+  if (param$dvm == 0) Tday = param$Tp # when param$bottom <= param$shelfdepth
   Tnight = param$Tp # all surface
   Teff[1:2] = (Tday+Tnight)/2
   # benthos (no use)

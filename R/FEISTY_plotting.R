@@ -614,7 +614,7 @@ plotDiet <- function(sim) {
   
   # Put all panels together:
   if (length(p$ix)==5){
-    if(p$bottom > p$mesop) {
+    if(p$bottom > p$shelfdepth) {
       plots <- plot_grid(p1,p2,p3,p5,p6,p7,nrow=2)
     }else{
       plots <- plot_grid(p1,p2,p3,p7,nrow=2)

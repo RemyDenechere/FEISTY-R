@@ -439,13 +439,13 @@ contains
        real(dp) :: tau
        !real(dp) :: bottom
        !real(dp) :: photic
-       real(dp) :: mesop
+       real(dp) :: shelfdepth
        real(dp) :: visual
 !      real(dp) :: ssigma = 10.d0
 !      real(dp) :: tau = 10.d0
 !      real(dp), parameter :: bottom = 1500.d0 ! total depth meter
 !      real(dp), parameter :: photic = 150.d0  ! photic zone depth
-!      real(dp), parameter :: mesop = 250.d0   ! depth ?
+!      real(dp), parameter :: shelfdepth = 250.d0   ! depth ?
 !      real(dp), parameter :: visual = 1.5d0 ! scalar; >1 visual predation primarily during the day, = 1 equal day and night
       real(dp), allocatable :: sigmap(:) ! width for each size class
       !real(dp) :: bent ! for bprod calc
@@ -586,7 +586,7 @@ contains
       if (bottom .lt. (photic + 500.d0)) then
          dvm = bottom     ! migration to bottom in intermediate habitats
       end if
-      if (bottom .le. mesop) then
+      if (bottom .le. shelfdepth) then
          dvm = 0.d0                   ! no migration in shallow habitats
       end if
 
@@ -839,7 +839,7 @@ contains
                                   & beta, sigma, mMin, &
                                   & lbenk, szoog, lzoog, sbeng, lbeng,&!bent,
                                   & mMedium, mLarge, &
-                                  & ssigma, tau, mesop, visual
+                                  & ssigma, tau, shelfdepth, visual
 
       call open_inputfile(file_unit, io_err)
       read (file_unit, nml=input_setupvertical, iostat=io_err)
@@ -851,19 +851,22 @@ contains
 ! --------------------------------------
 ! Revised setup of vertical overlap based on van Denderen et al. (2020)
 ! --------------------------------------
-   subroutine setupVertical2(szprod,lzprod, bprodin, dfbot, dfpho, nStages, Tp, Tm, Tb, bottom, photic, etaMature,Fishing,etaF)
+   subroutine setupVertical2(szprod,lzprod, bprodin, dfbot, dfpho, nStages, Tp, Tm, Tb, bottom, photic, etaMature,&
+                             shelfdepth, visual, Fishing, etaF)
      !  default bottom:1500m euphotic depth 150m
       real(dp), intent(in) :: szprod,lzprod, bottom, photic, bprodin, dfbot, dfpho, Tp, Tm, Tb, etaMature,Fishing,etaF ! bprodin: benthic productivity, dfbot: detrital flux reaching the sea floor, dfpho: detrital flux out of the photic zone
                                                                                                            ! only one of them works, keep the unused arguments negative e.g., bprodin = -1.d0, dfbot = -1.d0, dfpho = 100.d0
       integer, intent(in) :: nStages                                ! Mature mass relative to asymptotic size default 0.25, original in van Denderen et al., 2021 was 0.002
+      real(dp), intent(in) :: shelfdepth  ! shelf region depth, meso- and bathy-elagic fish exist when water is deeper than this. default 250m
+      real(dp), intent(in) :: visual      ! >1 visual predation primarily during the day, = 1 equal day and night. default 1.5
 
 ! for theta calc
        real(dp) :: ssigma
        real(dp) :: tau
        !real(dp) :: bottom
        !real(dp) :: photic
-       real(dp) :: mesop
-       real(dp) :: visual
+       !real(dp) :: mesop !change to shelfdepth
+       !real(dp) :: visual
 !      real(dp) :: ssigma = 10.d0
 !      real(dp) :: tau = 10.d0
 !      real(dp), parameter :: bottom = 1500.d0 ! total depth meter
@@ -1024,7 +1027,7 @@ contains
       if (bottom .lt. (photic + 500.d0)) then
          dvm = bottom     ! migration to bottom in intermediate habitats
       end if
-      if (bottom .le. mesop) then
+      if (bottom .le. shelfdepth) then
          dvm = 0.d0                   ! no migration in shallow habitats
       end if
 
@@ -1279,7 +1282,7 @@ contains
 ! zooplankton (no use)
       Tday = (Tp + Tm) / 2  ! half surface half dvm  dvm = photic + 500
       if (dvm == bottom) Tday = (Tp + Tb) / 2 ! when bottom < (photic + 500)
-      if (dvm == 0) Tday = Tp  ! when bottom <= mesop
+      if (dvm == 0) Tday = Tp  ! when bottom <= shelfdepth
       Tnight = Tp  ! all surface
       Teff(1:2) = (Tday + Tnight) / 2
 ! benthos (no use)
@@ -1367,14 +1370,14 @@ contains
    subroutine read_namelist_setupvertical()
       integer :: file_unit, io_err
 
-      namelist /input_setupvertical/ h, nn, q, gamma, kk, p, epsAssim, epsRepro, &
+      namelist /input_setupvertical2/ h, nn, q, gamma, kk, p, epsAssim, epsRepro, &
                                   & beta, sigma, mMin, &
                                   & lbenk, szoog, lzoog, sbeng, lbeng,&!bent,
                                   & mMedium, mLarge, &
-                                  & ssigma, tau, mesop, visual
+                                  & ssigma, tau!, mesop, visual
 
       call open_inputfile(file_unit, io_err)
-      read (file_unit, nml=input_setupvertical, iostat=io_err)
+      read (file_unit, nml=input_setupvertical2, iostat=io_err)
       call close_inputfile(file_unit, io_err)
    end subroutine read_namelist_setupvertical
 

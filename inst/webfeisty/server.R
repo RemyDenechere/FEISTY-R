@@ -107,7 +107,7 @@ server <- function(input, output) {
                            Tb = input$Tb,
                            depth    = input$bottom,
                            photic   = input$photic,
-                           mesopelagic=250,
+                           shelfdepth=250,
                            visual=1.5,
                            etaMature=input$etaMature,
                            F=input$F,
