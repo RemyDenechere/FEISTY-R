@@ -190,6 +190,9 @@ All size classes of fish experience a background mortality. The details of
 predation and fishing are in the sections below.
 
 ## Predation
+
+The second core element of FEISTY, besides the equation for biomass dynamics, is the specification of how each size class interacts via predation. This is specified in the feeding preference matrix (also known as a food-web matrix) $\theta_{i,j}$ where each element is a number between 0 and 1 which says how much fish class $i$ preys on class $j$. The feeding preference function is either based on size preference or derived from size preference coupling with the vertical habitat of each functional group. All of them are combined with additional modifications to account for feeding specializations.
+
 ### Size preference
 In the non-vertical distribution version (`setupBasic` and `setupBasic2`)
 $\theta_{i,j}$ refers to the feeding preference based on the size
@@ -218,11 +221,11 @@ selection and the values of $\beta$ and $\sigma$ can be defined by the
 function `paramSizepref()`.
 
 In the vertical distribution setups, $\theta_{i,j}$ is the product of
-size-based preference ($\theta_{s,i,j}$) and vertical overlap ($\theta_{v,i,j}$):
+size-based preference ($\theta_{\mathrm{s},i,j}$) and vertical overlap ($\theta_{\mathrm{v},i,j}$):
 \begin{equation}
-\theta_{i,j} = \theta_{s,i,j} \cdot\theta_{v,i,j} 
+\theta_{i,j} = \theta_{\mathrm{s},i,j} \cdot\theta_{\mathrm{v},i,j} 
 \end{equation}
-The calculation of $\theta_{s,i,j}$ follows Eq. \ref{eq:lognormalpreference} in setupVertical and Eq. \ref{eq:errorpreference} in setupVertical2. The detailed description of $\theta_{v,i,j}$ in the Section **Vertical overlap**.
+The calculation of $\theta_{\mathrm{s},i,j}$ follows Eq. \ref{eq:lognormalpreference} in setupVertical and Eq. \ref{eq:errorpreference} in setupVertical2. The detailed description of $\theta_{\mathrm{v},i,j}$ in the Section **Vertical overlap**.
 
 Once the feeding preference is ready, the predation mortality of a prey
 $j$ can be calculated:
@@ -231,9 +234,91 @@ $j$ can be calculated:
 \end{equation}
 
 ### Vertical overlap
+Concise introduction...
 
-The second core element of FEISTY, besides the equation for the biomass dynamics, is the specification of how each size-class interacts via predation. This is specified in the feeding preference matrix (also known as a food-web matrix) $\theta_{i,j}$ where each element is a number between 0 and 1 which says how much fish class $i$ preys on class $j$.  The feeding preference function is either set manually (in `setupBasic`) or derived from a specification of the vertical habitat of each functional group combined with additional modifiers to account for feeding specializations.
-**To be done...**
+water column discritization
+\begin{equation}
+z_{\mathrm{\zeta}} =  0+\zeta, \hspace{1.5cm}  \zeta\in[0,z_{\mathrm{b}}]
+\end{equation} 
+
+$z_{\mathrm{dvm}}$ is the representative depth where there is max biomass when functional types or size classes conduct the diel vertical migration.
+
+\begin{equation}
+  z_{\mathrm{dvm}} =
+  \begin{cases}
+     z_{\mathrm{photc}} + 500, & \text{ $z_{\mathrm{bottom}} \geq z_{\mathrm{photic}} + 500$ } \\
+     z_{\mathrm{bottom}}, & \text{ $ z_{\mathrm{photic}} + 500 > z_{\mathrm{bottom}} > z_{\mathrm{shelf}} $ } \\
+     0, & \text{$ z_{\mathrm{bottom}} \leq z_{\mathrm{shelf}} $ }      
+  \end{cases}
+\label{eq:xxxxxxxx4}
+\end{equation}
+
+For demersal fish, their are different due to living habits
+\begin{equation}
+  z_{\mathrm{dvmdem}} =
+  \begin{cases}
+     z_{\mathrm{dvm}}, & \text{ $ z_{\mathrm{bottom}} - z_{\mathrm{dvm}} < 1200 $ } \\
+     z_{\mathrm{bottom}} - 1200, & \text{ $ 1200 \leq z_{\mathrm{bottom}} - z_{\mathrm{dvm}} <1500 $ } \\
+     z_{\mathrm{bottom}}, & \text{ $ z_{\mathrm{bottom}} - z_{\mathrm{dvm}} \geq 1500 $ }      
+  \end{cases}
+\label{eq:xxxxxxxx5}
+\end{equation}
+
+
+\begin{equation}
+  \omega_i = \omega_0 + \tau \cdot \log_{10}\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{c},1}}\right)
+\end{equation}
+
+where $i$ represents each organisms including all resources and fish. Note, for benthic resources, $\omega_i = \omega_0$ to make them stay nearly at the bottom.
+
+a function to generate vertical distributions (a normal distribution)
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{1}{\sqrt{2\pi\omega_i^2}} \cdot \exp\left(-\frac{(z_{\mathrm{\zeta}} - z_{\mathrm{loc},\mathrm{x},i})^2}{2\omega_i^2}\right)\\
+\end{equation}
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{x},i}}{\sum\limits_{i} \theta_{\mathrm{\zeta},\mathrm{x},i}}
+\end{equation}
+
+x is either day or night. $z_{\mathrm{loc}}$ is the depth that the maximum biomass is.
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{day},i} + \theta_{\mathrm{\zeta},\mathrm{night},i}}{2}
+\end{equation}
+
+
+Predator prey vertical overlap
+
+\begin{equation}
+  \theta_{\mathrm{v},\mathrm{x},i,j} = \sum\limits_{\mathrm{\zeta}}\min(\theta_{\mathrm{\zeta},\mathrm{x},i},\theta_{\mathrm{\zeta},\mathrm{x},j})
+\end{equation}
+
+\begin{equation}
+  \theta_{\mathrm{v},i,j} = \frac{\theta_{\mathrm{v},\mathrm{day},i,j}+\theta_{\mathrm{v},\mathrm{night},i,j}}{2}
+\end{equation}
+
+**Zooplankton resources**\
+
+
+
+**Benthic resources**\
+
+**Small pelagics**\
+They always stay in the pelagic water ($T_{\mathrm{day}}=T_{\mathrm{night}}=T_{\mathrm{p}}$).
+
+**Mesopelagics**\
+At daytime, where mesopelagic fish stay depends on the water column depth and photic conditions:
+
+**Large pelagics**\
+The large-size classes of large pelagic fish are split into two groups: half of them are always in the pelagic zone, and 
+
+**Bathypelagics**\
+Bathypelagic fish stay at the dvm depth, bottom or pelagic zone, depending on the water column depth and photic conditions
+
+**Demersals**\
+Small demersals are 
+
 
 ### Modifications
 
@@ -288,7 +373,7 @@ k = Q_{10}^{\frac{T-T_{\mathrm{ref}}}{10}} \label{eq:Tscfac}
 where $T_{\mathrm{ref}}$ is the reference temperature and $T$ is the environment temperature.
 According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_{\mathrm{p}}$ (e.g., all forage fish); for fish always in the benthic zone $T=T_{\mathrm{b}}$ (e.g., medium-size demersal fish). $k_{\mathrm{T}}$ is temperature scaling factor for $C_{\mathrm{max},i}$ and $V_{i}$; $k_{\mathrm{TM}}$ is temperature scaling factor for $M_i$. To calculate them, different $Q_{10}$ factors are required (Table xx). The temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., `setupBasic` and `setupBasic2`. Technically, it also can be used in customized setups.
 
-In `setupBasic` and `setupBasic2`, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_{\mathrm{p}}$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_p$). Medium demersals live at the bottom ($T_{\mathrm{b}}$). Large demersals also stay in the bottom if the water is deep ($>~200$ m). However, in shallow water ($<~200$ m), due to their better swimming abilities, the large demersals migrate over the water column for feeding. To better describe the temperature effects on large demersals, the effective temperature is introduced (see
+In `setupBasic` and `setupBasic2`, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_{\mathrm{p}}$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_{\mathrm{p}}$). Medium demersals live at the bottom ($T_{\mathrm{b}}$). Large demersals also stay in the bottom if the water is deep ($>~200$ m). However, in shallow water ($<~200$ m), due to their better swimming abilities, the large demersals migrate over the water column for feeding. To better describe the temperature effects on large demersals, the effective temperature is introduced (see
 Section (**Real-time effective temperature**).
 
 In setupVertical, fish have a new trait axis of vertical distribution.
