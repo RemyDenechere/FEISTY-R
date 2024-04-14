@@ -239,7 +239,9 @@ Concise introduction...
 water column discritization
 \begin{equation}
 z_{\mathrm{\zeta}} =  0+\zeta, \hspace{1.5cm}  \zeta\in[0,z_{\mathrm{b}}]
-\end{equation} 
+\end{equation}
+where $\zeta$ is each depth of a water column (integer value), ranging from $0$ (surface) to $z_{\mathrm{bottom}}$ (sea floor).
+
 
 $z_{\mathrm{dvm}}$ is the representative depth where there is max biomass when functional types or size classes conduct the diel vertical migration.
 
@@ -264,60 +266,64 @@ For demersal fish, their are different due to living habits
 \label{eq:xxxxxxxx5}
 \end{equation}
 
+Width of vertical distribution of each organism $\omega_i$ including all resources and fish. 
 
 \begin{equation}
-  \omega_i = \omega_0 + \tau \cdot \log_{10}\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{c},1}}\right)
+  \omega_i = \omega_0 + \tau \cdot \log_{10}\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{c},0}}\right)
 \end{equation}
 
-where $i$ represents each organisms including all resources and fish. Note, for benthic resources, $\omega_i = \omega_0$ to make them stay nearly at the bottom.
+where $\omega_0$ is the baseline width of vertical distribution and $\tau$ is the width-increasing factor of vertical distribution. $m_{\mathrm{c},0}$ denotes the minimum geometric mean size within all organisms in the simulation (typically small mesozooplankton). Note, for benthic resources, $\omega_i = \omega_0$ to make them stay nearly at the bottom.
 
 a function to generate vertical distributions (a normal distribution)
 
 \begin{equation}
   \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{1}{\sqrt{2\pi\omega_i^2}} \cdot \exp\left(-\frac{(z_{\mathrm{\zeta}} - z_{\mathrm{loc},\mathrm{x},i})^2}{2\omega_i^2}\right)\\
+  \label{eq:vertdist1}
 \end{equation}
 
 \begin{equation}
-  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{x},i}}{\sum\limits_{i} \theta_{\mathrm{\zeta},\mathrm{x},i}}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{x},i}}{\sum\limits_{\mathrm{\zeta}} \theta_{\mathrm{\zeta},\mathrm{x},i}}
+  \label{eq:vertdist2}
 \end{equation}
 
-x is either day or night. $z_{\mathrm{loc}}$ is the depth that the maximum biomass is.
-
-\begin{equation}
-  \theta_{\mathrm{\zeta},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{day},i} + \theta_{\mathrm{\zeta},\mathrm{night},i}}{2}
-\end{equation}
-
+x is either day or night. $z_{\mathrm{loc},\mathrm{x},i}$ is the representative depth that the maximum biomass is. Some functional types or size classes have two representative depths $z_{\mathrm{loc},\mathrm{x},i}$. Consequently, they need to be calculated twice (Eq. \ref{eq:vertdist1} and \ref{eq:vertdist2}) and the vertical distribution is the averaged value, which shows a bimodal shape of the vertical distribution.
 
 Predator prey vertical overlap
+
+The less value between vertical distribution values of a specific predator $i$ and a prey $j$ at depth $\zeta$ at daytime or nighttime $x$ $\min(\theta_{\mathrm{\zeta},\mathrm{x},i}, \theta_{\mathrm{\zeta},\mathrm{x},j})$ represents their vertical overlap level. The depth-integration gives the synthetic vertical overlap value of predator $i$ to a prey $j$ at day or night $\theta_{\mathrm{v},\mathrm{x},i,j}$:
 
 \begin{equation}
   \theta_{\mathrm{v},\mathrm{x},i,j} = \sum\limits_{\mathrm{\zeta}}\min(\theta_{\mathrm{\zeta},\mathrm{x},i},\theta_{\mathrm{\zeta},\mathrm{x},j})
 \end{equation}
+
+Ultimately, the total vertical overlap is the averaged value of day and night vertical distribution values.
 
 \begin{equation}
   \theta_{\mathrm{v},i,j} = \frac{\theta_{\mathrm{v},\mathrm{day},i,j}+\theta_{\mathrm{v},\mathrm{night},i,j}}{2}
 \end{equation}
 
 **Zooplankton resources**\
-
-
+Zooplankton resources (small and large mesozooplankton) are supposed to be divide into two types in terms of whether they can conduct the diel vertical migration if water column conditions allows. During daytime, a half of them moves to deep water to avoid predation ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). Another half is in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = 0$). At nighttime they stay at the surface ($z_{\mathrm{loc},\mathrm{x},i} = 0$).
 
 **Benthic resources**\
+Benthos is benthic-living ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$). To ensure they stay close to the sea floor, their vertical distribution width is kept as the baseline value $\omega_i=\omega_0$.
 
 **Small pelagics**\
-They always stay in the pelagic water ($T_{\mathrm{day}}=T_{\mathrm{night}}=T_{\mathrm{p}}$).
+They always stay at in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
 
 **Mesopelagics**\
-At daytime, where mesopelagic fish stay depends on the water column depth and photic conditions:
+Mesopelagic fish stay at the midwater during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, they migrate to the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$).
 
 **Large pelagics**\
-The large-size classes of large pelagic fish are split into two groups: half of them are always in the pelagic zone, and 
+During daytime, Large pelagics perform differently according to their size. The small- and medium-size classes are at surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$). The large-size classes are divided into two groups: half of them are always in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = 0$), and half in midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). 
+They all move to surface during night ($z_{\mathrm{loc},\mathrm{night},i} = 0$)
 
-**Bathypelagics**\
-Bathypelagic fish stay at the dvm depth, bottom or pelagic zone, depending on the water column depth and photic conditions
+**Bathpelagics**\
+All bathypelagic fish stay at the dvm depth during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, the small- and medium-size classes are always at surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Half of large-size classes are in the surface water ($z_{\mathrm{loc},\mathrm{night},i} = 0$), and the another half in midwater ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$).
 
 **Demersals**\
-Small demersals are 
+During daytime, small demersals are at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$); medium demersals are at bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{bottom}}$); large demersals are at midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvmdem}}$).
+At night, small demersal fish are at surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Medium and large demersal fish are at the bottom ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
 
 
 ### Modifications
