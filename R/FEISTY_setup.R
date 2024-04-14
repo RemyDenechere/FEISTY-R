@@ -657,7 +657,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
   
   # meso pelagic day (all at dvm)
   ix = param$ix[[2]]
-  mpel_d = VertDist(sigmap[ix], xloc=param$dv)
+  mpel_d = VertDist(sigmap[ix], xloc=param$dvm)
   
   ## large pelagic fish night (all at surface)
   ix = param$ix[[3]]
