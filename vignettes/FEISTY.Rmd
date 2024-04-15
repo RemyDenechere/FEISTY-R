@@ -319,11 +319,44 @@ During daytime, Large pelagics perform differently according to their size. The 
 They all move to surface during night ($z_{\mathrm{loc},\mathrm{night},i} = 0$)
 
 **Bathpelagics**\
-All bathypelagic fish stay at the dvm depth during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, the small- and medium-size classes are always at surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Half of large-size classes are in the surface water ($z_{\mathrm{loc},\mathrm{night},i} = 0$), and the another half in midwater ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$).
+All bathypelagic fish stay at the dvm depth during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, the small- and medium-size classes are always at surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Large-size classes are in midwater ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$).
 
 **Demersals**\
 During daytime, small demersals are at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$); medium demersals are at bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{bottom}}$); large demersals are at midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvmdem}}$).
 At night, small demersal fish are at surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Medium and large demersal fish are at the bottom ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
+
+\begin{table}[htbp]
+
+\centering
+\caption{Main parameters of FEISTY $z_{\mathrm{loc},\mathrm{x},i}$}
+
+\begin{tabular}{ l l l p{2cm} l l p{2cm}}
+\hline
+ & \multicolumn{3}{l}{Day} & \multicolumn{3}{l}{Night} \\
+   \cline{2-7} 
+Resources\\
+\hline
+Zooplankton & \multicolumn{3}{l}{0 and $z_{\mathrm{dvm}}$} & \multicolumn{3}{l}{0} \\
+Benthos & \multicolumn{3}{l}{$z_{\mathrm{bottom}}$} & \multicolumn{3}{l}{$z_{\mathrm{bottom}}$} \\
+   \cline{2-7}
+&\\   
+Fish & Small & Medium & Large & Small & Medium & Large \\
+\hline
+Small pelagic fish & 0 & 0 & / & 0 & 0 & / \\
+Mesopelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & / & 0 & 0 & / \\
+Large pelagic fish & 0 & 0 & 0 and $z_{\mathrm{dvm}}$ & 0 & 0 & 0 \\
+Bathypelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & 0 & 0 & $z_{\mathrm{dvm}}$ \\
+Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$ \\\
+&&&($z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$)$^e$&&&($z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$)$^e$\\
+
+\hline
+\multicolumn{7}{l}{\footnotesize $^a$ ...} \\
+\multicolumn{7}{l}{\footnotesize $^b$ ....}\\
+\multicolumn{7}{l}{\footnotesize $^e$ if the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} < z_{\mathrm{photic}}$),}\\
+\multicolumn{7}{l}{\footnotesize large demersal fish migrate over the water column day and night (here $z_{\mathrm{dvmdem}}=0$).}
+
+\end{tabular}
+\end{table}
 
 
 ### Modifications
