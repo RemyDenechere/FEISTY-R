@@ -769,7 +769,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
   param$theta[idx_be, 3:4] = 0 # all pelagic and small demersals do not eat benthos,
   # only small & large demersals eat benthos
   
-  # small demersals are less preyed on
+  # medium demersals are less preyed on
   idx_smd = (param$ix[[5]][1] + (ixmedium - 1)): (param$ix[[5]][1] + (ixlarge - 2)) #
   param$theta[idx_be, idx_smd] = param$theta[idx_be, idx_smd]*0.25
   
