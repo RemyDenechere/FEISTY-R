@@ -160,7 +160,7 @@ reproduction process. It can be either assigned with constants manually
 (setupBasic and setupVertical [@petrik2019bottom; @van2021emergent]) or
 by a sigmoid function (setupBasic2 and setupVertical2):
 \begin{equation}
-\psi_i = \left(1+\left(\frac{m_{c,i}}{m_{\mathrm{mature}}}\right)^{-5} \right)^{-1}
+\psi_i = \left(1+\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{mature}}}\right)^{-5} \right)^{-1}
 \end{equation}
 $m_{\mathrm{mature}}$ is the half-maturation size of a functional type, which
 means fish reach 50% maturity level at $m_{\mathrm{mature}}$.
@@ -303,7 +303,11 @@ The light conditions of a location where visual predators stay in a water column
   \theta_{\mathrm{v},x,i,j} = \theta_{\mathrm{v},x,i,j} \cdot \theta_{\mathrm{visual}} .
 \end{equation}
 
-All small pelagics and small- and medium-size class large pelagics always stay at the surface regardless of day and night, so their daytime vertical overlap on all prey ($\theta_{\mathrm{v},day,i,j}$) is enhanced ($\theta_{\mathrm{visual}}=1.5$). Correspondingly, their nighttime vertical overlap ($\theta_{\mathrm{v},night,i,j}$) is decreased ($\theta_{\mathrm{visual}}=0.5$).
+All small pelagics and small- and medium-size class [^1] large pelagics always stay at the surface regardless of day and night, so their daytime vertical overlap on all prey ($\theta_{\mathrm{v},day,i,j}$) is enhanced ($\theta_{\mathrm{visual}}=1.5$). Correspondingly, their nighttime vertical overlap ($\theta_{\mathrm{v},night,i,j}$) is decreased ($\theta_{\mathrm{visual}}=0.5$).
+
+[^1]: small-, medium-, and large-size classes of fish are distinguished by comparison between the geometric mean mass value ($m_{\mathrm{c},i}$) and boundary mass value ($m_{\mathrm{medium}}$ or $m_{\mathrm{large}}$). Small-size class: $m_{\mathrm{c},i} < m_{\mathrm{medium}}$.
+Medium-size class: $m_{\mathrm{medium}} \leq m_{\mathrm{c},i} \leq m_{\mathrm{large}}$.
+Large-size class: $m_{\mathrm{c},i} > m_{\mathrm{large}}$.
 
 Half of large-size class large pelagics stay at the twilight zone ($z_{\mathrm{dvm}}$) at daytime, so their vertical overlap at daytime ($\theta_{\mathrm{v},day,i,j}$) on all mesopelagic fish and bathypelagic fish is reduced ($\theta_{\mathrm{visual}}=0.5$).
 
@@ -376,9 +380,6 @@ Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^e$ & 0 & $z_{
 
 ### Modifications
 
-
-
-**To be done...**
 Basic2
 
 In practice, the feeding preference setting is more complex, since it plays a vital role in the coexistence of various functional types. when the feeding preference $\theta_{i,j}$ is initially calculated as a function (e.g., Eq. \ref{eq:lognormalpreference}), sometimes it needs to be revised or corrected manually according to specific rules, such as cannibalism, habitats, feeding habits, and visibility. Here I introduce how the feeding preference $\theta_{i,j}$ is further processed in setupBasic2.
@@ -435,12 +436,11 @@ The general equation for the temperature scaling factor $k$ is:
 k = Q_{10}^{\frac{T-T_{\mathrm{ref}}}{10}} \label{eq:Tscfac}
 \end{equation}
 where $T_{\mathrm{ref}}$ is the reference temperature and $T$ is the environment temperature.
-According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_{\mathrm{p}}$ (e.g., all forage fish); for fish always in the benthic zone $T=T_{\mathrm{b}}$ (e.g., medium-size demersal fish). $k_{\mathrm{T}}$ is the temperature scaling factor for $C_{\mathrm{max},i}$, and $V_{i}$; $k_{\mathrm{TM}}$ is the temperature scaling factor for $M_i$. To calculate them, different $Q_{10}$ factors are required (Table xx). The temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., `setupBasic` and `setupBasic2`. Technically, it also can be used in customized setups.
+According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_{\mathrm{p}}$ (e.g., all forage fish); for fish always in the benthic zone $T=T_{\mathrm{b}}$ (e.g., medium-size demersal fish). Through introducing different $Q_{10}$ coefficients (Table \ref{tab:defaultparam}), various temperature scaling factors $k$ can be obtained. $k_{\mathrm{T}}$ is the temperature scaling factor for $C_{\mathrm{max},i}$, and $V_{i}$; $k_{\mathrm{TM}}$ is the temperature scaling factor for $M_i$.
 
 **setupBasic and setupBasic2**
 
-In `setupBasic` and `setupBasic2`, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_{\mathrm{p}}$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_{\mathrm{p}}$). Medium demersals live at the bottom ($T_{\mathrm{b}}$). Large demersals also stay in the bottom if the water is deep ($>~200$ m). However, in shallow water ($<~200$ m), due to their better swimming abilities, the large demersals migrate over the water column for feeding. To better describe the temperature effects on large demersals, the effective temperature is introduced (see Section **Real-time effective temperature**).
-
+In `setupBasic` and `setupBasic2`, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_{\mathrm{p}}$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_{\mathrm{p}}$). Medium demersals live at the bottom ($T_{\mathrm{b}}$). Large demersals also stay in the bottom if the water is deep ($>~200$ m). However, in shallow water ($<~200$ m), due to their better swimming abilities, the large demersals migrate over the water column for feeding. In code implementation, temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., `setupBasic` and `setupBasic2`. Moreover, to better describe the temperature effects on large demersals, the effective temperature is introduced (see Section **Real-time effective temperature**).
 
 **setupVertical**
 
@@ -473,7 +473,7 @@ To simplify the temperature input, three temperature inputs ($T_{\mathrm{p}}$, $
 T_{\mathrm{e}} = \frac{T_{\mathrm{day}}+T_{\mathrm{night}}}{2}
 \end{equation}
 
-Note this $T_{\mathrm{e}}$ is different from the one in the Section **Real-time effective temperature**. The implementation is hard-coded in the function `setupVertical2()`. 
+Note this $T_{\mathrm{e}}$ is different from the one in the Section **Real-time effective temperature**. Then $T_{\mathrm{e}}$ is taken into Eq. \ref{eq:Tscfac} as $T$, and so the temperature-dependent physiological rates (Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}) are updated. The implementation is hard-coded in the function `setupVertical2()`. 
 
 **Small pelagics**\
 They always stay in the pelagic water ($T_{\mathrm{day}}=T_{\mathrm{night}}=T_{\mathrm{p}}$).
@@ -567,8 +567,6 @@ T_{\mathrm{e}} = T_{\mathrm{p}} \cdot \lambda + T_{\mathrm{b}} \cdot (1 - \lambd
 $T_{\mathrm{e}}$ is updated each time step during the time integration, along with the temperature-dependent biological rates, which are handled by the function `updateET()`. In code implementation, `updateET()` is called every time step in `derivativesFEISTYR()`. The effective temperature scheme is forced turned on in `setupBasic()` [@petrik2019bottom]; it is an option in `setupBasic2()`.
 
 
-
-
 ## Setup of the size spectrum grid
 
 The fish size span of a functional type is logarithmically discretized
@@ -577,7 +575,7 @@ between the upper boundary size and lower boundary size:
 \begin{equation}
 z = \exp \left( \frac{\ln (M) - \ln (M_{0})}{n} \right)
 \end{equation} 
-where $M_{0}$ and $M$ are the smallest and largest fish in a functional type. There are $n+1$ boundaries of $n$ size bins ($m_{\mathrm{b},i}$), including all lower boundary sizes ($m_{\mathrm{l},i}$) and upper boundary sizes ($m_{\mathrm{u},i}$). 
+where $M_{0}$ and $M$ are the smallest and largest fish in a functional type (boundary size). There are $n+1$ boundaries of $n$ size bins ($m_{\mathrm{b},i}$), including all lower boundary sizes ($m_{\mathrm{l},i}$) and upper boundary sizes ($m_{\mathrm{u},i}$). 
 \begin{equation}
 m_{\mathrm{b},i} =  \exp( \ln(M_{0}) + (i-1) \ln(z)), \hspace{1.5cm}  i\in[1,n+1]
 \end{equation} 
@@ -591,7 +589,7 @@ The geometric mean size of each size class $m_{i}$ is:
 \begin{equation}
 m_{i} =  \exp ( \ln(m_{\mathrm{l},i}) + 0.5(\ln(z)) ), \hspace{2.2cm}  i\in[1,n]
 \end{equation}
-which will be comprehensively used for calculations, for instance,
+which can be comprehensively used for calculations, for instance,
 physiological rates and size-based feeding preference.\
 The size spectrum generation is done by calling the function
 `paramAddGroup()`. Also, see the source code of `makeGrid()`.
@@ -604,6 +602,7 @@ The size spectrum generation is done by calling the function
 
 \centering
 \caption{Main parameters of FEISTY}
+\label{tab:defaultparam}
 
 \begin{tabular}{lp{8cm}lp{1cm}lp{1cm}lp{1cm}lp{1cm}l}
 \hline
@@ -634,6 +633,8 @@ $\beta$ & Preferred predator:prey mass ratio & / & \multicolumn{3}{c}{400} & / \
 $\sigma$ & Width of size preference for feeding & / & \multicolumn{3}{c}{1.3} & / \\
 $aaa$ & Continental shelf depth & / & / & \multicolumn{2}{c}{250} & m \\
 $aaa$ & Photic zone depth & / & / & \multicolumn{2}{c}{150} & m \\
+$m_{\mathrm{medium}}$ & boundary size of small/medium fish class & \multicolumn{4}{c}{0.5} & gww \\
+$m_{\mathrm{large}}$ & boundary size of medium/large fish class  & \multicolumn{4}{c}{250} & gww \\
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ B1: setupBasic1, B2: setupBasic2, V1: setupVertcal1, V2: setupVertcal2.} \\
