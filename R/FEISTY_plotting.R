@@ -102,6 +102,8 @@ plotYieldtime = function(sim) {
   series <- getTimeseries(sim)
   series <- subset(series, series$group %in% fishexistname)
   
+  series$yield <- ifelse(series$yield == 0, 1E-16,series$yield)
+  
   plots <- defaultplot() + 
     geom_line(data = series, 
               aes(x = t, y = yield, group = group, color = group),
@@ -111,7 +113,9 @@ plotYieldtime = function(sim) {
                        breaks = fishexistname,
                        labels = p$my_names[fishexistname]) +
     annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
-    coord_cartesian(ylim = c(0,max(1,max(series$yield)*1.2))) + 
+    coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$yield)*5))) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", math_format(10^.x))) +
     xlab("Time (yr)") + ylab(expression("Yield (gWW m"^"-2"*" yr"^"-1"*")"))+
     theme(legend.key = element_blank())
 
