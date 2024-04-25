@@ -645,26 +645,46 @@ $m_{\mathrm{large}}$ & boundary size of medium/large fish class  & \multicolumn{
 \end{tabular}
 \end{table}
 
-# Examples
+# Demonstration
 
 ## The structure of main parameters
 
+Delete this paragraph?
+
 **FESITY** includes four setups which each specifies the available functional groups and their parameters:
 
--   setupBasic creates a basic three-species setup as described in
-    Petrik et al (2019) 
--   setupBasic2 creates the same three-species setup as setupBasic(), but
-    generalised to: more realistic sizes, generalized size-based
-    feeding, and the possiblity of more then 3 size groups in each group. (ref)
--   setupVertical makes a basic four-species setup that distinguishes
-    between visual and twilight predators and that includes vertical
-    distribution of zooplankton  (ref)
--   setupVertical2 is the same as setupVertical but …  (ref) .
+-   setupBasic creates a basic three-functional type setup as described in [@petrik2019bottom].
+-   setupBasic2 creates the same three-functional type setup as setupBasic(), but
+    it allows more size numbers in each functional type, size-based maturity, generalized size-based feeding preference, and size-based fishing mortality.
+-   setupVertical makes a basic five-functional type setup that includes vertical distribution of resources and fish  [@van2021emergent].
+-   setupVertical2 is the same as setupVertical but different it allows more size numbers in each functional type, size-based maturity, generalized size-based feeding preference, size-based fishing mortality, and simpler temperature input.
+
+## Basic simulation and visualization 
+Not Done.
+
+The model is first run with the default 3-functional group prameters,
+created with *setupBasic()*. Then two similar parameter datasets are
+created, with rates doubled or halved.
+
+```{r}
+p <- setupBasic()
+```
 
 
-## Example
+The model can now be run for all parameter sets; the result for the last
+20 years are shown.
 
-### Fishing mortality
+```{r, fig.width=8, fig.height=8}
+out1 <- simulateFEISTY(p=p,  times=seq(0, 200, length.out=1000),bCust=T)
+out2 <- simulateFEISTY(p=p, times=seq(0, 200, length.out=1000),bCust=T)
+out3 <- simulateFEISTY(p=p, times=seq(0, 200, length.out=1000),bCust=T)
+
+```
+
+
+## Fishing mortality assignment
+Not Done.
+
 For simplicity, arguments of fishing in **setupbasic()** and **setupVertical()** only allow assigning fishing mortality to all functional types. However, it is feasible to assign fishing mortality for a specific functional type.
 
 ```{r}
@@ -677,7 +697,7 @@ p=setFishing(p=p,F=0.2,etaF=0.05,groupidx=c(1))
 # assign 0.5/year as the baseline fishing mortality to demersal fish
 p=setFishing(p=p,F=0.3,etaF=0.05,groupidx=c(5))
 df=cbind(df,data.frame(mortF_new=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]])))
-df
+knitr::kable(df)
 
 df=data.frame("Stage"=1:length(p$ix[[1]]), "mortF"=p$mortF[p$ix[[1]]],"Groups"="smallPel")
 df=rbind(df,data.frame("Stage"=1:length(p$ix[[5]]), "mortF"=p$mortF[p$ix[[5]]],"Groups"="demersals"))
@@ -708,41 +728,13 @@ sim=simulateFEISTY(p = p, tEnd = 200, bCust = T)
 plotYieldtime(sim)
 ```
 
+## Bottom-up control examples
+Not Done.
 
-The model is first run with the default 3-functional group prameters,
-created with *setupBasic()*. Then two similar parameter datasets are
-created, with rates doubled or halved.
-
-```{r}
-p <- setupBasic()
-knitr::kable(p$resources, digits=2)
-knitr::kable(p$fishes, digits=2)
-knitr::kable(p$groups, digits=2)
-```
-
-Function *paramAddPhysiology* is used to change the allometric rates:
-
-```{r}
-p2 <- paramAddPhysiology(p, ac = 40, am = 8, ae=140)
-
-p3 <- paramAddPhysiology(p, ac = 10, am = 2, ae=35)
-```
-
-The model can now be run for all parameter sets; the reulst for the last
-20 years are shown.
-
-```{r, fig.width=8, fig.height=8}
-out1 <- simulateFEISTY(p=p,  times=seq(0, 200, length.out=1000),bCust=T)
-out2 <- simulateFEISTY(p=p2, times=seq(0, 200, length.out=1000),bCust=T)
-out3 <- simulateFEISTY(p=p3, times=seq(0, 200, length.out=1000),bCust=T)
-# plot(out1, out2, out3, which=5:12, lty=1, lwd=2, subset=time>180)
-# plot(out1, out2, out3, which=c("smallZoo", "largeZoo", "smallBenthos", 
-#   "totBiomass.smallPel", "totBiomass.largePel",  "totBiomass.Demersals"), 
-#   lty=1, lwd=2, subset=time>180)
-```
+...
 
 
-
+Delete later
 
 One highlight of the \textit{FEISTY} package is that it allows users to explore and test their new ideas within the model framework, since the package is designed in modular. To customise a new FEISTY model setup, several parameter setup functions are necessary. \texttt{paramInit()} is for initialising the parameter list in R. \texttt{paramAddResource()} and \texttt{paramAddGroup()} are to add resources and functional types into the parameter list. \texttt{paramAddPhysiology()} defines the physiological rates of all functional types including maximum consumption rates, clearance rates, and standard metabolism rates. The size-based feeding preference values can either be assigned by \texttt{paramSizepref()} based on different numerical methods or be assigned manually. Other functions for parameter assignment are optional, such as temperature effects on physiological rates or fishing. Note that some non-general settings cannot be done by internal functions and must be edited manually. Details of how to use these functions can be found in help pages in R.
 
