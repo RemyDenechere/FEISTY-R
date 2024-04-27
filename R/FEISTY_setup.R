@@ -835,7 +835,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' @author Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
 #' @usage setupVertical2(szprod = 80, lzprod = 80, bprodin = NA, dfbot = NA, dfpho = NA, nStages = 6, region = 4, depth = 1500, photic = 150, 
-#' mesopelagic = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF=0.05)
+#' shelfdepth = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF=0.05)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
 #' Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
@@ -855,7 +855,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' @param depth  water column depth [meter]. \cr 
 #' Different \code{depth} values will influence fish vertical overlap and temperature-dependent physiological rates. See source code of \code{setupVertical}
 #' @param photic Photic zone depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical}.
-#' @param mesopelagic Mesopelagic depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical} or \code{setupVertical2}.
+#' @param shelfdepth Continental shelf depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical} or \code{setupVertical2}.
 #' @param visual \code{visual=1.5}: visual predator, predation ability is enhanced during the day and decreased in the twilight zone during the day. \cr 
 #' \code{visual=1}: non-visual predator, predation abilities are equal in day and night. \cr
 #' It must \bold{be careful} to assign other values to \code{visual}, or the setup could crash. See source code of \code{setupVertical} or \code{setupVertical2}.
@@ -906,8 +906,8 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' \code{\link{paramAddPhysiology}}, and \code{\link{setFishing}}.
 #' 
 #' @examples 
-#' p=setupVertical2(szprod = 200, lzprod = 150, bprodin = NA, dfbot = NA, dfpho = 100, nStages = 6, region = 1, depth = 1000, photic = 120,
-#' mesopelagic = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF = 0.05)
+#' p=setupVertical2(szprod = 200, lzprod = 150, bprodin = NA, dfbot = NA, dfpho = 100, nStages = 6, depth = 1000, photic = 120,
+#' shelfdepth = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF = 0.05)
 #' sim=simulateFEISTY(p=p)
 #' plotSimulation(sim)
 #' 

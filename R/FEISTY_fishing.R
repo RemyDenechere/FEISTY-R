@@ -69,8 +69,7 @@ setFishing = function(p, F=0, etaF=0.05, groupidx=c(1:p$nGroups)) {
 #' \item yield: a matrix containing the yield data [gww/m2/year] of each functional type (column) in each time point (row)
 #' }
 #'
-#' @examples
-#' no examples
+# @examples
 #'
 #' @author Yixin Zhao
 #' 
@@ -142,8 +141,8 @@ calcYield = function(
 #' \item SSB: a matrix containing the SSB data [gww/m2/year] of each functional type (column) in each time point (row)
 #' }
 #'
-#' @examples
-#' no examples
+# @examples
+#' 
 #'
 #' @author Yixin Zhao
 #' 

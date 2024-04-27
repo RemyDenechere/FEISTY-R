@@ -304,7 +304,7 @@ derivativesFEISTYR = function(t,              # current time
 #' #-----------------------------------------------
 #' # run setupBasic with default parameter settings
 #' #-----------------------------------------------
-#' sim <- simulateFEISTY().
+#' sim <- simulateFEISTY()
 #' plotSimulation(sim)
 #' 
 #' # -------------------------------------------------------------------------------
@@ -327,7 +327,8 @@ derivativesFEISTYR = function(t,              # current time
 #' # run FEISTY simulation based on a customized set up
 #' 
 #' # Initialize the parameter list.
-#' p_cust <- paramInit()
+#' p_cust <- paramInit(szprod=100, lzprod=100, bprod=50, Tp=10,Tb=10,etaMature=0.25, depth=500,
+#' mMedium = 0.5, mLarge = 250)
 #' 
 #' # add three resources
 #' p_cust <- paramAddResource(p_cust,
@@ -369,7 +370,7 @@ derivativesFEISTYR = function(t,              # current time
 #' # run the simulation for 500 years. 
 #' sim_cust <- simulateFEISTY(bCust = TRUE, p = p_cust, tEnd = 500)
 #' 
-#' plotSimulation(sim_cust)
+#' 
 #' 
 #' @references
 #' Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.
@@ -410,7 +411,7 @@ simulateFEISTY = function(bCust    = FALSE,
                           times  = seq(from=0, to=tEnd, by=tStep),  
                           yini   = p$u0,  
                           USEdll = TRUE,
-                          Rmodel = derivativesFEISTYR) 
+                          Rmodel = derivativesFEISTYR)
 {
   
   nR      <- p$nResources[1]  # no of resources. [1] to make sure that this is only one number

@@ -70,7 +70,7 @@
 #' # Run the simulation for this customized FEISTY setup.           
 #'  sim=simulateFEISTY(bCust=TRUE,p=p, tEnd=100)
 #' # Plot dynamics of resources and small fish.
-#'  plot(sim, sim, which=1:6, lty=1, mfrow=c(2,3), subset=time >= 0)       
+#'       
 #'
 #' @author Yixin Zhao
 #' 
