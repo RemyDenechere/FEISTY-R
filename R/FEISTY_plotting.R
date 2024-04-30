@@ -416,7 +416,7 @@ plotNetwork <- function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_continuous(breaks = seq(0, round(-p$bottom - 1), by = -p$bottom), labels = yaxis) +
     annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") +
-    labs(x ="Weight (gWW)", y = "", color = "Group") +
+    labs(x ="Weight (gWW)", y = "", color = "Groups") +
     guides(size = "none",
            color = guide_legend(override.aes = list(size = 5))) +
     theme(legend.position = "bottom",legend.key = element_blank(),
