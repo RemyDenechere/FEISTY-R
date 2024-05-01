@@ -107,13 +107,13 @@ setupBasic = function(szprod = 100, # small zoo production?
   # mMature=NA overrides the generic psiMature-> only adult classes 50% mature
   u0  = 1E-5
   param = paramAddGroup(param, mMin=0.001, mMax=   250, mMature=NA, u0=u0,
-                        mortF=c(0,0.3),      nStages=2, name="smallPel")
+                        mortF=0,      nStages=2, name="smallPel") #mortF=c(0,0.03,0.3)
   
   param = paramAddGroup(param, mMin=0.001, mMax=125000, mMature=NA, u0=u0,
-                        mortF=c(0,0.03,0.3), nStages=3, name="largePel") 
+                        mortF=0, nStages=3, name="largePel") 
   
   param = paramAddGroup(param, mMin=0.001, mMax=125000, mMature=NA, u0=u0,
-                        mortF=c(0,0.03,0.3), nStages=3, name="demersals")
+                        mortF=0, nStages=3, name="demersals")
   
   # physiology of all fish stages
   param = paramAddPhysiology(param)
@@ -510,12 +510,12 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
                          dfpho  = NA, # detrital flux out of photic zone
                          #nStages=6, # No. of size groups    it is 6 in van Denderen et al., 2020
                          region = 4, # Temperature profile regions: 1 Tropical, 2 Temperate, 3 Boreal, 4 Default 10 Celsius 
-                         depth=1500, # Bottom depth
+                         depth=800, # Bottom depth
                          photic=150 # Photic zone depth
 ){
   # benthic production calc
   if (is.na(bprodin) & is.na(dfbot) & is.na(dfpho)){ # if all benthic arguments are NA, assign bprod to 5
-    bprodin = -1; dfbot = -1; dfpho = 150
+    bprodin = -1; dfbot = -1; dfpho = 350
     bprod=0.1*(dfpho*(depth/photic)^-0.86)
     if(bprod>=0.1*dfpho) bprod=0.1*dfpho
   } else {
@@ -934,7 +934,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
                           Tp = NA, # Average T of top 100 m (up to 100 m). Default 10 Celsius.
                           Tm = NA, # Average T of 500 - 1500 m (up to 1500 m). Default 10 Celsius. Keep it as NA, if no Tm data. Tm = Tb.
                           Tb = NA, # Bottom T (last layer value). Default 10 Celsius.
-                          depth=700, # Bottom depth
+                          depth=800, # Bottom depth
                           photic=150, # Photic zone depth
                           shelfdepth=250, # shelf region depth
                           visual=1.5,# >1 visual predation primarily during the day, = 1 equal day and night
@@ -945,7 +945,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
                           etaF=0.05) {
   # benthic production calc
   if (is.na(bprodin) & is.na(dfbot) & is.na(dfpho)){ # if all benthic arguments are NA, assign bprod to 5
-    bprodin = -1; dfbot = -1; dfpho = 150
+    bprodin = -1; dfbot = -1; dfpho = 350
     bprod=0.1*(dfpho*(depth/photic)^-0.86)
     if(bprod>=0.1*dfpho) bprod=0.1*dfpho
   } else {

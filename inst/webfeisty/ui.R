@@ -30,7 +30,7 @@ ui <- fluidPage(
                   min = 100,
                   max = 5500,
                   step = 50,
-                  value = 1500),
+                  value = 800),
       sliderInput("photic",
                   "Euphotic zone depth (m):",
                   min = 50,
@@ -64,7 +64,7 @@ ui <- fluidPage(
                   min = 100,
                   max = 1000,
                   step = 5,
-                  value = 150),
+                  value = 350),
       
       hr(),
       h3('Temperature:'),
