@@ -243,6 +243,7 @@ function `paramSizepref()`.
 
 ### Vertical overlap
 Concise introduction...
+**Daniël Please add more.**
 
 water column discretization
 \begin{equation}
@@ -372,12 +373,11 @@ Small pelagic fish & 0 & 0 & / & 0 & 0 & / \\
 Mesopelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & / & 0 & 0 & / \\
 Large pelagic fish & 0 & 0 & 0 and $z_{\mathrm{dvm}}$ & 0 & 0 & 0 \\
 Bathypelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & 0 & 0 & $z_{\mathrm{dvm}}$ \\
-Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^e$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$$^e$ \\
+Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$$^e$ \\
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ Zooplankton include small and large mesozooplankton} \\
-\multicolumn{7}{l}{\footnotesize $^b$ ....}\\
-\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^e$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} < z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. In such cases, $z_{\mathrm{dvmdem}}=0$.}
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} < z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. In such cases, $z_{\mathrm{dvmdem}}=0$.}
 
 \end{tabular}
 \end{table}
@@ -610,7 +610,7 @@ The size spectrum generation is done by calling the function
 
 \begin{tabular}{lp{8cm}lp{1cm}lp{1cm}lp{1cm}lp{1cm}l}
 \hline
-Symbol & Description & \multicolumn{4}{c}{Value} & Unit \\
+Symbol & Description & \multicolumn{4}{c}{Value$^a$} & Unit \\
                          \cline{3-6}
        &             & \multicolumn{1}{c}{B1} & \multicolumn{1}{c}{B2} & \multicolumn{1}{c}{V1} & \multicolumn{1}{c}{V2} & \\
 \hline
@@ -623,12 +623,13 @@ $b_\mathrm{m}$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}
 $\epsilon_{\mathrm{\alpha}}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
 $\epsilon_{\mathrm{r}}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\
 $\mu_\mathrm{b}$ & Background mortality & \multicolumn{4}{c}{0.1} & yr$^{-1}$ \\
-$F$ & Baseline fishing mortality rate & /$^e$ & \multicolumn{3}{c}{0} & yr$^{-1}$ \\
+$F$ & Baseline fishing mortality rate & \multicolumn{4}{c}{0$^b$} & yr$^{-1}$ \\
 $\eta_{\mathrm{mature}}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
 $\eta_{\mathrm{fishing}}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
-$\theta_\mathrm{A}$ & Large fish preference on forage fish$^b$ & \multicolumn{2}{c}{0.5} & / & / & / \\
+$\theta_\mathrm{A}$ & Large fish preference on forage fish$^d$ & \multicolumn{2}{c}{0.5} & / & / & / \\
 $\theta_\mathrm{D}$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & g \\
+$\omega_0$ & baseline range of the vertical distribution & \multicolumn{2}{c}{/} & \multicolumn{2}{c}{10} & / \\
+$\tau$ & range-increasing factor of vertical distribution & \multicolumn{2}{c}{/} & \multicolumn{2}{c}{10} & / \\
 $T_{\mathrm{ref}}$ & reference temperature & \multicolumn{4}{c}{10} & \textdegree{}C \\
 $Q_{\mathrm{10}}$ & Rate of change for every 10\textdegree{}C increase for clearance rate and maximum consumption & \multicolumn{4}{c}{1.88} & / \\
 $Q_{\mathrm{10m}}$ & Rate of change for every 10\textdegree{}C increase for metabolism & \multicolumn{2}{c}{2.35} & \multicolumn{2}{c}{1.88} & / \\
@@ -642,9 +643,11 @@ $m_{\mathrm{large}}$ & boundary size of medium/large fish class  & \multicolumn{
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ B1: setupBasic1, B2: setupBasic2, V1: setupVertcal1, V2: setupVertcal2.} \\
-\multicolumn{7}{l}{\footnotesize $^b$ In B1, $\theta_{\mathrm{A}}$ only poses on medium forage fish (the second size class).
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ In B1, the fishing mortality can also be assigned manually [@petrik2019bottom] (Eq. \ref{eq:fishing} does not apply). $\mu_{f,i}$ are constant values: Small fish 0 yr$^{-1}$, Medium fish 0.03 yr$^{-1}$, Large fish 0.3 yr$^{-1}$.}\\
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^c$ Maturity level $\psi_i$ is assigned manually in default B1. Only the last stage of each functional type has a value of 0.5 others are 0.} \\
+\multicolumn{7}{l}{\footnotesize $^d$ Fishing  mortality $\mu_{f,i}$ is 0 in default B1.} \\
+\multicolumn{7}{l}{\footnotesize $^e$ In B1, $\theta_{\mathrm{A}}$ only poses on medium forage fish (the second size class).
                                       In B2, $\theta_{\mathrm{A}}$ works on all forage fish.} \\
-\multicolumn{7}{l}{\footnotesize $^e$ In B1, Eq. \ref{eq:fishing} does not apply. $\mu_{f,i}$ are constant values: Small fish 0 yr$^{-1}$, Medium fish 0.03 yr$^{-1}$, Large fish 0.3 yr$^{-1}$.}\\
 
 \end{tabular}
 \end{table}
@@ -714,10 +717,10 @@ p=setFishing(p=p,F=0.2,etaF=0.05,groupidx=c(1))
 # assign 0.3/year as the baseline fishing mortality to demersal fish
 p=setFishing(p=p,F=0.3,etaF=0.05,groupidx=c(5))
 df=cbind(df,data.frame(mortF_new=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]])))
-knitr::kable(df)
-
+knitr::kable(df,caption="Fishing mortality before and after assignment")
 df=data.frame("Stage"=1:length(p$ix[[1]]), "mortF"=p$mortF[p$ix[[1]]],"Groups"="smallPel")
-df=rbind(df,data.frame("Stage"=1:length(p$ix[[5]]), "mortF"=p$mortF[p$ix[[5]]],"Groups"="demersals"))
+df=rbind(df,data.frame("Stage"=1:length(p$ix[[5]]), 
+                       "mortF"=p$mortF[p$ix[[5]]],"Groups"="demersals"))
 df$Groups=factor(df$Groups,levels=c("smallPel","demersals"))
 # plot of fishing mortality of small pelagics and demersals
 fig=ggplot(df, aes(x = Stage, y = mortF, color = Groups))+
@@ -755,37 +758,27 @@ plotSSBtime(sim)
 
 ## Bottom-up control examples
 
-One of main objectives of FEISTY model is illustrating the bottom-up mechanisms of fish communities. 
 
-oligotrophic conditions
+**Daniël Please add more.**
 
-eutrophic conditions
+One of main objectives of FEISTY model is illustrating the bottom-up mechanisms of fish communities. Here we demonstrate two setups with oligotrophic conditions eutrophic conditions based on `setupVertical2`.
 
 ```{r}
-p1=setupBasic2(depth=200,szprod=5, lzprod=5,bprodin=10)
-p2=setupBasic2(depth=200,szprod=100, lzprod=100,bprodin=30)
+p1=setupVertical2(depth=1000,szprod=5, lzprod=5,dfpho = 130) # oligotrophic 1000 meter
+p2=setupVertical2(depth=1000,szprod=100, lzprod=100,dfpho =380) # eutrophic 1000 meter
 ```
 
-
+In the oligotrophic water, small pelagic fish, midwater predators, and demersal fish cannot survive (panel f), since the resource productions are low and cannot provide enough food for them (panel d).
 ```{r, fig.width=8, fig.height=7}
 sim1=simulateFEISTY(p=p1,tEnd=500)
 plotSimulation(sim1)
 ```
 
-
-
+On the contrary, in the eutrophic water, high resource productions can support the existence of all five functional types albeit the water is deep (panel f). All fish have feeding levels that are higher than their critical feeding levels (panel d).
 ```{r, fig.width=8, fig.height=7}
 sim2=simulateFEISTY(p=p2,tEnd=500)
 plotSimulation(sim2)
 ```
-
-
-...
-
-
-Delete later
-
-One highlight of the \textit{FEISTY} package is that it allows users to explore and test their new ideas within the model framework, since the package is designed in modular. To customise a new FEISTY model setup, several parameter setup functions are necessary. \texttt{paramInit()} is for initialising the parameter list in R. \texttt{paramAddResource()} and \texttt{paramAddGroup()} are to add resources and functional types into the parameter list. \texttt{paramAddPhysiology()} defines the physiological rates of all functional types including maximum consumption rates, clearance rates, and standard metabolism rates. The size-based feeding preference values can either be assigned by \texttt{paramSizepref()} based on different numerical methods or be assigned manually. Other functions for parameter assignment are optional, such as temperature effects on physiological rates or fishing. Note that some non-general settings cannot be done by internal functions and must be edited manually. Details of how to use these functions can be found in help pages in R.
 
 \newpage
 
