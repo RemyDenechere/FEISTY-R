@@ -406,7 +406,7 @@ derivativesFEISTYR = function(t,              # current time
 
 simulateFEISTY = function(bCust    = FALSE,
                           p      = setupBasic(), 
-                          tEnd   = 100,
+                          tEnd   = 500,
                           tStep  = 1,
                           times  = seq(from=0, to=tEnd, by=tStep),  
                           yini   = p$u0,  

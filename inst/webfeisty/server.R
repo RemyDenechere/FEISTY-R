@@ -119,9 +119,9 @@ server <- function(input, output) {
       # Simulate
       return( simulateFEISTY(bCust    = FALSE,
                              p, 
-                             tEnd   = 100,
+                             tEnd   = 500,
                              tStep  = 1,
-                             times  = seq(from=0, to=200, by=1), #to=tEnd but must give a number directly
+                             times  = seq(from=0, to=500, by=1), #to=tEnd but must give a number directly
                              yini   = p$u0,  
                              USEdll = input$USEdll,
                              Rmodel = derivativesFEISTYR) )
