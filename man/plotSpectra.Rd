@@ -2,32 +2,29 @@
 % Please edit documentation in R/FEISTY_plotting.R
 \name{plotSpectra}
 \alias{plotSpectra}
-\title{Biomass plot}
+\title{Biomass spectra plot}
 \usage{
-plotSpectra(sim, bPlot=TRUE)
+plotSpectra(sim)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
-
-\item{bPlot}{Boolean option determining whether to create a new plot panel. \cr 
-If TRUE, create a new independent plot. \cr 
-If FALSE, users need to define the subplot layout first by \code{defaultplot(mfcol=c(x,y))}. See an example \code{\link{plotSimulation}} in FEISTY_plotting.R.}
 }
 \description{
-Make a plot of the biomass of all functional groups over the size spectrum.
-Data is averaged data over the last 40\% simulation time.
+Makes a plot of the biomass of all functional groups over the size spectrum.
+Data is averaged over the last 40\% simulation time.
 }
 \details{
-The X-axis is time. The Y-axis is the biomass data in the log10 scale.
+The X-axis is individual weight on a log10 scale. The Y-axis is 
+biomass on a log10 scale.
 }
 \examples{
 sim=simulateFEISTY()
-plotSpectra(sim, bPlot=TRUE)
+plotSpectra(sim)
 
 }
 \seealso{
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-Yixin Zhao
+P. Daniël van Denderen, Yixin Zhao
 }

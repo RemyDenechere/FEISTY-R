@@ -35,8 +35,6 @@ Different \code{depth} values will influence fish vertical overlap and temperatu
 
 \item{photic}{Photic zone depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical}.}
 
-\item{mesopelagic}{Mesopelagic depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical} or \code{setupVertical2}.}
-
 \item{visual}{\code{visual=1.5}: visual predator, predation ability is enhanced during the day and decreased in the twilight zone during the day. \cr 
 \code{visual=1}: non-visual predator, predation abilities are equal in day and night. \cr
 It must \bold{be careful} to assign other values to \code{visual}, or the setup could crash. See source code of \code{setupVertical} or \code{setupVertical2}.}
@@ -51,6 +49,8 @@ If \code{F} is assigned a value greater than 0, fishing mortality will be set by
 \item{etaF}{the coefficient determining the fish size \code{mFishing} with 50\% fishing selectivity. See source code of \code{\link{setFishing}}.}
 
 \item{bent}{Detrital flux out of the photic zone [gww/m2/year].}
+
+\item{mesopelagic}{Mesopelagic depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical} or \code{setupVertical2}.}
 }
 \value{
 Additional parameters added by function \code{\link{paramInit}}:

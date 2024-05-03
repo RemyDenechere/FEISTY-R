@@ -631,5 +631,5 @@ simulateFEISTY = function(bCust    = FALSE,
   sim=calcSSB(sim=sim,etaTime=0.4)
   sim=calcYield(sim=sim,etaTime=0.4)
   
-  return(sim)
+  return(structure(sim, class = 'FEISTY'))
 }

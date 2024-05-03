@@ -4,45 +4,30 @@
 \alias{plotRates}
 \title{Plots for growth rate, mortality, and feeding level}
 \usage{
-plotRates(sim, avg=TRUE, y=p$u0, bPlot=TRUE)
+plotRates(sim)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
-
-\item{avg}{Logistic flag. Default TRUE. \cr 
-TRUE: Rates are averaged values of selected time points. \cr 
-FALSE: Running the derivative function once to get rates based on biomass \code{y} input.}
-
-\item{y}{The state variable vector, only works when `avg=FALSE`. For example, \code{sim$u[,sim$nTime]}. This means the biomass data in the last time point is used for rate calculation.
-The time-averaged biomass data might be preferred, \code{colMeans(sim$u[,round(0.6*iTime):sim$nTime])}.}
-
-\item{bPlot}{Boolean option determining whether to create a new plot panel. \cr 
-If TRUE, create a new independent plot. \cr 
-If FALSE, users need to define the subplot layout first by \code{defaultplot(mfcol=c(x,y))}. See an example \code{\link{plotSimulation}} in FEISTY_plotting.R.}
 }
 \description{
-Plot growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
+Plots growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
 }
 \details{
-There are two approaches for rate calculation:
+Rate calculation:
 \itemize{
-\item Averaged values of rate data at each selected time points (Default last 40% simulation time).
-This method is preferred.
-\item Running the derivative function once to get rate data based on the biomass vector input.
+\item Averaged values of rate data are estimated over a selected time period 
+(default last 40% simulation time).
 }
 }
 \examples{
 sim=simulateFEISTY()
 # averaged rate data of last 40\%  simulation time
-plotRates(sim=sim, avg=TRUE, y=sim$u[,sim$nTime], bPlot=TRUE)
-# rate data based on last time point biomass
-plotRates(sim=sim, avg=FALSE, y=sim$u[,sim$nTime], bPlot=TRUE)
+plotRates(sim=sim)
 
 }
 \seealso{
-\code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-\code{\link{derivativesFEISTYR}} The derivative function of FEISTY
+\code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-Yixin Zhao
+P. Daniël van Denderen, Yixin Zhao
 }

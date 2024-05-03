@@ -8,3 +8,5 @@ README.html
 *.o
 *.so
 *.mod
+*.dll
+*.DLL
