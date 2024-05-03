@@ -60,7 +60,7 @@ plotSSBtime = function(sim) {
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$SSB)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Time (yr)") + ylab(expression("SSB (gWW m"^"-2"*")"))+
+    xlab("Time (yr)") + ylab(expression("SSB (g m"^"-2"*")"))+
     theme(legend.key = element_blank())
     
   return(plots)
@@ -116,7 +116,7 @@ plotYieldtime = function(sim) {
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$yield)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Time (yr)") + ylab(expression("Yield (gWW m"^"-2"*" yr"^"-1"*")"))+
+    xlab("Time (yr)") + ylab(expression("Yield (g m"^"-2"*" yr"^"-1"*")"))+
     theme(legend.key = element_blank())
 
   return(plots)
@@ -175,7 +175,7 @@ plotBiomasstime = function(sim) {
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$bio)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Time (yr)") + ylab(expression("Biomass (gWW m"^"-2"*")"))+
+    xlab("Time (yr)") + ylab(expression("Biomass (g m"^"-2"*")"))+
     theme(legend.key = element_blank())
   
   return(plots)
@@ -253,7 +253,7 @@ plotSpectra = function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Weight (gWW)") + ylab(expression("Biomass (gWW m"^"-2"*")"))+
+    xlab("Weight (g)") + ylab(expression("Biomass (g m"^"-2"*")"))+
     theme(legend.key = element_blank())
 
   
@@ -416,7 +416,7 @@ plotNetwork <- function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_continuous(breaks = seq(0, round(-p$bottom - 1), by = -p$bottom), labels = yaxis) +
     annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") +
-    labs(x ="Weight (gWW)", y = "", color = "Groups") +
+    labs(x ="Weight (g)", y = "", color = "Groups") +
     guides(size = "none",
            color = guide_legend(override.aes = list(size = 5))) +
     theme(legend.position = "bottom",legend.key = element_blank(),
@@ -979,7 +979,7 @@ getRates = function(sim) {
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
     annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") + 
-    xlab("Weight (gWW)") + ylab("Feeding level, f") +
+    xlab("Weight (g)") + ylab("Feeding level, f") +
     geom_line(data = fcrit,
               aes(x = mc, y = fc, color = "darkgrey"),
               linewidth=1,linetype = "dotted") + 
