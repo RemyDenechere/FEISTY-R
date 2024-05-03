@@ -1015,3 +1015,105 @@ get_legend_new <- function(plot, legend = NULL) {
   }
   return(NULL)
 }
+
+
+
+
+#' Plot simulation results
+#' 
+#' Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, 
+#' \code{\link{plotSpectra}}, \code{\link{plotNetwork}} and \code{\link{plotRates}}.
+#' 
+#' @details This function is designed to give a quick visualization of a simulation output. 
+#' 
+#' @author P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
+#'
+#' @usage plot.FEISTY(sim)
+#' 
+#' @param sim The dataframe of FEISTY simulation results.
+#' 
+#' @examples 
+#' sim=simulateFEISTY()
+#' plot.FEISTY(sim)
+#' 
+#' @aliases plotSimulation
+#' 
+#' @seealso 
+#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
+#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
+#' \code{\link{plotSSBtime}} Timeseries of spawning stock biomass \cr
+#' \code{\link{plotSpectra}} Biomass spectra plot \cr
+#' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
+#' \code{\link{plotNetwork}} Plot with all feeding interactions
+#' 
+#' @export
+#' 
+
+plot.FEISTY = function(sim) {
+  p_biomasstime     <- plotBiomasstime(sim)
+  p_rates   <- getRates(sim)
+  p_spectra <- plotSpectra(sim)
+  p_network <- plotNetwork(sim)
+  
+  ## get legend from plotNetwork
+  legend = get_legend_new(p_network)
+  
+  ## Turn legend off for later external plotting 
+  # subpanel a
+  
+  # create a fake line for legend 
+  text_loc <- data.frame(x=c(1,2,3,4,5,6),y=rep(1E-16,6),
+                         group=c("total"))
+  p_spectra     = p_spectra + labs(title = "a")+
+    #fake line
+    geom_line(data=text_loc,aes(x=x,y=y,linetype=group),linewidth=lwd_def) + 
+    scale_linetype_manual(values=c(1),name = "") + guides(color = "none") +
+    theme(legend.position=c(1,1),legend.justification=c("right"),
+          legend.background = element_rect(colour = NA, fill = NA),
+          axis.text.x=element_blank(),
+          axis.title.x = element_blank(),
+          legend.spacing.x = unit(.1, 'cm'),
+          legend.key = element_blank())
+  
+  # subpanel b-d
+  p_rates[[1]]  = p_rates[[1]] + labs(title = "b")
+  p_rates[[2]]  = p_rates[[2]] + labs(title = "c")
+  p_rates[[3]]  = p_rates[[3]] + labs(title = "d") + 
+    theme(legend.position="none",
+          plot.background = element_rect(color = NA))
+  
+  # subpanel e
+  p_network = p_network + labs(title = "e") + 
+    theme(legend.position="none",
+          plot.background = element_rect(color = NA))
+  
+  # subpanel f - set new scale to make y-scale "cleaner"
+  p_biomasstime     = p_biomasstime + labs(title = "f") +
+    theme(legend.position="none",
+          plot.background = element_rect(color = NA)) #+
+  # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x,n=3), 
+  #    labels = trans_format("log10", math_format(10^.x)))
+  
+  # create left and right and bottom 
+  left  <- align_plots(p_spectra,p_rates[[1]],p_rates[[2]],p_rates[[3]],align="v")
+  left  <- plot_grid(left[[1]],left[[2]],left[[3]],left[[4]],rel_heights = c(1,1.1,1.1,1.3),ncol=1)
+  right <- align_plots(p_network,p_biomasstime,align = 'v')
+  right <- plot_grid(right[[1]],right[[2]],ncol=1,rel_heights = c(3.2,1.3))
+  plots <- plot_grid(left,right,nrow=1,rel_widths = c(1,1.4))  
+  plots <- plot_grid(plots,legend,ncol=1,rel_heights = c(10,1))
+  
+  return(plots)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
