@@ -7,15 +7,14 @@
 plotSimulation(sim)
 }
 \arguments{
-\item{sim}{The data frame of FEISTY simulation results.}
+\item{sim}{The dataframe of FEISTY simulation results.}
 }
 \description{
-Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, \code{\link{plotSpectra}}, and \code{\link{plotRates}}.
+Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, 
+\code{\link{plotSpectra}}, \code{\link{plotNetwork}} and \code{\link{plotRates}}.
 }
 \details{
-This function is designed to give a quick visualization of a simulation output. \cr 
-There is a function \code{addLegends} in FEISTY_plotting.R to add legends. \cr
-Users may need to define their new scripts for adding legends according to the function \code{addLegends}.
+This function is designed to give a quick visualization of a simulation output.
 }
 \examples{
 sim=simulateFEISTY()
@@ -25,10 +24,11 @@ plotSimulation(sim)
 \seealso{
 \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
 \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-\code{\link{plotSSBtime}} Spawning stock biomass plot \cr
-\code{\link{plotSpectra}} Biomass plot \cr
-\code{\link{plotRates}} Plots for growth rate, mortality, and feeding level
+\code{\link{plotSSBtime}} Timeseries of spawning stock biomass \cr
+\code{\link{plotSpectra}} Biomass spectra plot \cr
+\code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
+\code{\link{plotNetwork}} Plot with all feeding interactions
 }
 \author{
-Yixin Zhao
+P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
 }

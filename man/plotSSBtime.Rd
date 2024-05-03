@@ -4,25 +4,20 @@
 \alias{plotSSBtime}
 \title{Spawning stock biomass plot}
 \usage{
-plotSSBtime(sim, bPlot=TRUE)
+plotSSBtime(sim)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
-
-\item{bPlot}{Boolean option determining whether to create a new plot panel. \cr 
-If TRUE, create a new independent plot. \cr 
-If FALSE, users need to define the subplot layout first by \code{defaultplot(mfcol=c(x,y))}. See an example \code{\link{plotSimulation}} in FEISTY_plotting.R.}
 }
 \description{
-Make a plot of the adult biomass (SSB) of all functional groups
-as a function of the whole simulation time.
+Makes a time series of spawning stock biomass (SSB) for each functional group
 }
 \details{
 X-axis is time. Y-axis is the SSB data in log10 scale.
 }
 \examples{
 sim=simulateFEISTY()
-plotSSBtime(sim, bPlot=TRUE)
+plotSSBtime(sim)
 
 }
 \seealso{
@@ -30,5 +25,5 @@ plotSSBtime(sim, bPlot=TRUE)
 \code{\link{calcSSB}} 	Spawning stock biomass calculation
 }
 \author{
-Yixin Zhao
+P. Daniël van Denderen, Yixin Zhao
 }

@@ -10,10 +10,13 @@ plotDiet(sim)
 \item{sim}{The data frame of FEISTY simulation results.}
 }
 \description{
-Revised Based on the work of Daniel Ottmann Riera and Solenne Roux.
-This function only works on four prepared setups or revised versions based on these four setups.
-If customized setups by users have massive differences e.g., more resources and fish functional types, this plot function may not work.
-Users may need to update scripts based on source codes.
+Makes a plot of prey groups in the stomach of each fish functional type and size class. 
+The function only works on the four prepared setups or revised versions 
+based on these four setups. If customized setups by users have more resources 
+and/or fish functional types, this plot function needs to be updated.
+}
+\details{
+To be added.
 }
 \examples{
 sim=simulateFEISTY()
@@ -24,5 +27,5 @@ plotDiet(sim)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-Yixin Zhao
+Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 }
