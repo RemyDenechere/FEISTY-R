@@ -301,31 +301,13 @@ plotNetwork <- function(sim) {
   #Average of the biomass : 
   Bi <- colMeans(biomass[round(0.6*nrow(biomass), digits = 0):nrow(biomass),]) # mean value of the last 40% time 
   
-  if (p$setup == "setupBasic"){
-    
-    # Set artificial depths to offset bubbles:
-    Av_depth <- c(-1,-1,-4,-4,0,0,-2,-2,-2,-3,-3,-3)
-    
-    p$SpId <- c('smallPel','largePel', 'demersals')
-    SpId <- c("smallZoo", "largeZoo", "benthos", "largeBenthos", 
-              rep(p$SpId[1], length(p$ix[[1]])),
-              rep(p$SpId[2], length(p$ix[[2]])),
-              rep(p$SpId[3], length(p$ix[[3]])))
-    
-    # Specify depth axis text:
-    yaxis <- c("", "") # Leave blank because there is no depth in setup vertical
-    
-    # Set artificial depth:
-    p$bottom <- -(min(Av_depth)) + 1
-  }  
-  
-  if (p$setup == "setupBasic2"){
+  if (p$setup == "setupBasic" | p$setup == "setupBasic2"){
     
     # Set artificial depths to offset bubbles:
     Av_depth <- c(-1,-1,-4,-4,rep(0, length(p$ix[[1]])),rep(-2, length(p$ix[[2]])),rep(-3, length(p$ix[[3]])))
     
-    p$SpId <- c('smallPel','largePel', 'demersals')
-    SpId <- c("smallZoo", "largeZoo", "benthos", "largeBenthos", 
+    p$SpId <- p$groupnames[(p$nResources+1):length(p$groupnames)]
+    SpId <- c(p$groupnames[1:p$nResources],
               rep(p$SpId[1], length(p$ix[[1]])),
               rep(p$SpId[2], length(p$ix[[2]])),
               rep(p$SpId[3], length(p$ix[[3]])))
@@ -357,8 +339,8 @@ plotNetwork <- function(sim) {
     Av_depth[p$ix[[2]][1]:p$ix[[2]][length(p$ix[[2]])]] <- Av_depth[p$ix[[2]][1]:p$ix[[2]][length(p$ix[[2]])]] - 0.2 * p$bottom
     
     # Set color palette: 
-    p$SpId <- c('smallPel','mesoPel','largePel', 'bathyPel', 'demersals')
-    SpId <- c("smallZoo", "largeZoo", "benthos", "largeBenthos", 
+    p$SpId <- p$groupnames[(p$nResources+1):length(p$groupnames)]
+    SpId <- c(p$groupnames[1:p$nResources],
               rep(p$SpId[1], length(p$ix[[1]])),
               rep(p$SpId[2], length(p$ix[[2]])),
               rep(p$SpId[3], length(p$ix[[3]])),
@@ -404,6 +386,9 @@ plotNetwork <- function(sim) {
   df2 <- subset(df,df$index %in% indx)
   df2 <- df2[order(-df2$Msize),]
   
+  df$SpId=factor(df$SpId,p$groupnames)
+  df2$SpId=factor(df2$SpId,p$groupnames)
+  
   # Generate plot:
   plot <- defaultplot() +
     geom_line(data = df2, aes(x = mc, y = depth, group = index, color = SpId, alpha = Alpha),
@@ -418,7 +403,9 @@ plotNetwork <- function(sim) {
     annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") +
     labs(x ="Weight (g)", y = "", color = "Groups") +
     guides(size = "none",
-           color = guide_legend(override.aes = list(size = 5))) +
+           color = guide_legend(override.aes = list(size = 5),
+                                nrow = 2,
+                                byrow = TRUE)) +
     theme(legend.position = "bottom",legend.key = element_blank(),
           axis.title.y = element_blank(),
           axis.text.x = element_text(size=12),
@@ -476,27 +463,25 @@ plotDiet <- function(sim) {
 
   if(length(p$ix)==5){
     
-    p$SpId <- c('smallPel','mesoPel','largePel', 'bathyPel', 'demersals')
-    SpId <- c("smallZoo", "largeZoo", "benthos", "largeBenthos", 
+    p$SpId <- p$groupnames[(p$nResources+1):length(p$groupnames)]
+    SpId <- c(p$groupnames[1:p$nResources], 
               rep(p$SpId[1], length(p$ix[[1]])),
               rep(p$SpId[2], length(p$ix[[2]])),
               rep(p$SpId[3], length(p$ix[[3]])),
               rep(p$SpId[4], length(p$ix[[4]])),
               rep(p$SpId[5], length(p$ix[[5]])))
     
-    p$RSpName <- c("Small mesozooplankton", "Large mesozooplankton", "Benthos", "Small pelagics",
-                   "Mesopelagics", "Large pelagics", "Bathypelagics", "Demersals")
+    p$RSpName <- unname(p$my_names[attr(p$my_names,"names") %in% p$groupnames])
     
   } else {
     
-    p$SpId <- c('smallPel','largePel', 'demersals')
-    SpId <- c("smallZoo", "largeZoo", "benthos", "largeBenthos", 
+    p$SpId <- p$groupnames[(p$nResources+1):length(p$groupnames)]
+    SpId <- c(p$groupnames[1:p$nResources],
               rep(p$SpId[1], length(p$ix[[1]])),
               rep(p$SpId[2], length(p$ix[[2]])),
               rep(p$SpId[3], length(p$ix[[3]])))
     
-    p$RSpName <- c("Small mesozooplankton", "Large mesozooplankton", "Benthos", "Small pelagics",
-                   "Large pelagics", "Demersals")   
+    p$RSpName <- unname(p$my_names[attr(p$my_names,"names") %in% p$groupnames])  
     
   }
   
@@ -594,25 +579,25 @@ plotDiet <- function(sim) {
     } 
   
   # Legend: ----
-  legend_colors <- data.frame(val = 0, stage = 0, SpId = unique(large_pel$SpId))
+  legend_colors <- data.frame(val = 0, stage = 0, SpId = unique(SpId))
   scale_color_manual(name = "Groups", 
                      values = c("total" = "black", p$my_palette[p$groupnames[fish]]),
                      breaks = c("total",p$groupnames[fish]),
                      labels = c("total"= "Total", p$my_names[p$groupnames[fish]]))
-  
+  legend_colors$SpId=factor(legend_colors$SpId,levels=legend_colors$SpId)
   
   p7 <- ggplot(data = legend_colors) +
     geom_bar(aes(x = stage, y = val, fill = SpId), stat = "identity") +
     scale_fill_manual(name = "Prey group",
                       values = p$my_palette[attr(p$my_palette, "names") %in% legend_colors$SpId],
-                      breaks = attr(p$my_palette, "names"),
-                      labels = attr(p$my_palette, "names"))+
+                      breaks = names(p$my_names[attr(p$my_names, "names") %in% legend_colors$SpId]),
+                      labels = p$my_names[attr(p$my_names, "names") %in% legend_colors$SpId])+
     theme_void() +
     theme(legend.position = c(.45,.4),
           legend.direction = "horizontal",
           legend.text = element_text(size = 12))+
     guides(fill = guide_legend(
-      nrow = 3,  
+      ncol = 2,  
       byrow = TRUE,  
       title.position = "top",  
     ))
