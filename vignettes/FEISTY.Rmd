@@ -416,10 +416,10 @@ The fishing mortality rate $\mu_{\mathrm{f},i}$ of a particular size class of
 fish $i$ can be either determined by constant values or by a fishing
 selectivity function [@andersen2019fish, Chapter 5]:
 \begin{equation}
-\mu_{\mathrm{f},i}=\psi_{\mathrm{f},i}F
+\mu_{\mathrm{f},i}=\psi_{\mathrm{f},i}F_{\mathrm{max}}
 \label{eq:fishing}
 \end{equation}
-where $F$ is the baseline fishing mortality rate (year$^{-1}$) of a functional type of
+where $F_{\mathrm{max}}$ is the baseline fishing mortality rate (year$^{-1}$) of a functional type of
 fish. $\psi_{\mathrm{f},i}$ denotes a trawl-based fishing selectivity following
 a sigmoid function:
 \begin{equation}
@@ -623,7 +623,7 @@ $b_\mathrm{m}$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}
 $\epsilon_{\mathrm{\alpha}}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
 $\epsilon_{\mathrm{r}}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\
 $\mu_\mathrm{b}$ & Background mortality & \multicolumn{4}{c}{0.1} & yr$^{-1}$ \\
-$F$ & Baseline fishing mortality rate & \multicolumn{4}{c}{0$^b$} & yr$^{-1}$ \\
+$F_{\mathrm{max}}$ & Maximum fishing mortality rate & \multicolumn{4}{c}{0$^b$} & yr$^{-1}$ \\
 $\eta_{\mathrm{mature}}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
 $\eta_{\mathrm{fishing}}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
 $\theta_\mathrm{A}$ & Large fish preference on forage fish$^d$ & \multicolumn{2}{c}{0.5} & / & / & / \\
@@ -712,9 +712,9 @@ p=setupVertical2(szprod= 120,
                  F=0) # no fishing for all size classes
 names(p$mortF)=p$stagenames
 df=data.frame(mortF_original=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]]))
-# assign 0.2/year as the baseline fishing mortality to small pelagic fish
+# assign 0.2/year as the maximum fishing mortality to small pelagic fish
 p=setFishing(p=p,F=0.2,etaF=0.05,groupidx=c(1))
-# assign 0.3/year as the baseline fishing mortality to demersal fish
+# assign 0.3/year as the maximum fishing mortality to demersal fish
 p=setFishing(p=p,F=0.3,etaF=0.05,groupidx=c(5))
 df=cbind(df,data.frame(mortF_new=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]])))
 knitr::kable(df,caption="Fishing mortality before and after assignment")
