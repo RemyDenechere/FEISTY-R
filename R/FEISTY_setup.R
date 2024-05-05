@@ -304,7 +304,7 @@ setupBasic2 = function(szprod = 100, # small zoo production?
                        Tb     = 8,  # bottom layer depth [Celsius]
                        nStages=9,
                        etaMature=0.25,
-                       F=0,
+                       Fmax=0,
                        etaF=0.05,
                        bET     = TRUE) { # boolean, effective T on large demersals)
   # benthic production calc
@@ -353,7 +353,7 @@ setupBasic2 = function(szprod = 100, # small zoo production?
                      demgroupidx=param$nGroups)
   
   # Add fishing mortality
-  param=setFishing(param, F=F, etaF=etaF)
+  param=setFishing(param, Fmax=Fmax, etaF=etaF)
   
   # Setup size interaction matrix:
   thetaA = 0.5  # Large fish pref for medium forage fish
@@ -941,7 +941,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
                           etaMature = 0.25, # Size of matureation relative to
                           # asymptotic size. Different from
                           # van Denderen (2021), where it is 0.002
-                          F=0,
+                          Fmax=0,
                           etaF=0.05) {
   # benthic production calc
   if (is.na(bprodin) & is.na(dfbot) & is.na(dfpho)){ # if all benthic arguments are NA, assign bprod to 5
@@ -1015,7 +1015,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   param = paramAddPhysiology(param,am = 0.2*20) # 20% * Max. consumption coefficient)
   
   # Add fishing mortality
-  param=setFishing(param, F=F, etaF=etaF)
+  param=setFishing(param, Fmax=Fmax, etaF=etaF)
   
   #------------------  
   # theta (preferences):

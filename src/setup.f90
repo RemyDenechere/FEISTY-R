@@ -240,12 +240,12 @@ contains
 ! --------------------------------------
 ! Setup by Ken based on Petrik et al. (2019).
 ! --------------------------------------
-   subroutine setupbasic2(szprod,lzprod, bprodin, dfbot, nStages, depth, Ts, Tb, etaMature,Fishing,etaF,bETin) !
+   subroutine setupbasic2(szprod,lzprod, bprodin, dfbot, nStages, depth, Ts, Tb, etaMature,Fmax,etaF,bETin) !
       real(dp), intent(in) :: szprod,lzprod, bprodin, dfbot, Ts, Tb, depth ! bprodin: benthic productivity, dfbot: detrital flux reaching the sea floor
                                                                            ! only one of them works, keep the unused arguments negative e.g., bprodin = 100.d0, dfbot = -1.d0
 
       real(dp), intent(in) :: etaMature ! Mature mass relative to asymptotic size default 0.25, original in van Denderen et al., 2021 was 0.002
-      real(dp), intent(in) :: Fishing, etaF ! fishing mortality, etaF * asymptotic size =fish size with 50% fishing mortality
+      real(dp), intent(in) :: Fmax, etaF ! fishing mortality, etaF * asymptotic size =fish size with 50% fishing mortality
       integer, intent(in) :: nStages,bETin
       real(dp) :: bprod
       integer :: iGroup, i, j
@@ -294,7 +294,7 @@ contains
       end do
 
 ! fishing mortality
-      call setFishing(Fishing,etaF)
+      call setFishing(Fmax,etaF)
 
 ! Feeding preference matrix:
 ! assemble vectors
@@ -852,9 +852,9 @@ contains
 ! Revised setup of vertical overlap based on van Denderen et al. (2020)
 ! --------------------------------------
    subroutine setupVertical2(szprod,lzprod, bprodin, dfbot, dfpho, nStages, Tp, Tm, Tb, bottom, photic, etaMature,&
-                             shelfdepth, visual, Fishing, etaF)
+                             shelfdepth, visual, Fmax, etaF)
      !  default bottom:1500m euphotic depth 150m
-      real(dp), intent(in) :: szprod,lzprod, bottom, photic, bprodin, dfbot, dfpho, Tp, Tm, Tb, etaMature,Fishing,etaF ! bprodin: benthic productivity, dfbot: detrital flux reaching the sea floor, dfpho: detrital flux out of the photic zone
+      real(dp), intent(in) :: szprod,lzprod, bottom, photic, bprodin, dfbot, dfpho, Tp, Tm, Tb, etaMature,Fmax,etaF ! bprodin: benthic productivity, dfbot: detrital flux reaching the sea floor, dfpho: detrital flux out of the photic zone
                                                                                                            ! only one of them works, keep the unused arguments negative e.g., bprodin = -1.d0, dfbot = -1.d0, dfpho = 100.d0
       integer, intent(in) :: nStages                                ! Mature mass relative to asymptotic size default 0.25, original in van Denderen et al., 2021 was 0.002
       real(dp), intent(in) :: shelfdepth  ! shelf region depth, meso- and bathy-elagic fish exist when water is deeper than this. default 250m
@@ -975,7 +975,7 @@ contains
 ! fishing mortality
       !group(nGroups)%spec%mortF(group(nGroups)%spec%n) = 0.5d0 ! only demersal adults have fishing mortality
 
-      call setFishing(Fishing,etaF)
+      call setFishing(Fmax,etaF)
 
 ! Feeding preference matrix:
 ! assemble vectors
@@ -2017,8 +2017,8 @@ contains
 
    end subroutine parametersAddGroup
 
-   subroutine setFishing(F,etaF)
-     real(dp), intent(in) :: F, etaF
+   subroutine setFishing(Fmax,etaF)
+     real(dp), intent(in) :: Fmax, etaF
      integer :: iGroup
      real(dp),allocatable :: psiF(:)
      real(dp) :: mFishing
@@ -2032,7 +2032,7 @@ contains
 
       mFishing = etaF*maxval(group(iGroup)%spec%mUpper)
       psiF =( 1 + (group(iGroup)%spec%m/mFishing)**(-3) )**(-1)
-      group(iGroup)%spec%mortF=psiF*F
+      group(iGroup)%spec%mortF=psiF*Fmax
       deallocate(psiF)
      end do
    end subroutine

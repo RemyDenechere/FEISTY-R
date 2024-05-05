@@ -33,14 +33,14 @@
 #' \code{\link{calcYield}} Yield calculation
 #' 
 #' @export
-setFishing = function(p, F=0, etaF=0.05, groupidx=c(1:p$nGroups)) {
-  p$F=F
+setFishing = function(p, Fmax=0, etaF=0.05, groupidx=c(1:p$nGroups)) {
+  p$Fmax=Fmax
   p$etaF=etaF
   for (iGroup in 1:length(groupidx)) {
     ix = p$ix[[groupidx[iGroup]]]
     mFishing = etaF*max(p$mUpper[ix]) # selectivity at 0.05 of maximum size
     psi = ( 1 + (p$mc[ix]/mFishing)^(-3) )^(-1) # Standard trawl selectivity from Andersen (2019) Fig 5.2
-    p$mortF[ix] = psi*F
+    p$mortF[ix] = psi*Fmax
   }
   return(p)
 }

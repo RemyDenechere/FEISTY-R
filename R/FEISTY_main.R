@@ -404,14 +404,14 @@ derivativesFEISTYR = function(t,              # current time
 #' @export
 #'
 
-simulateFEISTY = function(bCust    = FALSE,
-                          p      = setupBasic(), 
+simulateFEISTY = function(p      = setupBasic(), 
                           tEnd   = 500,
                           tStep  = 1,
                           times  = seq(from=0, to=tEnd, by=tStep),  
                           yini   = p$u0,  
                           USEdll = TRUE,
-                          Rmodel = derivativesFEISTYR)
+                          Rmodel = derivativesFEISTYR,
+                          bCust    = FALSE)
 {
   
   nR      <- p$nResources[1]  # no of resources. [1] to make sure that this is only one number
@@ -542,14 +542,14 @@ simulateFEISTY = function(bCust    = FALSE,
         setupinput=c(p$szprod,p$lzprod,p$bprodin,p$dfbot,p$depth,p$Tp,p$Tb)
       }else if(p$setup=="setupBasic2"){
         initfunc <- "initfeistysetupbasic2"
-        setupinput=c(p$szprod,p$lzprod,p$bprodin,p$dfbot,length(p$ix[[p$nGroups]]),p$depth,p$Tp,p$Tb,p$etaMature,p$F,p$etaF,as.integer(p$bET))
+        setupinput=c(p$szprod,p$lzprod,p$bprodin,p$dfbot,length(p$ix[[p$nGroups]]),p$depth,p$Tp,p$Tb,p$etaMature,p$Fmax,p$etaF,as.integer(p$bET))
       }else if(p$setup=="setupVertical"){
         initfunc <- "initfeistysetupvertical"
         setupinput = c(p$szprod,p$lzprod,p$bprodin,p$dfbot,p$dfpho,p$region, p$bottom, p$photic)
       }else if(p$setup=="setupVertical2"){
         initfunc <- "initfeistysetupvertical2"
         setupinput = c(p$szprod,p$lzprod,p$bprodin,p$dfbot,p$dfpho,length(p$ix[[p$nGroups]]), p$Tp, p$Tm, p$Tb, p$bottom,p$photic,p$etaMature,
-                       p$shelfdepth,p$visual,p$F,p$etaF)
+                       p$shelfdepth,p$visual,p$Fmax,p$etaF)
       }
       
       if (any(is.na(times)))  # one call and return
