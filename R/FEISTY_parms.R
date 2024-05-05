@@ -196,7 +196,7 @@ paramInit = function(...) {
                         "smallPel" = "#EE6677",
                         "mesoPel" = "#AA4499",
                         "largePel" = "#33BBEE",
-                        "bathyPel" =  "#004488",
+                        "midwPred" =  "#004488",
                         "demersals" =  "#228833")
   
   param$my_names <- c("smallZoo" = "Small mesozooplankton",
@@ -205,7 +205,7 @@ paramInit = function(...) {
                       "smallPel" = "Small pelagics",
                       "mesoPel" = "Mesopelagics",
                       "largePel" = "Large pelagics",
-                      "bathyPel" = "Bathypelagics",
+                      "midwPred" = "Midwater predators",
                       "demersals" = "Demersals")
   
   return(param)

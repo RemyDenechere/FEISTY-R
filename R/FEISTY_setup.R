@@ -569,7 +569,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
                         mortF=0, nStages=nStages, name="largePel") 
   
   param = paramAddGroup(param, mMin=0.001, mMax=125000, mMature=etaMature*125000, u0=u0M, 
-                        mortF=0, nStages=nStages, name="bathyPel") 
+                        mortF=0, nStages=nStages, name="midwPred") 
   
   param = paramAddGroup(param, mMin=0.001, mMax=125000, mMature=etaMature*125000, u0=u0,
                         mortF=0, nStages=nStages, name="demersals")
@@ -1003,7 +1003,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
                         mortF=0, nStages=nStages, name="largePel") 
   
   param = paramAddGroup(param, mMin=0.001, mMax=125000, mMature=etaMature*125000, u0=u0M, 
-                        mortF=0, nStages=nStages, name="bathyPel") 
+                        mortF=0, nStages=nStages, name="midwPred") 
   
   param = paramAddGroup(param, mMin=0.001, mMax=125000, mMature=etaMature*125000, u0=u0,
                         mortF=0, nStages=nStages, name="demersals")
