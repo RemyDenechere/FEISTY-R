@@ -14,7 +14,13 @@
 #' 
 #' @author Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
-#' @usage setupBasic(szprod = 100, lzprod = 100, bprodin = NA, dfbot = NA, depth = 100, Tp = 10, Tb = 8)
+#' @usage setupBasic(szprod = 100, 
+#'                   lzprod = 100, 
+#'                   bprodin = NA, 
+#'                   dfbot = NA, 
+#'                   depth = 100, 
+#'                   Tp = 10, 
+#'                   Tb = 8)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
 #' Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
@@ -55,7 +61,13 @@
 #' \code{\link{paramAddGroup}}, \code{\link{paramAddPhysiology}}, and \code{\link{paramTeffect}}.
 #' 
 #' @examples 
-#' p=setupBasic(szprod = 200, lzprod = 150, bprodin = 15, dfbot = NA, depth = 300, Tp = 10, Tb = 9)
+#' p=setupBasic(szprod = 200, 
+#'              lzprod = 150,
+#'              bprodin = 15, 
+#'              dfbot = NA, 
+#'              depth = 300, 
+#'              Tp = 10, 
+#'              Tb = 9)
 #' sim=simulateFEISTY(p=p)
 #' plotSimulation(sim)
 #' 
@@ -215,8 +227,18 @@ setupBasic = function(szprod = 100, # small zoo production?
 #' 
 #' @author Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
-#' @usage setupBasic2(szprod = 100, lzprod = 100, bprodin = NA, dfbot = NA, depth = 100, Tp = 10, Tb = 8, 
-#' nStages=9, etaMature=0.25, F=0, etaF=0.05, bET=TRUE)
+#' @usage setupBasic2(szprod = 100, 
+#'                    lzprod = 100, 
+#'                    bprodin = NA, 
+#'                    dfbot = NA, 
+#'                    depth = 100, 
+#'                    Tp = 10, 
+#'                    Tb = 8, 
+#'                    nStages=9, 
+#'                    etaMature=0.25, 
+#'                    F=0, 
+#'                    etaF=0.05, 
+#'                    bET=TRUE)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
 #' Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
@@ -231,7 +253,7 @@ setupBasic = function(szprod = 100, # small zoo production?
 #' @param Tp Pelagic water temperature, representing the top 100m average temperature [Celsius].
 #' @param Tb Bottom water temperature [Celsius].
 #' @param nStages size number of large fish functional groups (e.g., large pelagic fish, demersal fish, and bathypelagic fish). 
-#' The size number of small fish functional groups (e.g., small  pelagic fish and mesopelagic fish) is \code{round(2/3*nStages)}. 
+#' The size number of small fish functional groups (e.g., small pelagic fish and mesopelagic fish) is \code{round(2/3*nStages)}. 
 #' Generally, \code{nStages} is multiples of 3 (e.g., \code{nStages = 3, 6, 9, or 12}...).
 #' @param etaMature The coefficient determines the fish size \code{mMature} with a 50\% maturity level. 
 #' \code{mMature = etaMature * mMax},  where \code{mMax} is the largest fish size (boundary) of a fish functional group. See \code{\link{paramAddGroup}}. 
@@ -274,8 +296,18 @@ setupBasic = function(szprod = 100, # small zoo production?
 #' \code{\link{paramAddPhysiology}}, \code{\link{paramTeffect}}, \code{\link{setFishing}}, and \code{\link{paramSizepref}}.
 #' 
 #' @examples 
-#' p=setupBasic2(szprod = 200, lzprod = 150, bprodin = 15, dfbot = NA, depth = 300, Tp = 10, Tb = 9, 
-#' nStages=6, etaMature=0.25, F=0, etaF=0.05, bET=TRUE)
+#' p=setupBasic2(szprod = 200, 
+#'               lzprod = 150, 
+#'               bprodin = 15, 
+#'               dfbot = NA, 
+#'               depth = 300, 
+#'               Tp = 10, 
+#'               Tb = 9, 
+#'               nStages=6, 
+#'               etaMature=0.25, 
+#'               F=0, 
+#'               etaF=0.05, 
+#'               bET=TRUE)
 #' sim=simulateFEISTY(p=p)
 #' plotSimulation(sim)
 #' 
@@ -427,7 +459,14 @@ setupBasic2 = function(szprod = 100, # small zoo production?
 #' 
 #' @author Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
-#' @usage setupVertical(szprod = 80, lzprod = 80, bprodin = NA, dfbot = NA, dfpho = NA, region = 4, depth = 1500, photic = 150)
+#' @usage setupVertical(szprod = 80, 
+#'                      lzprod = 80, 
+#'                      bprodin = NA, 
+#'                      dfbot = NA, 
+#'                      dfpho = NA, 
+#'                      region = 4, 
+#'                      depth = 1500, 
+#'                      photic = 150)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
 #' Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
@@ -489,7 +528,14 @@ setupBasic2 = function(szprod = 100, # small zoo production?
 #' van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emergent global biogeography of marine fish food webs. Global Ecology and Biogeography, 30(9), 1822-1834.
 #' 
 #' @examples 
-#' p=setupVertical(szprod = 200, lzprod = 150, bprodin = NA, dfbot = NA, dfpho = 100, region = 1, depth = 1000, photic = 120)
+#' p=setupVertical(szprod = 200, 
+#'                 lzprod = 150, 
+#'                 bprodin = NA, 
+#'                 dfbot = NA, 
+#'                 dfpho = 100, 
+#'                 region = 1, 
+#'                 depth = 1000, 
+#'                 photic = 120)
 #' sim=simulateFEISTY(p=p)
 #' plotSimulation(sim)
 #' 
@@ -834,14 +880,26 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' 
 #' @author Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
-#' @usage setupVertical2(szprod = 80, lzprod = 80, bprodin = NA, dfbot = NA, dfpho = NA, nStages = 6, region = 4, depth = 1500, photic = 150, 
-#' shelfdepth = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF=0.05)
+#' @usage setupVertical2(szprod = 80, lzprod = 80, 
+#'                       bprodin = NA, 
+#'                       dfbot = NA, 
+#'                       dfpho = NA, 
+#'                       nStages = 9, 
+#'                       Tp = NA,
+#'                       Tm = NA, 
+#'                       Tb = NA, 
+#'                       depth = 1000,
+#'                       photic = 150, 
+#'                       shelfdepth = 250, 
+#'                       visual = 1.5, 
+#'                       etaMature = 0.25, 
+#'                       F = 0, 
+#'                       etaF=0.05)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
 #' Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
 #' Therefore, it is described as small zooplankton productivity [gww/m2/year]. \code{lzprod} is the same.
 #' @param lzprod Large zooplankton productivity.
-#' @param bent Detrital flux out of the photic zone [gww/m2/year].
 #' @param bprodin Benthic organism productivity input [gww/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
 #' The benthic productivity `bprod` equals `bprodin`.
 #' @param dfbot Detrital flux reaching the bottom [gww/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
@@ -849,6 +907,9 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' @param dfpho Detrital flux out of the photic zone [gww/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`. If all are NAs then `dfpho = 150`.
 #' `dfpho` will be further calculated based on the Martin curve to get detrital flux reaching the bottom and then multiplied the trophic transfer efficiency (10\%) to get benthic productivity `bprod` ultimately .\cr
 #' See source code of \code{setupVertical}.
+#' @param nStages size number of large fish functional types (e.g., large pelagic fish, demersal fish, and midwater predators). 
+#' The size number of small fish functional types (e.g., small pelagic fish and mesopelagic fish) is \code{round(2/3*nStages)}. 
+#' Generally, \code{nStages} is multiples of 3 (e.g., \code{nStages = 3, 6, 9, or 12}...).
 #' @param Tp Pelagic water temperature, representing the top 100m average temperature [Celsius]. Default NA. Input NA means Tp = 10.
 #' @param Tm Mid-water temperature, representing the average temperature of 500m - up to 1500m. Default NA. Input NA means Tp = Tb.
 #' @param Tb Bottom water (the bottom layer) temperature [Celsius]. Default NA. Input NA means Tb = 10.
@@ -906,7 +967,15 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' \code{\link{paramAddPhysiology}}, and \code{\link{setFishing}}.
 #' 
 #' @examples 
-#' p=setupVertical2(szprod = 200, lzprod = 150, bprodin = NA, dfbot = NA, dfpho = 100, nStages = 6, depth = 1000, photic = 120,
+#' p=setupVertical2(szprod = 200, lzprod = 150, 
+#'                  bprodin = NA, 
+#'                  dfbot = NA, 
+#'                  dfpho = 100, 
+#'                  nStages = 9, 
+#'                  Tp=18,
+#'                  Tb=12,
+#'                  depth = 1000, 
+#'                  photic = 120,
 #' shelfdepth = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF = 0.05)
 #' sim=simulateFEISTY(p=p)
 #' plotSimulation(sim)

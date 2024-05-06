@@ -242,8 +242,9 @@ derivativesFEISTYR = function(t,              # current time
 #' It provides options for integrating ordinary differential equations in Fortran or R for four prepared setups (\code{setupBasic}, \code{setupBasic2}, \code{setupVertical}, and \code{setupVertical2}).
 #' It also allows simulations for customized FEISTY setups.
 #'
-#' @usage simulateFEISTY (bCust = FALSE, p = setupBasic(), tEnd = 100, tStep  = 1, times = seq(from=0, to=tEnd, by=tStep),
-#'        yini = p$u0, USEdll = TRUE, Rmodel = derivativesFEISTYR)
+#' @usage simulateFEISTY (bCust = FALSE, p = setupBasic(), 
+#'                        tEnd = 100, tStep  = 1, times = seq(from=0, to=tEnd, by=tStep),
+#'                        yini = p$u0, USEdll = TRUE, Rmodel = derivativesFEISTYR)
 #'
 #' @param bCust Logical flag, indicates whether to use fixed setups (FALSE) or customized setups (TRUE). \cr 
 #' If \code{bCust} is TRUE, FEISTY simulations based on customized setups only can be done in FORTRAN, not R. \code{useDLL} input does not work.
@@ -317,8 +318,10 @@ derivativesFEISTYR = function(t,              # current time
 #' plotSimulation(sim_Vertical_R)
 #' 
 #' # run FEISTY simulation based on setupBasic2 by Fortran
-#' sim_Basic2_F <- simulateFEISTY(p = setupBasic2(szprod = 90, lzprod = 100, bprod = 15, depth = 500, Tp = 11, Tb = 9, 
-#' nStages=9, etaMature=0.25, F=0, etaF=0.05), tEnd = 1000, tStep = 1, USEdll = TRUE)
+#' sim_Basic2_F <- simulateFEISTY(p = setupBasic2(szprod = 90, lzprod = 100, bprod = 15, 
+#'                                                depth = 500, Tp = 11, Tb = 9, 
+#'                                                nStages=9, etaMature=0.25, F=0, etaF=0.05),
+#'                                 tEnd = 1000, tStep = 1, USEdll = TRUE)
 #' 
 #' plotSimulation(sim_Basic2_F)
 #' 

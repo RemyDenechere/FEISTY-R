@@ -50,11 +50,14 @@
 #'      mUpper = c(0.001, 0.5, 125),
 #'      mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000)))
 #' # add the first functional type
-#' p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, mortF=0, mort0 = 0.1, name = "smallfish")
+#' p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "smallfish")
 #' # add the second functional type
-#' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, mortF=0, mort0 = 0.1, name = "largefish")
+#' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "largefish")
 #' # add the third functional type
-#' p <- paramAddGroup(p, nStages = 9, mMin = 0.1, mMax = 500000, mMature = 500000*0.25, mortF=0, mort0 = 0.1, name = "giantfish")
+#' p <- paramAddGroup(p, nStages = 9, mMin = 0.1, mMax = 500000, mMature = 500000*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "giantfish")
 #' # add physiological parameters for three functional types (smallfish, largefish and giantfish)
 #' p <- paramAddPhysiology(p, 
 #'      ac = 20, bc = -0.25,       
@@ -163,7 +166,8 @@ paramSizepref <- function(
 #'
 #' @examples
 #' # Initialize parameters
-#' p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150, mediumsize = 250) # add four extra parameters to the list
+#' p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150,
+#'                 mediumsize = 250) # add four extra parameters to the list
 #' 
 #' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #' 
@@ -248,7 +252,17 @@ makeGrid = function(mMin,         # min size, gram
 #'
 #' This function updates the parameter list by adding resource-related parameters.
 #' 
-#' @usage paramAddResource (p, K, r=1, dynamics=c("chemostat", "logistic"), mc, mLower = NA, mUpper = NA, names=NA, u0=NA, ixpelR, ixbenR)
+#' @usage paramAddResource (p, 
+#'                          K, 
+#'                          r=1, 
+#'                          dynamics=c("chemostat", "logistic"), 
+#'                          mc, 
+#'                          mLower = NA, 
+#'                          mUpper = NA, 
+#'                          names=NA, 
+#'                          u0=NA, 
+#'                          ixpelR=NA, 
+#'                          ixbenR=NA)
 #'
 #' @param p Parameter list to be updated.
 #' @param K A vector of carrying capacities of all resources [gww/m2].
@@ -294,7 +308,8 @@ makeGrid = function(mMin,         # min size, gram
 #'    mc= c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000), 0.25*sqrt(500), 1e-07*sqrt(500)),
 #'    mLower = c(2e-06,0.001, 0.5e-03, 0.25, 1e-07),
 #'    mUpper = c(0.001, 0.5, 125, 125, 5e-05),
-#'    names=c("smallZoo", "largeZoo", "smallBenthos", "largeBenthos", "Phytoplankton"), u0=c(100,100,200,200,200))
+#'    names=c("smallZoo", "largeZoo", "smallBenthos", "largeBenthos", "Phytoplankton"), 
+#'    u0=c(100,100,200,200,200))
 #'
 #' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
@@ -403,9 +418,11 @@ paramAddResource = function(p,        # parameter to be updated
 #'      mUpper = c(0.001, 0.5, 125, 125),
 #'      mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000), 0.25*sqrt(500)))
 #' # add the first functional type
-#' p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, mortF=0, mort0 = 0.1, name = "smallfish")
+#' p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "smallfish")
 #' # add the second functional type
-#' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, mortF=0, mort0 = 0.1, name = "largefish")
+#' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "largefish")
 #'
 #' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
 #'
@@ -489,7 +506,15 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 #' 
 #' This function updates the parameter list by adding physiological parameters of all size classes of all functional types.
 #'
-#' @usage paramAddPhysiology(p, ac = 20, bc = -0.25, am = 0.011*365, bm = -0.175, ae = 70, be = -0.2, epsRepro = 0.01, epsAssim = 0.7)
+#' @usage paramAddPhysiology(p, 
+#'                           ac = 20, 
+#'                           bc = -0.25, 
+#'                           am = 0.011*365, 
+#'                           bm = -0.175, 
+#'                           ae = 70, 
+#'                           be = -0.2, 
+#'                           epsRepro = 0.01, 
+#'                           epsAssim = 0.7)
 #'
 #' @param p  The parameter to be updated.
 #' @param ac Maximum consumption coefficient [g^bc year-1)].
@@ -534,9 +559,11 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 #'      mUpper = c(0.001, 0.5, 125),
 #'      mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000)))
 #' # add the first functional type
-#' p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, mortF=0, mort0 = 0.1, name = "smallfish")
+#' p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "smallfish")
 #' # add the second functional type
-#' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, mortF=0, mort0 = 0.1, name = "largefish")
+#' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
+#'                    mortF=0, mort0 = 0.1, name = "largefish")
 #' # add physiological parameters for two functional types (smallfish and largefish)
 #' p <- paramAddPhysiology(p, 
 #'      ac = 20, bc = -0.25,       
