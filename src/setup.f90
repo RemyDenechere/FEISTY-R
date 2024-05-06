@@ -169,12 +169,12 @@ contains
          group(iGroup)%spec%psiMature = 0.d0 ! reset
          group(iGroup)%spec%psiMature(group(iGroup)%spec%n) = 0.5d0 ! only adults reproduce
 
-         if (group(iGroup)%spec%n .eq. 2) then
-            group(iGroup)%spec%mortF(group(iGroup)%spec%n) = 0.3d0 ! only adults have fishing mortality
-         else if ((group(iGroup)%spec%n .eq. 3)) then
-            group(iGroup)%spec%mortF(group(iGroup)%spec%n - 1) = 0.03d0 ! juvenile
-            group(iGroup)%spec%mortF(group(iGroup)%spec%n) = 0.3d0 ! adult
-         end if
+!         if (group(iGroup)%spec%n .eq. 2) then
+!            group(iGroup)%spec%mortF(group(iGroup)%spec%n) = 0.3d0 ! only adults have fishing mortality
+!         else if ((group(iGroup)%spec%n .eq. 3)) then
+!            group(iGroup)%spec%mortF(group(iGroup)%spec%n - 1) = 0.03d0 ! juvenile
+!            group(iGroup)%spec%mortF(group(iGroup)%spec%n) = 0.3d0 ! adult
+!         end if
       end do
 
 ! Feeding preference matrix:
