@@ -527,9 +527,9 @@ simulateFEISTY = function(p      = setupBasic(),
           }
         }
         
-        file_path=system.file("data", "input.nml", package = "FEISTY")
+        file_path=system.file("extdata", "input.nml", package = "FEISTY")
         dummy=.C("passpath", length=nchar(file_path), file_path_in = charToRaw(file_path))
-        file_path_V=system.file("data", "tempdata.dat", package = "FEISTY")
+        file_path_V=system.file("extdata", "tempdata.dat", package = "FEISTY")
         dummy=.C("passpathv", length=nchar(file_path_V), file_path_in=charToRaw(file_path_V))
       }
       

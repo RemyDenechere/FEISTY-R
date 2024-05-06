@@ -787,7 +787,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
   param$theta[idx_predat,idx_prey] = param$theta[idx_predat,idx_prey]*0.5
   
   # update temperature
-  tempdata=read.table(system.file("data", "tempdata.dat", package = "FEISTY"), sep=',') #
+  tempdata=read.table(system.file("extdata", "tempdata.dat", package = "FEISTY"), sep=',') #
   tempdata[,5]=10 #
   Q10=1.88
   Q10m=1.88
