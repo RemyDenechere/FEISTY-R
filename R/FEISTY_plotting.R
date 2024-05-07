@@ -11,9 +11,9 @@ min_mort    <- 1E-2 # minimum mortality in plotRates mortality
 
 #' Spawning stock biomass plot
 #' 
-#' Makes a time series of spawning stock biomass (SSB) for each functional group
+#' It displays the time series of spawning stock biomass (SSB) for each functional type.
 #' 
-#' @details X-axis is time. Y-axis is the SSB data in log10 scale.
+#' @details X-axis is time. Y-axis is the SSB data in the log10 scale.
 #' 
 #' @author P. Daniël van Denderen, Yixin Zhao
 #'
@@ -68,9 +68,9 @@ plotSSBtime = function(sim) {
   
 #' Fishing Yield plot
 #' 
-#' Makes a time series of the fishing yield for each functional group
+#' It displays the time series of the fishing yield for each functional type.
 #' 
-#' @details X-axis is time. Y-axis is the fishing yield data.
+#' @details X-axis is time. Y-axis is the fishing yield data in the log10 scale.
 #' 
 #' @author P. Daniël van Denderen, Yixin Zhao
 #'
@@ -124,10 +124,10 @@ plotYieldtime = function(sim) {
 
 #' Total biomass plot
 #' 
-#' Makes a time series of total biomass for each fish functional group and zooplankton
-#' and benthic resource
+#' It displays the time series of total biomass for each fish functional type and zooplankton
+#' and benthic resources.
 #' 
-#' @details X-axis is time. Y-axis is the biomass data in log10 scale.
+#' @details X-axis is time. Y-axis is the biomass data in the log10 scale.
 #' 
 #' @author P. Daniël van Denderen, Yixin Zhao
 #'
@@ -183,7 +183,7 @@ plotBiomasstime = function(sim) {
 
 #' Biomass spectra plot
 #' 
-#' Makes a plot of the biomass of all functional groups over the size spectrum.
+#' It makes a plot of the biomass of all functional types over the size spectrum.
 #' Data is averaged over the last 40\% simulation time.
 #' 
 #' @details The X-axis is individual weight on a log10 scale. The Y-axis is 
@@ -263,20 +263,23 @@ plotSpectra = function(sim) {
 #' Food web plot
 #' 
 #' Makes a plot with all feeding interactions of fish functional groups and 
-#' resources. The size of the biomass circles and feeding fluxes are divided by 
+#' resources. 
+#' 
+#' @details
+#' The size of the biomass circles and feeding fluxes are divided by 
 #' the maximum biomass or flux and re-scaled with the cube root.
 #' The function works on the four prepared setups or revised 
 #' versions based on these four setups. If customized setups by users have 
-#' more resources and/or fish functional types, this plot function may need to be updated.
-#' 
-#' @details
-#' To be added.
+#' more resources and/or fish functional types, this plot function may not work.
+#' In setupBasic and setupBasic2, There is no Y-axis.
+#' In setypVertical and setupVertcal2, 
+#' Y-axis represent locations of relative surface and bottom to avoid overlap of dot symbols.
 #' 
 #' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotNetwork(sim)
 #' 
-#' @param sim The dataframe of FEISTY simulation results.
+#' @param sim The data frame of FEISTY simulation results.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
@@ -619,12 +622,15 @@ plotDiet <- function(sim) {
 #' 
 #' Plots growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
 #' 
-#' @details
-#' Rate calculation:
-#' \itemize{
-#' \item Averaged values of rate data are estimated over a selected time period 
-#' (default last 40% simulation time).
-#' }
+#' @details 
+#' Note the growth rate here denotes the fraction of the available energy can be invested in growth (Eq. 15 in vignette), 
+#' which is not the growth rate from a size class to the next neighboring class (Eq. 16 in vignette).
+#' 
+#' Mortality panel displays the total mortality, background mortality, fishing mortality and predation mortality. 
+#'
+#' Feeding levels calculation is in Eq. 10 in vignettes.
+#' 
+#' data are averaged over a selected time period (last 40% of the simulation time).
 #' 
 #' @author P. Daniël van Denderen, Yixin Zhao
 #'
@@ -634,7 +640,7 @@ plotDiet <- function(sim) {
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
-#' # averaged rate data of last 40%  simulation time
+#' # averaged data of last 40% of the simulation time
 #' plotRates(sim=sim)
 #' 
 #' @aliases plotRates
@@ -654,30 +660,32 @@ plotRates = function(sim) {
 
 #' Plot simulation results
 #' 
-#' Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, 
-#' \code{\link{plotSpectra}}, \code{\link{plotNetwork}} and \code{\link{plotRates}}.
+#' This function is designed to give a quick visualization overview of a simulation output. 
 #' 
-#' @details This function is designed to give a quick visualization of a simulation output. 
+#' @details It makes a plot combo for the simulation results, including \code{\link{plotSpectra}}, \code{\link{plotRates}},
+#' \code{\link{plotNetwork}} and \code{\link{plotBiomasstime}}. 
 #' 
 #' @author P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
 #'
 #' @usage plotSimulation(sim)
 #' 
-#' @param sim The dataframe of FEISTY simulation results.
+#' @param sim The data frame of FEISTY simulation results.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
 #' plotSimulation(sim)
+#' # We provide a short cut to call plotSimulation(sim).
+#' plot(sim)
 #' 
 #' @aliases plotSimulation
 #' 
 #' @seealso 
 #' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
 #' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{plotSSBtime}} Timeseries of spawning stock biomass \cr
 #' \code{\link{plotSpectra}} Biomass spectra plot \cr
 #' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
 #' \code{\link{plotNetwork}} Plot with all feeding interactions
+#' \code{\link{plotBiomasstime}} Time series of biomass \cr
 #' 
 #' @export
 #' 
@@ -740,6 +748,7 @@ plotSimulation = function(sim) {
 
 # Only for Shiny
 #' @export
+NULL
 plotSimulationShiny = function(sim) {
   p_biomasstime   <- plotBiomasstime(sim)+theme(legend.position = "bottom")
   p_spectra       <- plotSpectra(sim)
@@ -1002,38 +1011,11 @@ get_legend_new <- function(plot, legend = NULL) {
   return(NULL)
 }
 
-
-
-
-#' Plot simulation results
-#' 
-#' Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, 
-#' \code{\link{plotSpectra}}, \code{\link{plotNetwork}} and \code{\link{plotRates}}.
-#' 
-#' @details This function is designed to give a quick visualization of a simulation output. 
-#' 
-#' @author P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
-#'
-#' @usage plot.FEISTY(sim)
-#' 
-#' @param sim The dataframe of FEISTY simulation results.
-#' 
-#' @examples 
-#' sim=simulateFEISTY()
-#' plot.FEISTY(sim)
-#' 
-#' @aliases plotSimulation
-#' 
-#' @seealso 
-#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
-#' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-#' \code{\link{plotSSBtime}} Timeseries of spawning stock biomass \cr
-#' \code{\link{plotSpectra}} Biomass spectra plot \cr
-#' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
-#' \code{\link{plotNetwork}} Plot with all feeding interactions
-#' 
+# Simplify plotSimulation(sim) to plot(sim).
+# same as plotSimulation()
+# Remerber to update this when plotSimulation() is changed.
 #' @export
-#' 
+NULL
 
 plot.FEISTY = function(sim) {
   p_biomasstime     <- plotBiomasstime(sim)
