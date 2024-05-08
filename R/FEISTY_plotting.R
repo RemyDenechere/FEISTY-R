@@ -1015,7 +1015,6 @@ get_legend_new <- function(plot, legend = NULL) {
 # same as plotSimulation()
 # Remerber to update this when plotSimulation() is changed.
 #' @export
-NULL
 
 plot.FEISTY = function(sim) {
   p_biomasstime     <- plotBiomasstime(sim)
