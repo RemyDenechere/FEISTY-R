@@ -255,7 +255,7 @@ makeGrid = function(mMin,         # min size, gram
 #' @usage paramAddResource (p, 
 #'                          K, 
 #'                          r=1, 
-#'                          dynamics=c("chemostat", "logistic"), 
+#'                          dynamics="chemostat", 
 #'                          mc, 
 #'                          mLower = NA, 
 #'                          mUpper = NA, 

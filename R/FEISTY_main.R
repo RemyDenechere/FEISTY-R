@@ -242,9 +242,10 @@ derivativesFEISTYR = function(t,              # current time
 #' It provides options for integrating ordinary differential equations in Fortran or R for four prepared setups (\code{setupBasic}, \code{setupBasic2}, \code{setupVertical}, and \code{setupVertical2}).
 #' It also allows simulations for customized FEISTY setups.
 #'
-#' @usage simulateFEISTY (bCust = FALSE, p = setupBasic(), 
-#'                        tEnd = 100, tStep  = 1, times = seq(from=0, to=tEnd, by=tStep),
-#'                        yini = p$u0, USEdll = TRUE, Rmodel = derivativesFEISTYR)
+#' @usage simulateFEISTY (p = setupBasic(), 
+#'                        tEnd = 500, tStep  = 1, times = seq(from=0, to=tEnd, by=tStep), 
+#'                        yini = p$u0, USEdll = TRUE, Rmodel = derivativesFEISTYR, 
+#'                        bCust = FALSE)
 #'
 #' @param bCust Logical flag, indicates whether to use fixed setups (FALSE) or customized setups (TRUE). \cr 
 #' If \code{bCust} is TRUE, FEISTY simulations based on customized setups only can be done in FORTRAN, not R. \code{useDLL} input does not work.

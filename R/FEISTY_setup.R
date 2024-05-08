@@ -236,7 +236,7 @@ setupBasic = function(szprod = 100, # small zoo production?
 #'                    Tb = 8, 
 #'                    nStages=9, 
 #'                    etaMature=0.25, 
-#'                    F=0, 
+#'                    Fmax=0, 
 #'                    etaF=0.05, 
 #'                    bET=TRUE)
 #' 
@@ -258,9 +258,9 @@ setupBasic = function(szprod = 100, # small zoo production?
 #' @param etaMature The coefficient determines the fish size \code{mMature} with a 50\% maturity level. 
 #' \code{mMature = etaMature * mMax},  where \code{mMax} is the largest fish size (boundary) of a fish functional group. See \code{\link{paramAddGroup}}. 
 #' In van Denderen et al. (2021), it was 0.002.
-#' @param F Baseline fishing mortality [1/year]. \cr
-#' If \code{F} is 0, there is no fishing mortality.\cr 
-#' If \code{F} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function.
+#' @param Fmax maximum fishing mortality [1/year]. \cr
+#' If \code{Fmax} is 0, there is no fishing mortality.\cr 
+#' If \code{Fmax} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function.
 #' See source code of \code{\link{setFishing}}.
 #' @param etaF The coefficient determining the fish size \code{mFishing} with 50\% fishing selectivity. See source code of \code{\link{setFishing}}.
 #' @param bET Logical flag, controlling whether use effective temperature effects on the large demersal fish. See Petrik et al., 2019.
@@ -305,7 +305,7 @@ setupBasic = function(szprod = 100, # small zoo production?
 #'               Tb = 9, 
 #'               nStages=6, 
 #'               etaMature=0.25, 
-#'               F=0, 
+#'               Fmax=0, 
 #'               etaF=0.05, 
 #'               bET=TRUE)
 #' sim=simulateFEISTY(p=p)
@@ -465,7 +465,7 @@ setupBasic2 = function(szprod = 100, # small zoo production?
 #'                      dfbot = NA, 
 #'                      dfpho = NA, 
 #'                      region = 4, 
-#'                      depth = 1500, 
+#'                      depth = 800, 
 #'                      photic = 150)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
@@ -888,12 +888,12 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #'                       Tp = NA,
 #'                       Tm = NA, 
 #'                       Tb = NA, 
-#'                       depth = 1000,
+#'                       depth = 800,
 #'                       photic = 150, 
 #'                       shelfdepth = 250, 
 #'                       visual = 1.5, 
 #'                       etaMature = 0.25, 
-#'                       F = 0, 
+#'                       Fmax = 0, 
 #'                       etaF=0.05)
 #' 
 #' @param szprod Small zooplankton productivity. \cr
@@ -922,7 +922,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
 #' It must \bold{be careful} to assign other values to \code{visual}, or the setup could crash. See source code of \code{setupVertical} or \code{setupVertical2}.
 #' @param etaMature The coefficient determines the fish size \code{mMature} with a 50\% maturity level. \code{mMature = etaMature * mMax},  where \code{mMax} is the largest fish size (boundary) of a fish functional group. See \code{\link{paramAddGroup}}. 
 #' In van Denderen et al. (2021), it was 0.002.
-#' @param F Baseline fishing mortality [1/year]. \cr
+#' @param Fmax maximum fishing mortality [1/year]. \cr
 #' If \code{F} is 0, there is no fishing mortality. \cr
 #' If \code{F} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function. See source code of \code{\link{setFishing}}.
 #' @param etaF the coefficient determining the fish size \code{mFishing} with 50\% fishing selectivity. See source code of \code{\link{setFishing}}.
