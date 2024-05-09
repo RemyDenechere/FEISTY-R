@@ -33,7 +33,7 @@
 #' This function is designed to simulate the dynamics of marine resources and fish populations in FEISTY model in R. 
 #' The derivative calculation of resources can be based on different types of dynamics (chemostat or logistic).
 #' Negative state variables and NA values are revised to zero to prevent computational errors.
-#' ODE solving is conducted by package deSolve.
+#' ODE solving is conducted by package deSolve. The equations are documented in the vignette.
 #' More theories can be found in de Roos et al. (2008) and Petrik et al. (2019).
 #'
 #' @return
@@ -42,22 +42,22 @@
 #' \item deriv: a vector of derivatives [gWW/m2/year] of all resources and all functional type size classes.
 #' \item f: a vector containing feeding levels [-] of all resources (0) and all size classes of functional types.
 #' \item mortpred: a vector containing predation mortality rate [1/year] of all resources and all size classes of functional types.
-#' \item g: Net growth rate [1/year] of all size classes of functional types. Resources not included.
-#' \item Repro: Energy used for reproduction of all size classes of functional types, rate [gWW/m2/year]. Resources not included.
+#' \item g: Net growth rate (the fraction of available energy invested in growth) [1/year]. It includes all size classes of functional types. Resources not included.
+#' \item Repro: Energy used for reproduction of all size classes of functional types [gWW/m2/year]. Resources not included.
 #' \item Fin: Biomass flux into each size class [gWW/m2/year]. Resources not included.
 #' \item Fout: Biomass flux out of each size class [gWW/m2/year]. Resources not included.
 #' \item totMort: a vector containing total mortality [gWW/m2/year] of each functional type, 
 #' which includes predation mortality, background mortality, and fishing mortality.
-#' \item totGrazing: a vector containing total grazing [gWW/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level)
-#' To be simply, the food intake before assimilation.
-#' \item totLoss: a vector containing all biomass loss [gWW/m2/year] of each functional type, including unassimilated food and metabolism.
-#' They are released to environments. where is energy loss from reproduction (1-epsRepro), to be fixed.
-#' \item totRepro: a vector containing total energy used for reproduction [gWW/m2] of each functional type.
-#' \item totRecruit: a vector containing total recruitment [gWW/m2] of each functional type. 
-#' TotRecruit = TotRepro * epsRepro (reproduction efficiency)
-#' \item totBiomass: a vector containing total biomass [gWW/m2] of each functional type.
-#'   }
-#' If \code{FullOutput = FALSE}, only returns \code{deriv}.
+#' \item totGrazing: a vector containing total grazing (food intake before assimilation) [gWW/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level).
+#' \item totLoss: a vector containing total biomass loss [gWW/m2/year] of each functional type, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
+#' The reproduction cost here also include the energy loss (1-epsRepro) from the flux out of the last size class (invested in reproduction) of each functional type.
+#' These loss are supposed to be released to environments.
+#' \item totRepro: a vector containing total energy used for reproduction [gWW/m2/year] of each functional type (before multiplying the reproduction efficiency epsRepro).
+#' \item totRecruit: a vector containing total recruitment [gWW/m2/year] of each functional type. 
+#' totRecruit = totRepro * epsRepro (reproduction efficiency)
+#' \item totBiomass: a vector containing total biomass [gWW/m2] of each functional type. 
+#' }
+#' If \code{FullOutput = FALSE}, it only returns derivatives of resources and all size classes.
 #'
 #' @examples
 #' # Parameter list preparation
@@ -126,7 +126,6 @@ derivativesFEISTYR = function(t,              # current time
   f   = Enc / (p$Cmax + Enc)   # Functional response
   f[is.na(f)] = 0
   
-  
   # net growth rate, /yr
   Eavail  = p$epsAssim * p$Cmax * f - p$metabolism
   
@@ -150,8 +149,8 @@ derivativesFEISTYR = function(t,              # current time
   
   # Flux out of the size group
   #------------------------------
-  v     = Eavail[iFish]   # net growth rate
-  vplus = pmax(0, v)
+  v     = Eavail[iFish,]   # net growth rate
+  vplus = pmax(v,0)
   
   # fraction available for growth
   kappa = 1 - p$psiMature[iFish]   
@@ -167,19 +166,17 @@ derivativesFEISTYR = function(t,              # current time
   Fout = gamma*B
   
   # Energy used for reproduction
-  Repro = (1-kappa)*vplus*B
+  Repro = p$psiMature[iFish]*vplus*B
   
   # Flux into the size group
   #------------------------------
-  Fin = 0
-  RR = 0
+  Fin = Fout*0
   for (i in 1:p$nGroups) {
     ix = p$ix[[i]] - p$ix[[1]][1] +1                  # growth to
     ixPrev  = c(ix[length(ix)], ix[1:(length(ix)-1)]) # growth from
     Fin[ix] = Fout[ixPrev]
     
     # for reproduction: consider the reproduction success
-    RR[i] = sum(Repro[ix]) + Fin[ix[1]]
     Fin[ix[1]] = p$epsRepro[i]*(Fin[ix[1]] + sum( Repro[ix] ))
   }
   
@@ -203,8 +200,8 @@ derivativesFEISTYR = function(t,              # current time
   if (FullOutput) { # Output everything
     out = list()
     out$deriv = c(dRdt, dBdt)
-    out$f     = f[-p$ixR] # Feeding level only all fish stages, no resources
-    out$mortpred = mortpred
+    out$f     = f[-p$ixR,] # Feeding level only all fish stages, no resources
+    out$mortpred = mortpred[,]
     out$g     = g # net growth rate fish stages
     out$Repro = Repro
     out$Fin   = Fin
@@ -224,9 +221,9 @@ derivativesFEISTYR = function(t,              # current time
     
     out$totMort    = tapply((mort   *u)[p$ixFish], INDEX=il, FUN=sum)
     out$totGrazing = tapply((grazing*u)[p$ixFish], INDEX=il, FUN=sum)
-    # Add the waste energy in reproduction from flux out of the last stage of each functional group.
+    # Add the waste energy in reproduction from flux out of the last stage of each functional type.
     out$totLoss    = tapply((loss   *u)[p$ixFish], INDEX=il, FUN=sum) +(1-p$epsRepro)*Fout[sapply(p$ix, tail, n = 1)-p$nResources] 
-    out$totRepro   = RR    
+    out$totRepro   = tapply(Repro, INDEX=il, FUN=sum) + Fout[sapply(p$ix, tail, n = 1)-p$nResources] 
     out$totRecruit = out$totRepro* p$epsRepro
     out$totBiomass = tapply(B, INDEX=il, FUN=sum)
     return(out)
