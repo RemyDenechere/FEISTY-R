@@ -611,11 +611,6 @@ paramAddPhysiology = function (p,
   # Assimilation efficiency, [-]
   p$epsAssim = epsAssim                   
   
-  #Oct 2023 add for Temperature effects
-  p$Cmaxsave=p$Cmax
-  p$Vsave=p$V
-  p$metabolismsave=p$metabolism
-  
   # remove the NAs
   p$mc       [is.na(p$mc)]        <- 0 
   p$u0       [is.na(p$u0)]        <- 0 
@@ -626,6 +621,11 @@ paramAddPhysiology = function (p,
   p$Cmax     [is.na(p$Cmax)]      <- 0 
   p$metabolism[is.na(p$metabolism)] <- 0 
   p$V        [is.na(p$V)]         <- 0 
+  
+  #Oct 2023 add for Temperature effects
+  p$Cmaxsave=p$Cmax
+  p$Vsave=p$V
+  p$metabolismsave=p$metabolism
   
   names(p$u0) =  p$stagenames  
   iF = p$ixFish
