@@ -20,7 +20,7 @@
   nn = -0.25                 ! Metabolic exponent                           [ ]
   gamma = 70                 ! Coef. for clearance rate                     [m2 g^q yr-1]
   q = -0.2                   ! Clearance rate exponent                      [ ]
-  kk = 4.0150                ! 0.011d0*365.d0 Metabolism coefficient        [g^p yr-1]
+  kk = 4                      ! 0.2*h Metabolism coefficient        [g^p yr-1]
   p = -0.175                 ! Metabolism exponent                          [ ]
   epsAssim = 0.7             ! Assimilation efficiency                      [ ]
   epsRepro = 0.01            ! reproduction * recruitment efficiency        [ ]
@@ -57,7 +57,7 @@
   nn = -0.25                 ! Metabolic exponent
   q = -0.2                   ! Clearance rate exponent
   gamma = 70                 ! Coef. for clearance rate
-  kk = 4.0150                ! 0.011d0*365.d0 Metabolism coefficient
+  kk = 4                      ! 0.2*h Metabolism coefficient
   p = -0.175                 ! Metabolism exponent
   epsAssim = 0.7             ! Assimilation efficiency
   epsRepro = 0.01            !reproduction * recruitment efficiency

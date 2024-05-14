@@ -624,7 +624,7 @@ setupVertical = function(szprod= 80,lzprod = 80, # Pelagic productivities
   #------------------  
   # Setup physiology:
   #------------------  
-  param = paramAddPhysiology(param,am = 0.2*20) # 20% * Max. consumption coefficient)
+  param = paramAddPhysiology(param)
   
   #overwrite psiMature only for setupVertical
   nsize= nStages+1
@@ -1081,7 +1081,7 @@ setupVertical2 = function(szprod= 80,lzprod = 80, # Pelagic productivities
   #------------------  
   # Setup physiology:
   #------------------  
-  param = paramAddPhysiology(param,am = 0.2*20) # 20% * Max. consumption coefficient)
+  param = paramAddPhysiology(param)
   
   # Add fishing mortality
   param=setFishing(param, Fmax=Fmax, etaF=etaF)

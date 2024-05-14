@@ -583,12 +583,12 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 paramAddPhysiology = function (p, 
                                ac = 20,          # Max. consumption coefficient  [g^(-n)/yr]
                                bc = -0.25,       # Max. consumption exponent     [-]
-                               am = 0.011*365,#4,           # Metabolism coefficient        [g^(-p)/yr]
+                               am = 0.2*ac,      # Metabolism coefficient        [g^(-p)/yr]
                                bm = -0.175,      # Metabolism exponent           [-]
-                               ae = 70,      # Coef. for clearance rate      [m2*g^(q-1)/yr] encounter slope
+                               ae = 70,          # Coef. for clearance rate      [m2*g^(q-1)/yr] encounter slope
                                be = -0.2,        # Clearance rate exponent
-                               epsRepro = 0.01, # reproduction * recruitment efficiency )
-                               epsAssim = 0.7   # Assimilation efficiency  
+                               epsRepro = 0.01,  # reproduction * recruitment efficiency )
+                               epsAssim = 0.7    # Assimilation efficiency  
 )
 {
   # index pointing to fish stages and the fish weights:
