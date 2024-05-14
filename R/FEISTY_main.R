@@ -1,17 +1,17 @@
 #===============================================================================
 # The FEISTY model as described in 
-# Van Denderen et al. 2020 Global Ecology and Biogeography, DOI: 10.1111/geb.13348 
-# Emergent global biogeography of marine fish food webs.
-
-# Petrik, CM, Stock, CA, Andersen, KH, van Denderen, PD, Watson, JR 2019. 
+# Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). 
 # Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. 
-# Progress in Oceanography, 176, 102124. https://doi.org/10.1016/j.pocean.2019.102124
+# Progress in oceanography, 176, 102124.
 
-# Slightly rewritten by Karline Soetaert, based on code from Ken H. Andersen
+# van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). 
+# Emergent global biogeography of marine fish food webs. 
+# Global Ecology and Biogeography, 30(9), 1822-1834.
+
 # 
 # Main model routines
 #      derivativesFEISTYR  : derivative code in R
-#      simulateFEISTY      : run the feisty model
+#      simulateFEISTY      : run the FEISTY model
 #
 #===============================================================================
 
@@ -39,23 +39,23 @@
 #' @return
 #' If \code{FullOutput} is 'TRUE', a list containing the following components:
 #' \itemize{
-#' \item deriv: a vector of derivatives [gWW/m2/year] of all resources and all functional type size classes.
+#' \item deriv: a vector of derivatives [g/m2/year] of all resources and all functional type size classes.
 #' \item f: a vector containing feeding levels [-] of all resources (0) and all size classes of functional types.
 #' \item mortpred: a vector containing predation mortality rate [1/year] of all resources and all size classes of functional types.
 #' \item g: Net growth rate (the fraction of available energy invested in growth) [1/year]. It includes all size classes of functional types. Resources not included.
-#' \item Repro: Energy used for reproduction of all size classes of functional types [gWW/m2/year]. Resources not included.
-#' \item Fin: Biomass flux into each size class [gWW/m2/year]. Resources not included.
-#' \item Fout: Biomass flux out of each size class [gWW/m2/year]. Resources not included.
-#' \item totMort: a vector containing total mortality [gWW/m2/year] of each functional type, 
+#' \item Repro: Energy used for reproduction of all size classes of functional types [g/m2/year]. Resources not included.
+#' \item Fin: Biomass flux into each size class [g/m2/year]. Resources not included.
+#' \item Fout: Biomass flux out of each size class [g/m2/year]. Resources not included.
+#' \item totMort: a vector containing total mortality [g/m2/year] of each functional type, 
 #' which includes predation mortality, background mortality, and fishing mortality.
-#' \item totGrazing: a vector containing total grazing (food intake before assimilation) [gWW/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level).
-#' \item totLoss: a vector containing total biomass loss [gWW/m2/year] of each functional type, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
+#' \item totGrazing: a vector containing total grazing (food intake before assimilation) [g/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level).
+#' \item totLoss: a vector containing total biomass loss [g/m2/year] of each functional type, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
 #' The reproduction cost here also include the energy loss (1-epsRepro) from the flux out of the last size class (invested in reproduction) of each functional type.
 #' These loss are supposed to be released to environments.
-#' \item totRepro: a vector containing total energy used for reproduction [gWW/m2/year] of each functional type (before multiplying the reproduction efficiency epsRepro).
-#' \item totRecruit: a vector containing total recruitment [gWW/m2/year] of each functional type. 
+#' \item totRepro: a vector containing total energy used for reproduction [g/m2/year] of each functional type (before multiplying the reproduction efficiency epsRepro).
+#' \item totRecruit: a vector containing total recruitment [g/m2/year] of each functional type. 
 #' totRecruit = totRepro * epsRepro (reproduction efficiency)
-#' \item totBiomass: a vector containing total biomass [gWW/m2] of each functional type. 
+#' \item totBiomass: a vector containing total biomass [g/m2] of each functional type. 
 #' }
 #' If \code{FullOutput = FALSE}, it only returns derivatives of resources and all size classes.
 #'
@@ -242,22 +242,26 @@ derivativesFEISTYR = function(t,              # current time
 #' @usage simulateFEISTY (p = setupBasic(), 
 #'                        tEnd = 500, tStep  = 1, times = seq(from=0, to=tEnd, by=tStep), 
 #'                        yini = p$u0, USEdll = TRUE, Rmodel = derivativesFEISTYR, 
-#'                        bCust = FALSE)
+#'                        bCust = TRUE)
 #'
-#' @param bCust Logical flag, indicates whether to use fixed setups (FALSE) or customized setups (TRUE). \cr 
-#' If \code{bCust} is TRUE, FEISTY simulations based on customized setups only can be done in FORTRAN, not R. \code{useDLL} input does not work.
 #' @param p A complete parameter list. \cr 
 #' The parameter of FEISTY setups can be one of the following: \code{\link{setupBasic}}, \code{\link{setupBasic2}}, \code{\link{setupVertical}}, and \code{\link{setupVertical2}}.
-#' Or, modelers can customize new setups before calling \code{simulateFEISTY}.
+#' Moreover, modelers can modify these four prepared FEISTY setups or customize new setups before calling \code{simulateFEISTY}.
 #' @param tEnd The end time for the simulation [year], i.e., simulation period of FEISTY, in years. 
-#' @param tStep The time step for ODE solving output [year]. Default 1
+#' @param tStep The time step for ODE solving output [year]. Default is 1. Time series results are in every year.
 #' @param times A sequence of time points for FEISTY simulations (ODEs solving), required by function \code{\link{ode}}. Generally, it needs nothing, since it will be generated by `tEnd` and `tStep` automatically. \cr
-#'              If `NA`, the function returns only the derivative (one time step running) by `Rmodel`. The `Rmodel` is \code{\link{derivativesFEISTYR}}.
-#' @param yini A vector containing initial biomass values of all state variables (resources and all size classes). The default is imported from the setup parameter list, `p$u0`.
+#'              If `NA`, the function returns only the derivatives (one time step running) by the derivative function, which is the \code{\link{derivativesFEISTYR}} in R or the same function in FORTRAN.
+#' @param yini A vector containing initial biomass values of all state variables (resources and all size classes). The default is imported from the setup parameter list, `p$u0`. 
+#'             If input the whole output list of a simulation (e.g., \code{yini=sim}), the biomass values of all state variables of the last time step (\code{yini=sim$u[sim$nTime,]}) will be applied to the initial values.
 #' @param USEdll Logical flag, determining whether the ODEs are solved in FORTRAN (`TRUE`) or R (`FALSE`). \cr
-#' The \link{deSolve} package is used for both methods.
+#' The \link{deSolve} package is required for both methods. Default is TRUE, \code{USEdll=FALSE} is useful in debugging or model development.
+#' `bCust` flag input is ineffective when \code{USEdll=FALSE}.
 #' @param Rmodel The R function for computing derivatives, defaults to \code{\link{derivativesFEISTYR}}. Generally, should not be changed, unless modelers modify the model profoundly.
-#'
+#' @param bCust Logical flag, indicates whether to use fixed setups (FALSE) or customized setups (TRUE). \cr 
+#' Default is TRUE, which means the core FEISTY parameters generated in R are transmitted to Fortran, and the ode solving is also done by compiled language. 
+#' \code{bCust=FALSE} is useful in debugging and model development, e,g., comparing R and FORTRAN results.
+#' \code{bCust} flag has a lower priority than \code{USEdll} flag. \code{bCust} flag input is ineffective when \code{USEdll} flag is FALSE.
+#' 
 #' @details
 #' The function runs the FEISTY model simulation over the specified time frame. \cr
 #' The simulation supports published FEISTY setups and their revised versions:
@@ -279,40 +283,34 @@ derivativesFEISTYR = function(t,              # current time
 #' \item f: A matrix containing feeding levels [-] of all size classes of functional types over each time point. Resources not included.
 #' \item mortpred: A matrix containing a vector containing predation mortality rate [1/year] of all resources and all size classes of functional types over each time point. Resources not included.
 #' \item g: A matrix containing the net growth rate [1/year] of all size classes of functional types over each time point. Resources not included.
-#' \item Repro: A matrix containing the energy used for reproduction of all size classes of functional types over each time point, rate [gWW/m2/year]. Resources not included.
-#' \item Fin: A matrix containing the biomass flux into each size class over each time point [gWW/m2/year]. Resources not included.
-#' \item Fout: A matrix containing the biomass flux out of each size class over each time point [gWW/m2/year]. Resources not included.
-#' \item totMort: a matrix containing the total mortality [gWW/m2/year] of each functional type over each time point, 
+#' \item Repro: A matrix containing the energy used for reproduction of all size classes of functional types over each time point, rate [g/m2/year]. Resources not included.
+#' \item Fin: A matrix containing the biomass flux into each size class over each time point [g/m2/year]. Resources not included.
+#' \item Fout: A matrix containing the biomass flux out of each size class over each time point [g/m2/year]. Resources not included.
+#' \item totMort: a matrix containing the total mortality [g/m2/year] of each functional type over each time point, 
 #' which includes predation mortality, background mortality, and fishing mortality.
-#' \item totGrazing: a matrix containing the total grazing [gWW/m2/year] of each functional type over each time point, Cmax * f (maximum consumption rate * feeding level)
+#' \item totGrazing: a matrix containing the total grazing [g/m2/year] of each functional type over each time point, Cmax * f (maximum consumption rate * feeding level)
 #' To be simply, the food intake before assimilation.
-#' \item totLoss: a matrix containing all biomass loss [gWW/m2/year] of each functional type over each time point, including unassimilated food and metabolism.
+#' \item totLoss: a matrix containing all biomass loss [g/m2/year] of each functional type over each time point, including unassimilated food and metabolism.
 #' They are released to environments. where is energy loss from reproduction (1-epsRepro), to be fixed.
-#' \item totRepro: a matrix containing the total energy used for reproduction [gWW/m2] of each functional type over each time point.
-#' \item totRecruit: a matrix containing the total recruitment [gWW/m2] of each functional type over each time point. 
+#' \item totRepro: a matrix containing the total energy used for reproduction [g/m2] of each functional type over each time point.
+#' \item totRecruit: a matrix containing the total recruitment [g/m2] of each functional type over each time point. 
 #' TotRecruit = TotRepro * epsRepro (reproduction efficiency)
-#' \item totBiomass: a matrix containing the total biomass [gWW/m2] of each functional type over each time point.
+#' \item totBiomass: a matrix containing the total biomass [g/m2] of each functional type over each time point.
 #' \item `SSBAMean`, `SSBGMean`, `SSBMin`, `SSBMax`, and `SSB` can be found in \code{\link{calcSSB}}. \cr
 #' `yieldAMean`, `yieldGMean`, `yieldMin`, `yieldMax`, and `yield` can be found in \code{\link{calcYield}}.
 #' }
 #' 
 #' @examples
-#' # Just some examples, data input and output may not make sense.
 #' 
-#' 
-#' #-----------------------------------------------
 #' # run setupBasic with default parameter settings
-#' #-----------------------------------------------
 #' sim <- simulateFEISTY()
 #' plotSimulation(sim)
-#' 
-#' # -------------------------------------------------------------------------------
 #' 
 #' # run FEISTY simulation based on setupVertical2
 #' # prepare a parameter list
 #' p_V <- setupVertical2(szprod = 100, lzprod = 120, bprodin = 200, depth = 1000)
 #' # run the simulation by R
-#' sim_Vertical_R <- simulateFEISTY(p = p_V)
+#' sim_Vertical_R <- simulateFEISTY(p = p_V, USEdll = FALSE)
 #' plotSimulation(sim_Vertical_R)
 #' 
 #' # run FEISTY simulation based on setupBasic2 by Fortran
@@ -320,12 +318,12 @@ derivativesFEISTYR = function(t,              # current time
 #'                                                depth = 500, Tp = 11, Tb = 9, 
 #'                                                nStages=9, etaMature=0.25, F=0, etaF=0.05),
 #'                                 tEnd = 1000, tStep = 1, USEdll = TRUE)
-#' 
 #' plotSimulation(sim_Basic2_F)
 #' 
 #' # -------------------------------------------------------------------------------
 #' 
-#' # run FEISTY simulation based on a customized set up
+#' # run FEISTY simulation based on a customized set up. 
+#' # It is just an example, the parameters and results may not make sense.
 #' 
 #' # Initialize the parameter list.
 #' p_cust <- paramInit(szprod=100, lzprod=100, bprod=50, Tp=10,Tb=10,etaMature=0.25, depth=500,
@@ -371,8 +369,6 @@ derivativesFEISTYR = function(t,              # current time
 #' # run the simulation for 500 years. 
 #' sim_cust <- simulateFEISTY(bCust = TRUE, p = p_cust, tEnd = 500)
 #' 
-#' 
-#' 
 #' @references
 #' Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.
 #' 
@@ -412,7 +408,7 @@ simulateFEISTY = function(p      = setupBasic(),
                           yini   = p$u0,  
                           USEdll = TRUE,
                           Rmodel = derivativesFEISTYR,
-                          bCust    = FALSE)
+                          bCust    = TRUE)
 {
   
   nR      <- p$nResources[1]  # no of resources. [1] to make sure that this is only one number
@@ -446,7 +442,13 @@ simulateFEISTY = function(p      = setupBasic(),
   #
   # calculate in Fortran
   #
-  if (USEdll==TRUE || bCust==TRUE) {    
+  
+  if (USEdll==TRUE){
+
+    # names of functions in fortran code to be used
+    runfunc  <- "runfeisty"    # the derivative function
+    
+  if (bCust==TRUE) {    
     # the integers to be passed to the fortran code
     ipar <- c(nGroups,                           # total number of groups
               nR,                                # total number of resources
@@ -488,14 +490,10 @@ simulateFEISTY = function(p      = setupBasic(),
                 p$Tp,
                 p$Tb)
     
-    # names of functions in fortran code to be used
-    runfunc  <- "runfeisty"    # the derivative function
-    
     # 
     # Run the simulation:
     #
-    if (bCust==TRUE){     # for customized setups
-      
+    
       initfunc <- "initfeisty"
       
       if (any(is.na(times)))  # one call and return
