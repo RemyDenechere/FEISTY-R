@@ -74,7 +74,7 @@
 #' 
 #' de Roos, A. M., Schellekens, T., Van Kooten, T., Van De Wolfshaar, K., Claessen, D., & Persson, L. (2008). Simplifying a physiologically structured population model to a stage-structured biomass model. Theoretical population biology, 73(1), 47-62.
 #' 
-#' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+#' @author AAAA, EEEE, DDDD
 #'
 #' @aliases derivativesFEISTYR
 #' 
@@ -237,7 +237,6 @@ derivativesFEISTYR = function(t,              # current time
 #' @description
 #' \code{simulateFEISTY} runs simulations of the FEISTY model to resolve the dynamics of marine resources and fish populations over a specified time frame. \cr
 #' It provides options for integrating ordinary differential equations in Fortran or R for four prepared setups (\code{setupBasic}, \code{setupBasic2}, \code{setupVertical}, and \code{setupVertical2}).
-#' It also allows simulations for customized FEISTY setups.
 #'
 #' @usage simulateFEISTY (p = setupBasic(), 
 #'                        tEnd = 500, tStep  = 1, times = seq(from=0, to=tEnd, by=tStep), 
@@ -253,6 +252,7 @@ derivativesFEISTYR = function(t,              # current time
 #'              If `NA`, the function returns only the derivatives (one time step running) by the derivative function, which is the \code{\link{derivativesFEISTYR}} in R or the same function in FORTRAN.
 #' @param yini A vector containing initial biomass values of all state variables (resources and all size classes). The default is imported from the setup parameter list, `p$u0`. 
 #'             If input the whole output list of a simulation (e.g., \code{yini=sim}), the biomass values of all state variables of the last time step (\code{yini=sim$u[sim$nTime,]}) will be applied to the initial values.
+#'             It can be used for successive simulations based on previous simulations. 
 #' @param USEdll Logical flag, determining whether the ODEs are solved in FORTRAN (`TRUE`) or R (`FALSE`). \cr
 #' The \link{deSolve} package is required for both methods. Default is TRUE, \code{USEdll=FALSE} is useful in debugging or model development.
 #' `bCust` flag input is ineffective when \code{USEdll=FALSE}.
@@ -378,7 +378,7 @@ derivativesFEISTYR = function(t,              # current time
 #' 
 #' Soetaert, K., Petzoldt, T., & Setzer, R. W. (2010). Solving differential equations in R: package deSolve. Journal of statistical software, 33, 1-25.
 #' 
-#' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+#' @author AAAA, EEEE, DDDD
 #'
 #' @aliases simulateFEISTY
 #' 

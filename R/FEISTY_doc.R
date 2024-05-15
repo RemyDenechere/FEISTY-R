@@ -36,10 +36,8 @@
 #' 
 #' @examples
 #' # A simulation can be as simple as:
-#'   p = setupBasic()
-#'   sim = simulateFEISTY(p=p)
+#'   sim = simulateFEISTY()
 #'   plotSimulation(sim)
-#' 
 #' 
 #' @references
 #' Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.
@@ -50,9 +48,7 @@
 #' 
 #' Soetaert, K., Petzoldt, T., & Setzer, R. W. (2010). Solving differential equations in R: package deSolve. Journal of statistical software, 33, 1-25.
 #' 
-#' @author Ken H Andersen,
-#'         Karline Soetaert <karline.soetaert@nioz.nl>,
-#'         Yixin Zhao
+#' @author AAAA,DDDD,EEEE
 #' 
 #' @seealso 
 #' Setups and simulations: \cr
@@ -65,8 +61,10 @@
 #' 
 #' Plotting: \cr
 #' \code{\link{plotSimulation}} Plot simulation results \cr
+#' \code{\link{plotBiomasstime}} Time series of biomass \cr
 #' \code{\link{plotSSBtime}} Spawning stock biomass plot \cr
-#' \code{\link{plotSpectra}} Biomass plot \cr
+#' \code{\link{plotYieldtime}} Time series of yield \cr
+#' \code{\link{plotSpectra}} Biomass spectra plot \cr
 #' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
 #' \code{\link{plotNetwork}} Food web plot \cr
 #' \code{\link{plotDiet}} Diet plot

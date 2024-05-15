@@ -1,15 +1,15 @@
 #' Set Fishing Mortality
 #'
-#' This function sets fishing mortality for all fish based on a baseline fishing mortality and a size-based trawl selectivity.
+#' This function sets fishing mortality for specific functional types based on maximum fishing mortality and size-based trawl selectivity.
 #'
 #' @param p The model parameter list, as created with e.g. \link{setupBasic2}.
-#' @param F The baseline fishing mortality rate [1/year]. Default 0, indicating no fishing.
+#' @param Fmax The baseline fishing mortality rate [1/year]. Default 0, indicating no fishing.
 #' @param etaF A coefficient determining the fish size with 50\% fishing selectivity. The value represents the fraction of the maximum size of a fish functional type. The default value is 0.05.
 #' @param groupidx An integer vector containing indices of functional types that fishing mortality will be assigned to. Default is all functional types.
 #' 
 #' @return It returns an updated parameter list:
 #' \itemize{
-#' \item F, baseline fishing mortality, from parameter input.
+#' \item Fmax, maximum fishing mortality, from parameter input.
 #' \item etaF, from parameter input.
 #' \item mortF, a vector containing fishing mortality of all state variables, including resources (always 0) and fish.
 #' }
@@ -25,7 +25,7 @@
 #' @references
 #' Andersen, K. H. (2019). Fish ecology, evolution, and exploitation: a new theoretical synthesis. Princeton University Press.
 #' 
-#' @author Yixin Zhao
+#' @author DDDD
 #' 
 #' @aliases setFishing
 #' 
@@ -47,7 +47,7 @@ setFishing = function(p, Fmax=0, etaF=0.05, groupidx=c(1:p$nGroups)) {
 
 #' Yield Calculation
 #'
-#' This function calculates the yield for each functional type in units of gWW/m2/year based on a FEISTY simulation result.
+#' This function calculates the yield for each functional type in units of g/m2/year based on a FEISTY simulation result.
 #'
 #' @usage calcYield(sim, etaTime = 0.4)
 #'
@@ -56,22 +56,22 @@ setFishing = function(p, Fmax=0, etaF=0.05, groupidx=c(1:p$nGroups)) {
 #'
 #' @details
 #' This function calculates the yield for each function type based on the FEISTY simulation results within the specified time fraction (default is the last 40\% of the simulation period). \cr
-#' Yield is the product of biomass \code{u} [gww/m2] and fishing mortality \code{mortF} [1/year]. Negative values in \code{u} are revised to 0. \cr
+#' Yield is the product of biomass \code{u} [g/m2] and fishing mortality \code{mortF} [1/year]. Negative values in \code{u} are corrected to 0. \cr
 #' This function has been integrated into \code{\link{simulateFEISTY}}. It cannot be called independently.
 #'
 #' @return 
 #' Add yield data to the result list:
 #' \itemize{
-#' \item yieldAMean: a vector containing the arithmetic mean yield data [gww/m2/year] of each functional type of the time range specified.
-#' \item yieldGMean: a vector containing the natural log-based geometric mean yield data [gww/m2/year] of each functional type of the time range specified.
-#' \item yieldMin: a vector containing the minimum yield data [gww/m2/year] of each functional type within the time range specified.
-#' \item yieldMax: a vector containing the maximum yield data [gww/m2/year] of each functional type within the time range specified.
-#' \item yield: a matrix containing the yield data [gww/m2/year] of each functional type (column) in each time point (row)
+#' \item yieldAMean: a vector containing the arithmetic mean yield data [g/m2/year] of each functional type of the time range specified.
+#' \item yieldGMean: a vector containing the natural log-based geometric mean yield data [g/m2/year] of each functional type of the time range specified.
+#' \item yieldMin: a vector containing the minimum yield data [g/m2/year] of each functional type within the time range specified.
+#' \item yieldMax: a vector containing the maximum yield data [g/m2/year] of each functional type within the time range specified.
+#' \item yield: a matrix containing the yield data [g/m2/year] of each functional type (column) in each time point (row)
 #' }
 #'
 # @examples
 #'
-#' @author Yixin Zhao
+#' @author DDDD
 #' 
 #' @seealso 
 #' \code{\link{setFishing}} 	Set fishing mortality
@@ -118,7 +118,7 @@ calcYield = function(
 #' Spawning Stock Biomass Calculation
 #'
 #' This function calculates the spawning stock biomass (SSB) for each functional 
-#' type based on a FEISTY simulation result in units of gWW/m2.
+#' type based on a FEISTY simulation result in units of g/m2.
 #'
 #' @usage calcSSB(sim, etaTime = 0.4)
 #'
@@ -127,24 +127,24 @@ calcYield = function(
 #'
 #' @details
 #' This function calculates the spawning stock biomass for each function type based on the FEISTY simulation results within the specified time fraction (default is the last 40\% of the simulation period). \cr
-#' Spawning stock biomass is the product of biomass \code{u} [gww/m2] and maturity level \code{psiMature} [1/year]. Negative values in \code{u} are revised to 0. \cr
+#' Spawning stock biomass is the product of biomass \code{u} [g/m2] and maturity level \code{psiMature} [dimensionless]. Negative values in \code{u} are corrected to 0. \cr
 #' Note the SSB data only represents how much biomass (energy) could be used for reproduction, rather than the amount of offspring. \cr
 #' This function has been integrated into \code{\link{simulateFEISTY}}. It cannot be called independently.
 #'
 #' @return 
 #' Add SSB data to the result list:
 #' \itemize{
-#' \item SSBAMean: a vector containing the arithmetic mean SSB data [gww/m2/year] of each functional type of the time range specified.
-#' \item SSBGMean: a vector containing the natural log-based geometric mean SSB data [gww/m2/year] of each functional type of the time range specified.
-#' \item SSBMin: a vector containing the minimum SSB data [gww/m2/year] of each functional type within the time range specified.
-#' \item SSBMax: a vector containing the maximum SSB data [gww/m2/year] of each functional type within the time range specified.
-#' \item SSB: a matrix containing the SSB data [gww/m2/year] of each functional type (column) in each time point (row)
+#' \item SSBAMean: a vector containing the arithmetic mean SSB data [g/m2/year] of each functional type of the time range specified.
+#' \item SSBGMean: a vector containing the natural log-based geometric mean SSB data [g/m2/year] of each functional type of the time range specified.
+#' \item SSBMin: a vector containing the minimum SSB data [g/m2/year] of each functional type within the time range specified.
+#' \item SSBMax: a vector containing the maximum SSB data [g/m2/year] of each functional type within the time range specified.
+#' \item SSB: a matrix containing the SSB data [g/m2/year] of each functional type (column) in each time point (row)
 #' }
 #'
 # @examples
 #' 
 #'
-#' @author Yixin Zhao
+#' @author DDDD
 #' 
 #' @aliases calcSSB
 #' 

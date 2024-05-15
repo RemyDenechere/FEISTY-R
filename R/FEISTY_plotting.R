@@ -15,7 +15,7 @@ min_mort    <- 1E-2 # minimum mortality in plotRates mortality
 #' 
 #' @details X-axis is time. Y-axis is the SSB data in the log10 scale.
 #' 
-#' @author P. Daniël van Denderen, Yixin Zhao
+#' @author BBBB, DDDD
 #'
 #' @usage plotSSBtime(sim)
 #' 
@@ -72,7 +72,7 @@ plotSSBtime = function(sim) {
 #' 
 #' @details X-axis is time. Y-axis is the fishing yield data in the log10 scale.
 #' 
-#' @author P. Daniël van Denderen, Yixin Zhao
+#' @author BBBB, DDDD
 #'
 #' @usage plotYieldtime(sim)
 #' 
@@ -129,7 +129,7 @@ plotYieldtime = function(sim) {
 #' 
 #' @details X-axis is time. Y-axis is the biomass data in the log10 scale.
 #' 
-#' @author P. Daniël van Denderen, Yixin Zhao
+#' @author BBBB, DDDD
 #'
 #' @usage plotBiomasstime(sim)
 #' 
@@ -189,7 +189,7 @@ plotBiomasstime = function(sim) {
 #' @details The X-axis is individual weight on a log10 scale. The Y-axis is 
 #' biomass on a log10 scale.
 #' 
-#' @author P. Daniël van Denderen, Yixin Zhao
+#' @author BBBB, DDDD
 #'
 #' @usage plotSpectra(sim)
 #' 
@@ -266,16 +266,15 @@ plotSpectra = function(sim) {
 #' resources. 
 #' 
 #' @details
-#' The size of the biomass circles and feeding fluxes are divided by 
+#' The round patterns and lines between them represent biomass and feeding fluxes.
+#' The size of the round patterns (biomass) and lines (feeding fluxes) are divided by 
 #' the maximum biomass or flux and re-scaled with the cube root.
-#' The function works on the four prepared setups or revised 
-#' versions based on these four setups. If customized setups by users have 
-#' more resources and/or fish functional types, this plot function may not work.
+#' The function works on the four prepared setups or revised versions based on these four setups. 
+#' If customized setups by users have more resources and/or fish functional types, this plot function may not work.
 #' In setupBasic and setupBasic2, There is no Y-axis.
-#' In setypVertical and setupVertcal2, 
-#' Y-axis represent locations of relative surface and bottom to avoid overlap of dot symbols.
+#' In setypVertical and setupVertcal2, Y-axis represent locations of relative surface and bottom to avoid overlap of dot symbols.
 #' 
-#' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
+#' @author CCCC, BBBB, DDDD
 #'
 #' @usage plotNetwork(sim)
 #' 
@@ -426,9 +425,10 @@ plotNetwork <- function(sim) {
 #' and/or fish functional types, this plot function needs to be updated.
 #' 
 #' @details
-#' To be added.
+#' Each column indicates the feeding level ranging from 0 to 1 of a predator. 
+#' The sub-columns with different colors in a column represent the proportions of each prey in the predator's diet.
 #' 
-#' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
+#' @author CCCC, BBBB, DDDD
 #'
 #' @usage plotDiet(sim)
 #' 
@@ -630,9 +630,9 @@ plotDiet <- function(sim) {
 #'
 #' Feeding levels calculation is in Eq. 10 in vignettes.
 #' 
-#' data are averaged over a selected time period (last 40% of the simulation time).
+#' Data are averaged over a selected time period (last 40% of the simulation time).
 #' 
-#' @author P. Daniël van Denderen, Yixin Zhao
+#' @author BBBB, DDDD
 #'
 #' @usage plotRates(sim)
 #' 
@@ -658,14 +658,14 @@ plotRates = function(sim) {
   return(plots)
 }
 
-#' Plot simulation results
+#' Plot FEISTY simulation results
 #' 
 #' This function is designed to give a quick visualization overview of a simulation output. 
 #' 
 #' @details It makes a plot combo for the simulation results, including \code{\link{plotSpectra}}, \code{\link{plotRates}},
 #' \code{\link{plotNetwork}} and \code{\link{plotBiomasstime}}. 
 #' 
-#' @author P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
+#' @author BBBB, FFFF, DDDD
 #'
 #' @usage plotSimulation(sim)
 #' 
@@ -684,7 +684,7 @@ plotRates = function(sim) {
 #' \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
 #' \code{\link{plotSpectra}} Biomass spectra plot \cr
 #' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
-#' \code{\link{plotNetwork}} Plot with all feeding interactions
+#' \code{\link{plotNetwork}} Food web plot \cr
 #' \code{\link{plotBiomasstime}} Time series of biomass \cr
 #' 
 #' @export
@@ -746,9 +746,28 @@ plotSimulation = function(sim) {
   return(plots)
 }
 
-# Only for Shiny
+#' Plot 'General' Panel for Shiny App
+#' 
+#' This function is designed to give the figures in the `General` tab in the Shiny App. 
+#' It can be called independently.
+#' 
+#' @details It makes a plot combo displayed in the `General` tab in the Shiny App, 
+#' including \code{\link{plotBiomasstime}}, \code{\link{plotSpectra}}, and \code{\link{plotRates}}.
+#' 
+#' @author DDDD
+#'
+#' @usage plotSimulationShiny(sim)
+#' 
+#' @aliases plotSimulationShiny
+#' 
+#' @seealso 
+#' \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
+#' \code{\link{plotBiomasstime}} Time series of biomass \cr
+#' \code{\link{plotSpectra}} Biomass spectra plot \cr
+#' \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
+#' 
 #' @export
-NULL
+#' 
 plotSimulationShiny = function(sim) {
   p_biomasstime   <- plotBiomasstime(sim)+theme(legend.position = "bottom")
   p_spectra       <- plotSpectra(sim)

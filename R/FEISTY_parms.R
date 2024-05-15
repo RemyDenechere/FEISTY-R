@@ -1,8 +1,5 @@
 #===============================================================================
-# Functions to creating parameter settings for the FEISTY model
-#
-# Slightly rewritten by Karline Soetaert, based on code from Ken H. Andersen
-# 
+# Functions to creating parameter settings for the FEISTY model 
 #===============================================================================
 
 #' Size Preference Matrix Calculation
@@ -75,7 +72,7 @@
 #' # Plot dynamics of resources and small fish.
 #'       
 #'
-#' @author Yixin Zhao
+#' @author DDDD
 #' 
 #' @references 
 #' van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emergent global biogeography of marine fish food webs. Global Ecology and Biogeography, 30(9), 1822-1834.
@@ -169,7 +166,7 @@ paramSizepref <- function(
 #' p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150,
 #'                 mediumsize = 250) # add four extra parameters to the list
 #' 
-#' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+#' @author AAAA, EEEE, DDDD
 #' 
 #' @aliases paramInit
 #'
@@ -265,12 +262,12 @@ makeGrid = function(mMin,         # min size, gram
 #'                          ixbenR=NA)
 #'
 #' @param p Parameter list to be updated.
-#' @param K A vector of carrying capacities of all resources [gww/m2].
+#' @param K A vector of carrying capacities of all resources [g/m2].
 #' @param r A vector containing each resource nudging rate (growth rate) [1/year], default 1, does not recommend other values.
 #' @param dynamics The type of resource dynamics, either "chemostat" or "logistic".
-#' @param mc A vector containing each resource geometric mean weight [gww].
-#' @param mLower A vector containing the lower limit of each resource weight [gww]. Optional, depending on the size-based preference calculation function.
-#' @param mUpper A vector containing the upper limit of each resource weight [gww]. Optional, depending on the size-based preference calculation function.
+#' @param mc A vector containing each resource geometric mean weight [g].
+#' @param mLower A vector containing the lower limit of each resource weight [g]. Optional, depending on the size-based preference calculation function.
+#' @param mUpper A vector containing the upper limit of each resource weight [g]. Optional, depending on the size-based preference calculation function.
 #' @param names A character vector of each resource name (acronym). Optional, if not provided, default names are assigned, e.g., Resource_1 and Resource_2.
 #' @param u0 A vector of the initial concentration of each resource. If not provided, defaults to the value of \code{K}.
 #' @param ixpelR An integer vector of indices of pelagic resources.
@@ -311,12 +308,12 @@ makeGrid = function(mMin,         # min size, gram
 #'    names=c("smallZoo", "largeZoo", "smallBenthos", "largeBenthos", "Phytoplankton"), 
 #'    u0=c(100,100,200,200,200))
 #'
-#' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+#' @author AAAA, EEEE, DDDD
 #'
 #' @aliases paramAddResource
 #' 
 #' @seealso 
-#' \code{\link{paramAddGroup}} Add Parameters of One Functional Type
+#' \code{\link{paramAddGroup}} Add parameters for one functional type
 #'
 #' @export
 #' 
@@ -362,7 +359,7 @@ paramAddResource = function(p,        # parameter to be updated
   return(p)
 }
 
-#' Add parameters of a functional type
+#' Add functional type Parameters
 #'
 #' This function updates the parameter list by adding parameters of one functional type.
 #'
@@ -370,13 +367,13 @@ paramAddResource = function(p,        # parameter to be updated
 #'
 #' @param p The parameter list to be updated.
 #' @param nStages Number of stages for this functional type.
-#' @param mMin Minimum size (mass) of this functional type (boundary value), in gram wet weight [gWW].
-#' @param mMax Maximum size (mass) of this functional type (boundary value), in gram wet weight [gWW].
-#' @param mMature Size [gWW] at which fish has a 50\% maturity level, which will be used for maturity level calculation based on an S-shape function.\cr
+#' @param mMin Minimum size (mass) of this functional type (boundary value), in gram wet weight [g].
+#' @param mMax Maximum size (mass) of this functional type (boundary value), in gram wet weight [g].
+#' @param mMature Size [g] at which fish has a 50\% maturity level, which will be used for maturity level calculation based on an S-shape function.\cr
 #' If NA, only the last size class is 50\% mature; others are 0.
 #' @param mortF Fishing mortality for all size classes [1/year]. Default value 0, indicating no fishing.
 #' @param mort0 Natural mortality (background mortality) for all size groups [1/year]. Default value 0.1.
-#' @param u0 Initial biomass value of all size classes [gWW/m2]. Default value 1.
+#' @param u0 Initial biomass value of all size classes [g/m2]. Default value 1.
 #' @param name The name (acronym) of the functional type. If not provided, a default name is assigned.
 #'
 #' @details
@@ -424,7 +421,7 @@ paramAddResource = function(p,        # parameter to be updated
 #' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
 #'                    mortF=0, mort0 = 0.1, name = "largefish")
 #'
-#' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+#' @author AAAA, EEEE, DDDD
 #'
 #' @aliases paramAddGroup
 #' 
@@ -509,7 +506,7 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 #' @usage paramAddPhysiology(p, 
 #'                           ac = 20, 
 #'                           bc = -0.25, 
-#'                           am = 0.011*365, 
+#'                           am = 0.2*20, 
 #'                           bm = -0.175, 
 #'                           ae = 70, 
 #'                           be = -0.2, 
@@ -517,11 +514,11 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 #'                           epsAssim = 0.7)
 #'
 #' @param p  The parameter to be updated.
-#' @param ac Maximum consumption coefficient [g^bc year-1)].
+#' @param ac Maximum consumption coefficient [g^-bc year-1)].
 #' @param bc Maximum consumption exponent [-].
-#' @param am Metabolism coefficient [g^bm year-1].
+#' @param am Metabolism coefficient [g^-bm year-1] 20\% of `ac`.
 #' @param bm Metabolism exponent [-].
-#' @param ae Clearance rate (encounter rate) coefficient [m2 g^be year-1].
+#' @param ae Clearance rate (encounter rate) coefficient [m2 g^(-be-1) year-1].
 #' @param be Clearance rate (encounter rate) exponent [-].
 #' @param epsRepro Reproduction efficiency [-].
 #' @param epsAssim Assimilation efficiency [-].
@@ -567,12 +564,12 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 #' # add physiological parameters for two functional types (smallfish and largefish)
 #' p <- paramAddPhysiology(p, 
 #'      ac = 20, bc = -0.25,       
-#'      am = 0.011*365, bm = -0.175,      
+#'      am = 0.2*20, bm = -0.175,      
 #'      ae = 70, be = -0.2,        
 #'      epsRepro = 0.01, 
 #'      epsAssim = 0.7)
 #'
-#' @author Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+#' @author AAAA, EEEE, DDDD
 #'
 #' @aliases paramAddPhysiology
 #' 
@@ -644,7 +641,8 @@ paramAddPhysiology = function (p,
 #'
 #' This function adjusts temperature-dependent physiological rates based on environmental temperatures.\cr
 #' It also prepares some indices for effective temperature effects on large demersal fish in demersal water.\cr
-#' It applies Q10 temperature coefficients to modify metabolic rates, clearance rates, and maximum consumption rates.
+#' It applies Q10 temperature coefficients to modify metabolic rates, clearance rates, and maximum consumption rates.\cr
+#' This function is specifically designed for `setupBasic` and `setupBasic2`.
 #' 
 #' @usage paramTeffect(p, Tref, Q10, Q10m, pelgroupidx, demgroupidx)
 #' 
@@ -704,7 +702,7 @@ paramAddPhysiology = function (p,
 #' p1$Cmax
 #' p2$Cmax
 #' 
-#' @author Yixin Zhao
+#' @author DDDD
 #' 
 #' @references
 #' Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.
@@ -810,7 +808,7 @@ paramTeffect = function (p, # only for setupbasic & 2
 # Therefore it works when the functions paramAddPhysiology and paramTeffect are used.
 # `Tp` and `Tb` are required in the input parameter list, or this function will not work.
 #
-# author Yixin Zhao
+# author DDDD
 #
 # references
 # Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.
