@@ -34,10 +34,8 @@ This structure contains all the information of the simulation and can be passed 
 }
 \examples{
 # A simulation can be as simple as:
-  p = setupBasic()
-  sim = simulateFEISTY(p=p)
+  sim = simulateFEISTY()
   plotSimulation(sim)
-
 
 }
 \references{
@@ -60,8 +58,10 @@ Setups and simulations: \cr
 
 Plotting: \cr
 \code{\link{plotSimulation}} Plot simulation results \cr
+\code{\link{plotBiomasstime}} Time series of biomass \cr
 \code{\link{plotSSBtime}} Spawning stock biomass plot \cr
-\code{\link{plotSpectra}} Biomass plot \cr
+\code{\link{plotYieldtime}} Time series of yield \cr
+\code{\link{plotSpectra}} Biomass spectra plot \cr
 \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
 \code{\link{plotNetwork}} Food web plot \cr
 \code{\link{plotDiet}} Diet plot
@@ -82,7 +82,5 @@ Parameters: \cr
 \code{\link{derivativesFEISTYR}} The derivative function of FEISTY
 }
 \author{
-Ken H Andersen,
-        Karline Soetaert <karline.soetaert@nioz.nl>,
-        Yixin Zhao
+AAAA,DDDD,EEEE
 }

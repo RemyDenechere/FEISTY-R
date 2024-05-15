@@ -4,25 +4,42 @@
 \alias{setupVertical2}
 \title{setupVertical2}
 \usage{
-setupVertical2(szprod = 80, lzprod = 80, bprodin = NA, dfbot = NA, dfpho = NA, nStages = 6, region = 4, depth = 1500, photic = 150, 
-mesopelagic = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF=0.05)
+setupVertical2(szprod = 80, lzprod = 80, 
+                      bprodin = NA, 
+                      dfbot = NA, 
+                      dfpho = NA, 
+                      nStages = 9, 
+                      Tp = NA,
+                      Tm = NA, 
+                      Tb = NA, 
+                      depth = 800,
+                      photic = 150, 
+                      shelfdepth = 250, 
+                      visual = 1.5, 
+                      etaMature = 0.25, 
+                      Fmax = 0, 
+                      etaF=0.05)
 }
 \arguments{
-\item{szprod}{Small zooplankton productivity. \cr
-Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
-Therefore, it is described as small zooplankton productivity [gww/m2/year]. \code{lzprod} is the same.}
+\item{szprod}{Small mesozooplankton productivity. \cr
+Actually, this represents small mesozooplankton carrying capacity [g/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
+Therefore, it is described as small mesozooplankton productivity [g/m2/year]. \code{lzprod} is the same.}
 
-\item{lzprod}{Large zooplankton productivity.}
+\item{lzprod}{Large mesozooplankton productivity.}
 
-\item{bprodin}{Benthic organism productivity input [gww/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
+\item{bprodin}{Benthic organism productivity input [g/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
 The benthic productivity `bprod` equals `bprodin`.}
 
-\item{dfbot}{Detrital flux reaching the bottom [gww/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
+\item{dfbot}{Detrital flux reaching the bottom [g/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
 It will multiply the trophic transfer efficiency (10\%) to get the benthic productivity `bprod`.}
 
-\item{dfpho}{Detrital flux out of the photic zone [gww/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`. If all are NAs then `dfpho = 150`.
+\item{dfpho}{Detrital flux out of the photic zone [g/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`. If all are NAs then `dfpho = 150`.
 `dfpho` will be further calculated based on the Martin curve to get detrital flux reaching the bottom and then multiplied the trophic transfer efficiency (10\%) to get benthic productivity `bprod` ultimately .\cr
 See source code of \code{setupVertical}.}
+
+\item{nStages}{size number of large fish functional types (e.g., large pelagic fish, demersal fish, and midwater predators). 
+The size number of small fish functional types (e.g., small pelagic fish and mesopelagic fish) is \code{round(2/3*nStages)}. 
+Generally, \code{nStages} is multiples of 3 (e.g., \code{nStages = 3, 6, 9, or 12}...).}
 
 \item{Tp}{Pelagic water temperature, representing the top 100m average temperature [Celsius]. Default NA. Input NA means Tp = 10.}
 
@@ -30,40 +47,41 @@ See source code of \code{setupVertical}.}
 
 \item{Tb}{Bottom water (the bottom layer) temperature [Celsius]. Default NA. Input NA means Tb = 10.}
 
-\item{depth}{water column depth [meter]. \cr 
+\item{depth}{Water column depth [meter]. \cr 
 Different \code{depth} values will influence fish vertical overlap and temperature-dependent physiological rates. See source code of \code{setupVertical}}
 
-\item{photic}{Photic zone depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical}.}
+\item{photic}{Photic zone depth [meter]. The value affects the diel vertical migration depth and the detrital flux reaching the bottom (if `dfpho` is used). See source code of \code{setupVertical}.}
+
+\item{shelfdepth}{Continental shelf depth [meter]. If the water is shallow (depth<=shelfdepth), mesopelagic fish and midwater predators do not exist,
+and fish do not conduct diel vertical migration (dvm=0). See source code of \code{setupVertical} or \code{setupVertical2}.}
 
 \item{visual}{\code{visual=1.5}: visual predator, predation ability is enhanced during the day and decreased in the twilight zone during the day. \cr 
 \code{visual=1}: non-visual predator, predation abilities are equal in day and night. \cr
 It must \bold{be careful} to assign other values to \code{visual}, or the setup could crash. See source code of \code{setupVertical} or \code{setupVertical2}.}
 
-\item{etaMature}{The coefficient determines the fish size \code{mMature} with a 50\% maturity level. \code{mMature = etaMature * mMax},  where \code{mMax} is the largest fish size (boundary) of a fish functional group. See \code{\link{paramAddGroup}}. 
+\item{etaMature}{the coefficient determines the fish size \code{mMature} with a 50\% maturity level. \code{mMature = etaMature * mMax},  where \code{mMax} is the largest fish size (boundary) of a fish functional group. See \code{\link{paramAddGroup}}. 
 In van Denderen et al. (2021), it was 0.002.}
 
-\item{F}{Baseline fishing mortality [1/year]. \cr
-If \code{F} is 0, there is no fishing mortality. \cr
-If \code{F} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function. See source code of \code{\link{setFishing}}.}
+\item{Fmax}{Maximum fishing mortality [1/year]. \cr
+If \code{Fmax} is 0, there is no fishing mortality. \cr
+If \code{Fmax} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function. See source code of \code{\link{setFishing}}.
+Note here it only allows assigning fishing mortality to all functional types based on the `Fmax` input. 
+If users want to assign fishing mortality to specific functional types with different `Fmax` and `etaF`, it can be done by calling \code{\link{setFishing}} later on. Details are in \code{\link{setFishing}}.}
 
 \item{etaF}{the coefficient determining the fish size \code{mFishing} with 50\% fishing selectivity. See source code of \code{\link{setFishing}}.}
-
-\item{bent}{Detrital flux out of the photic zone [gww/m2/year].}
-
-\item{mesopelagic}{Mesopelagic depth [meter]. The value affects the diel vertical migration depth. See source code of \code{setupVertical} or \code{setupVertical2}.}
 }
 \value{
 Additional parameters added by function \code{\link{paramInit}}:
 \itemize{
-\item szprod, Small zooplankton productivity, from parameter input.
-\item lzprod, Large zooplankton productivity, from parameter input.
+\item szprod, Small mesozooplankton productivity, from parameter input.
+\item lzprod, Large mesozooplankton productivity, from parameter input.
 \item bprodin, Benthic organism productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfbot, Detrital flux reaching the bottom, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfpho, Detrital flux out of the photic zone, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item bprod, Benthic organism productivity, from calculation based on `bprodin` or `dfbot`, or `dfpho`.
 \item bottom, Water column depth, from parameter input (depth).
 \item photic, Photic zone depth, from parameter input.
-\item mesop, mesopelagic zone depth. from parameter input.
+\item shelfdepth, continental shelf depth. from parameter input.
 \item visual, visual=1.5: visual predator. visual=1: non-visual predator. from parameter input.
 \item etaMature, The coefficient determines the fish size \code{mMature} with a 50\% maturity level, from parameter input.
 \item Tp, pelagic water temperature, from parameter input.
@@ -88,15 +106,15 @@ Added by function \code{\link{setupVertical2}}:
 \item theta, the feeding preference matrix for each predator x to each prey y. It is the product of `sizeprefer` and `vertover`.
 }
 
-Other parameters returned can be found in \code{\link{paramInit}}, \code{\link{paramAddResource}}, \code{\link{paramAddGroup}},
+Other returned parameters can be found in \code{\link{paramInit}}, \code{\link{paramAddResource}}, \code{\link{paramAddGroup}},
 \code{\link{paramAddPhysiology}}, and \code{\link{setFishing}}.
 }
 \description{
 \code{setupVertical2} creates a revised setup based on \code{setupVertical}.
 }
 \details{
-The setupVertical2 makes a revised five-species setup (small pelagic fish, mesopelagic fish, large pelagic fish, bathypelagic fish, and demersal fish) with vertical distribution based on van Denderen et al. (2021). 
-There are four resources: small zooplankton, large zooplankton, small benthos, and large benthos. Large benthos actually do \bold{not exist} (always 0).\cr
+The setupVertical2 makes a revised five-species setup (small pelagic fish, mesopelagic fish, large pelagic fish, midwater predators, and demersal fish) with vertical distribution based on van Denderen et al. (2021). 
+There are three resources: small mesozooplankton, large mesozooplankton, benthos, and a spare position in the state variable vector. \cr
 Main revision:
 \itemize{
 \item Allowing more size numbers in each functional type. See \code{\link{paramAddGroup}}.
@@ -105,12 +123,24 @@ Main revision:
 where `mc` is the vector containing the geometric mean size of each class of a functional type, and `mMature` is the body size with a 50\% maturity level. \cr
 See \code{\link{paramAddGroup}}.
 \item Allowing the size-based fishing mortality. See \code{\link{setFishing}}.
-
 }
 }
 \examples{
-p=setupVertical2(szprod = 200, lzprod = 150, bprodin = NA, dfbot = NA, dfpho = 100, nStages = 6, region = 1, depth = 1000, photic = 120,
-mesopelagic = 250, visual = 1.5, etaMature = 0.25, F = 0, etaF = 0.05)
+p=setupVertical2(szprod = 200, lzprod = 150, 
+                 bprodin = NA, 
+                 dfbot = NA, 
+                 dfpho = 100, 
+                 nStages = 9, 
+                 Tp=18,
+                 Tm=15,
+                 Tb=10,
+                 depth = 800, 
+                 photic = 120,
+                 shelfdepth = 250, 
+                 visual = 1.5, 
+                 etaMature = 0.25, 
+                 Fmax = 0, 
+                 etaF = 0.05)
 sim=simulateFEISTY(p=p)
 plotSimulation(sim)
 
@@ -128,5 +158,5 @@ van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emer
 \code{\link{simulateFEISTY}} The main function to run FEISTY simulations
 }
 \author{
-Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

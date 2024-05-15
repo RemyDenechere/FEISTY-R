@@ -1,11 +1,11 @@
 !
 ! FEISTY model (for R package)
 ! References: Petrik et al., 2019; van Denderen et al., 2020.
-! Yixin Zhao original library mixed with Karline Soetaert package codes (Jan 2023)
-! Yixin Zhao Oct 2023
+! DDDD original library mixed with EEEE package codes (Jan 2023)
+! DDDD Oct 2023
 
 !============================================================
-! New stuff based on Karline Soetaert package (Oct 2023 added)
+! New stuff based on EEEE package (Oct 2023 added)
 !============================================================
 
 ! =====================================
@@ -502,12 +502,12 @@ if(bET .eqv. .TRUE. .and. depthET .lt. 200) call updateET(u)
 
 
 !============================================================
-! New stuff based on Karline Soetaert package (Oct 2023 added)
+! New stuff based on EEEE package (Oct 2023 added)
 !============================================================
 
 !==========================================================================
 !==========================================================================
-! interface subroutines between R and fortran for thefeisty model
+! interface subroutines between R and fortran for the feisty model
 !==========================================================================
 !==========================================================================
 

@@ -1,8 +1,8 @@
 !
 ! FEISTY model
 ! References: Petrik et al., 2019; van Denderen et al., 2020.
-! The library follows MATLAB/R codes from Ken Haste Andersen; Pieter Dani?l van Denderen; R?my Den?ch?re; Daniel Ottmann Riera ...
-! Programmed by Yixin Zhao, August 2022.
+! The library follows MATLAB/R codes from AAAA; BBBB; FFFF; CCCC ...
+! Programmed by DDDD, August 2022.
 !
 Module setup
    use globals
@@ -44,7 +44,7 @@ Module setup
    real(dp), allocatable:: K(:), rr(:)   ! Carrying capacity of resources and growth rate of resources
 
 !=======================================================================================================
-! New from Karline Soetaert package   (Oct 2023 added)
+! New from EEEE package   (Oct 2023 added)
          integer:: nFGrid        ! Total number of fish size grids
 
          integer :: Rtype   ! resource dynamics, 1=chemostat; 2=logistic
@@ -238,7 +238,7 @@ contains
    end subroutine setupbasic
 
 ! --------------------------------------
-! Setup by Ken based on Petrik et al. (2019).
+! Setup by AAAA based on Petrik et al. (2019).
 ! --------------------------------------
    subroutine setupbasic2(szprod,lzprod, bprodin, dfbot, nStages, depth, Ts, Tb, etaMature,Fmax,etaF,bETin) !
       real(dp), intent(in) :: szprod,lzprod, bprodin, dfbot, Ts, Tb, depth ! bprodin: benthic productivity, dfbot: detrital flux reaching the sea floor
@@ -1384,7 +1384,7 @@ contains
    end subroutine setupVertical2
 
 ! --------------------------------------
-! Setup of vertical overlap (van Denderen et al., 2020) squid Remy
+! Setup of vertical overlap (van Denderen et al., 2020) squid FFFF
 ! --------------------------------------
    subroutine setupsquid(szprod,lzprod, bottom, nStages)
       real(dp), intent(in) :: szprod,lzprod !
@@ -1493,10 +1493,10 @@ contains
          group(iGroup)%spec%psiMature = 0.d0 ! reset
          if (iGroup .le. 2) then ! small
          group(iGroup)%spec%psiMature = (1.d0 + (group(iGroup)%spec%m / smat)**(-5.d0))**(-1.d0) * &
-                         (group(iGroup)%spec%m / maxfishi(iGroup))**(1.d0-(nn+1.d0))! from Daniel Ottmann Riera?
+                         (group(iGroup)%spec%m / maxfishi(iGroup))**(1.d0-(nn+1.d0))
          else ! large
          group(iGroup)%spec%psiMature = (1.d0 + (group(iGroup)%spec%m / lmat)**(-5.d0))**(-1.d0) * &
-                         (group(iGroup)%spec%m / maxfishi(iGroup))**(1.d0-(nn+1.d0))! from Daniel Ottmann Riera?
+                         (group(iGroup)%spec%m / maxfishi(iGroup))**(1.d0-(nn+1.d0))
          end if
 
       end do
@@ -2037,20 +2037,6 @@ contains
      end do
    end subroutine
 
-!
-! =====================================
-! derivative calculation
-! =====================================
-!
-! ----------------------------------------------------------------------
-!  Calculate the derivatives for all groups:
-!  In:
-!  u: the vector of state variables (all resources and all fish grids)
-!  dudt: vector to hold the derivative (input and output)
-! ----------------------------------------------------------------------
-
-!Replaced by vectorized 'calcderivatives' in Karline Soetaert package below.
-
 
 !-------------------------------------------------------------
 ! return assembled vectors containing values for all fish grid (no resources)
@@ -2095,7 +2081,7 @@ contains
 
 
 ! Oct 2023
-! assign parameter set from Yixin Zhao library to vectors in Karline Soetaert package
+! assign parameter set from DDDD library to vectors in EEEE package
 subroutine set2vec
  integer :: iGroup
 

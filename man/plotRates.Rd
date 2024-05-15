@@ -13,15 +13,18 @@ plotRates(sim)
 Plots growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
 }
 \details{
-Rate calculation:
-\itemize{
-\item Averaged values of rate data are estimated over a selected time period 
-(default last 40% simulation time).
-}
+Note the growth rate here denotes the fraction of the available energy can be invested in growth (Eq. 15 in vignette), 
+which is not the growth rate from a size class to the next neighboring class (Eq. 16 in vignette).
+
+Mortality panel displays the total mortality, background mortality, fishing mortality and predation mortality. 
+
+Feeding levels calculation is in Eq. 10 in vignettes.
+
+Data are averaged over a selected time period (last 40% of the simulation time).
 }
 \examples{
 sim=simulateFEISTY()
-# averaged rate data of last 40\%  simulation time
+# averaged data of last 40\% of the simulation time
 plotRates(sim=sim)
 
 }
@@ -29,5 +32,5 @@ plotRates(sim=sim)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-P. Daniël van Denderen, Yixin Zhao
+BBBB, DDDD
 }

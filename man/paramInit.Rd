@@ -36,12 +36,13 @@ The returned parameter list will be used for further updates.
 }
 \examples{
 # Initialize parameters
-p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150, mediumsize = 250) # add four extra parameters to the list
+p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150,
+                mediumsize = 250) # add four extra parameters to the list
 
 }
 \seealso{
 \code{\link{paramAddResource}} Add Resource Parameters
 }
 \author{
-Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

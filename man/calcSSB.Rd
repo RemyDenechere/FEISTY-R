@@ -14,30 +14,26 @@ calcSSB(sim, etaTime = 0.4)
 \value{
 Add SSB data to the result list:
 \itemize{
-\item SSBAMean: a vector containing the arithmetic mean SSB data [gww/m2/year] of each functional type of the time range specified.
-\item SSBGMean: a vector containing the natural log-based geometric mean SSB data [gww/m2/year] of each functional type of the time range specified.
-\item SSBMin: a vector containing the minimum SSB data [gww/m2/year] of each functional type within the time range specified.
-\item SSBMax: a vector containing the maximum SSB data [gww/m2/year] of each functional type within the time range specified.
-\item SSB: a matrix containing the SSB data [gww/m2/year] of each functional type (column) in each time point (row)
+\item SSBAMean: a vector containing the arithmetic mean SSB data [g/m2/year] of each functional type of the time range specified.
+\item SSBGMean: a vector containing the natural log-based geometric mean SSB data [g/m2/year] of each functional type of the time range specified.
+\item SSBMin: a vector containing the minimum SSB data [g/m2/year] of each functional type within the time range specified.
+\item SSBMax: a vector containing the maximum SSB data [g/m2/year] of each functional type within the time range specified.
+\item SSB: a matrix containing the SSB data [g/m2/year] of each functional type (column) in each time point (row)
 }
 }
 \description{
 This function calculates the spawning stock biomass (SSB) for each functional 
-type based on a FEISTY simulation result in units of gWW/m2.
+type based on a FEISTY simulation result in units of g/m2.
 }
 \details{
 This function calculates the spawning stock biomass for each function type based on the FEISTY simulation results within the specified time fraction (default is the last 40\% of the simulation period). \cr
-Spawning stock biomass is the product of biomass \code{u} [gww/m2] and maturity level \code{psiMature} [1/year]. Negative values in \code{u} are revised to 0. \cr
+Spawning stock biomass is the product of biomass \code{u} [g/m2] and maturity level \code{psiMature} [dimensionless]. Negative values in \code{u} are corrected to 0. \cr
 Note the SSB data only represents how much biomass (energy) could be used for reproduction, rather than the amount of offspring. \cr
 This function has been integrated into \code{\link{simulateFEISTY}}. It cannot be called independently.
-}
-\examples{
-no examples
-
 }
 \seealso{
 \code{\link{paramAddGroup}} 	Add parameters of one functional type
 }
 \author{
-Yixin Zhao
+DDDD
 }

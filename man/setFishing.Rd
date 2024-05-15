@@ -4,12 +4,12 @@
 \alias{setFishing}
 \title{Set Fishing Mortality}
 \usage{
-setFishing(p, F = 0, etaF = 0.05, groupidx = c(1:p$nGroups))
+setFishing(p, Fmax = 0, etaF = 0.05, groupidx = c(1:p$nGroups))
 }
 \arguments{
 \item{p}{The model parameter list, as created with e.g. \link{setupBasic2}.}
 
-\item{F}{The baseline fishing mortality rate [1/year]. Default 0, indicating no fishing.}
+\item{Fmax}{The baseline fishing mortality rate [1/year]. Default 0, indicating no fishing.}
 
 \item{etaF}{A coefficient determining the fish size with 50\% fishing selectivity. The value represents the fraction of the maximum size of a fish functional type. The default value is 0.05.}
 
@@ -18,13 +18,13 @@ setFishing(p, F = 0, etaF = 0.05, groupidx = c(1:p$nGroups))
 \value{
 It returns an updated parameter list:
 \itemize{
-\item F, baseline fishing mortality, from parameter input.
+\item Fmax, maximum fishing mortality, from parameter input.
 \item etaF, from parameter input.
 \item mortF, a vector containing fishing mortality of all state variables, including resources (always 0) and fish.
 }
 }
 \description{
-This function sets fishing mortality for all fish based on a baseline fishing mortality and a size-based trawl selectivity.
+This function sets fishing mortality for specific functional types based on maximum fishing mortality and size-based trawl selectivity.
 }
 \details{
 The function sets fishing mortality for all fish.
@@ -43,5 +43,5 @@ Andersen, K. H. (2019). Fish ecology, evolution, and exploitation: a new theoret
 \code{\link{calcYield}} Yield calculation
 }
 \author{
-Yixin Zhao
+DDDD
 }

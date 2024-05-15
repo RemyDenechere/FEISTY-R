@@ -43,7 +43,8 @@ An updated parameter list:
 \description{
 This function adjusts temperature-dependent physiological rates based on environmental temperatures.\cr
 It also prepares some indices for effective temperature effects on large demersal fish in demersal water.\cr
-It applies Q10 temperature coefficients to modify metabolic rates, clearance rates, and maximum consumption rates.
+It applies Q10 temperature coefficients to modify metabolic rates, clearance rates, and maximum consumption rates.\cr
+This function is specifically designed for `setupBasic` and `setupBasic2`.
 }
 \details{
 The function calculates temperature effects on physiological rates (metabolism, clearance rate, and maximum consumption rate) using 
@@ -85,5 +86,5 @@ van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emer
 \code{\link{setupBasic2}} A revised setup based on `setupBasic`
 }
 \author{
-Yixin Zhao
+DDDD
 }

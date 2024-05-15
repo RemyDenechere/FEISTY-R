@@ -2,33 +2,35 @@
 % Please edit documentation in R/FEISTY_plotting.R
 \name{plotSimulation}
 \alias{plotSimulation}
-\title{Plot simulation results}
+\title{Plot FEISTY simulation results}
 \usage{
 plotSimulation(sim)
 }
 \arguments{
-\item{sim}{The dataframe of FEISTY simulation results.}
+\item{sim}{The data frame of FEISTY simulation results.}
 }
 \description{
-Make a plot combo for the simulation results, including \code{\link{plotSSBtime}}, 
-\code{\link{plotSpectra}}, \code{\link{plotNetwork}} and \code{\link{plotRates}}.
+This function is designed to give a quick visualization overview of a simulation output.
 }
 \details{
-This function is designed to give a quick visualization of a simulation output.
+It makes a plot combo for the simulation results, including \code{\link{plotSpectra}}, \code{\link{plotRates}},
+\code{\link{plotNetwork}} and \code{\link{plotBiomasstime}}.
 }
 \examples{
 sim=simulateFEISTY()
 plotSimulation(sim)
+# We provide a short cut to call plotSimulation(sim).
+plot(sim)
 
 }
 \seealso{
 \code{\link{webFEISTY}} A shiny interface for visualizing FEISTY model results \cr
 \code{\link{simulateFEISTY}} Run FEISTY model simulations \cr
-\code{\link{plotSSBtime}} Timeseries of spawning stock biomass \cr
 \code{\link{plotSpectra}} Biomass spectra plot \cr
 \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
-\code{\link{plotNetwork}} Plot with all feeding interactions
+\code{\link{plotNetwork}} Food web plot \cr
+\code{\link{plotBiomasstime}} Time series of biomass \cr
 }
 \author{
-P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
+BBBB, FFFF, DDDD
 }

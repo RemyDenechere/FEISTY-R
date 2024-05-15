@@ -14,28 +14,24 @@ calcYield(sim, etaTime = 0.4)
 \value{
 Add yield data to the result list:
 \itemize{
-\item yieldAMean: a vector containing the arithmetic mean yield data [gww/m2/year] of each functional type of the time range specified.
-\item yieldGMean: a vector containing the natural log-based geometric mean yield data [gww/m2/year] of each functional type of the time range specified.
-\item yieldMin: a vector containing the minimum yield data [gww/m2/year] of each functional type within the time range specified.
-\item yieldMax: a vector containing the maximum yield data [gww/m2/year] of each functional type within the time range specified.
-\item yield: a matrix containing the yield data [gww/m2/year] of each functional type (column) in each time point (row)
+\item yieldAMean: a vector containing the arithmetic mean yield data [g/m2/year] of each functional type of the time range specified.
+\item yieldGMean: a vector containing the natural log-based geometric mean yield data [g/m2/year] of each functional type of the time range specified.
+\item yieldMin: a vector containing the minimum yield data [g/m2/year] of each functional type within the time range specified.
+\item yieldMax: a vector containing the maximum yield data [g/m2/year] of each functional type within the time range specified.
+\item yield: a matrix containing the yield data [g/m2/year] of each functional type (column) in each time point (row)
 }
 }
 \description{
-This function calculates the yield for each functional type in units of gWW/m2/year based on a FEISTY simulation result.
+This function calculates the yield for each functional type in units of g/m2/year based on a FEISTY simulation result.
 }
 \details{
 This function calculates the yield for each function type based on the FEISTY simulation results within the specified time fraction (default is the last 40\% of the simulation period). \cr
-Yield is the product of biomass \code{u} [gww/m2] and fishing mortality \code{mortF} [1/year]. Negative values in \code{u} are revised to 0. \cr
+Yield is the product of biomass \code{u} [g/m2] and fishing mortality \code{mortF} [1/year]. Negative values in \code{u} are corrected to 0. \cr
 This function has been integrated into \code{\link{simulateFEISTY}}. It cannot be called independently.
-}
-\examples{
-no examples
-
 }
 \seealso{
 \code{\link{setFishing}} 	Set fishing mortality
 }
 \author{
-Yixin Zhao
+DDDD
 }

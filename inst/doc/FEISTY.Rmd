@@ -1,6 +1,6 @@
 ---
 title: "FishErIes Size and functional TYpe model (FEISTY) in R"
-author: "Ken H Andersen and Karline Soetaert"
+author: "DDDD, AAAA, CCCC, and EEEE"
 date: " 2024"
 output:
   pdf_document:
@@ -18,222 +18,139 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE) # for printing the examples
 if (!require(FEISTY)) devtools::install_github("Kenhasteandersen/FEISTY@R-Package")
 library(FEISTY)
+library(ggplot2)
 palette("ggplot2")  # ggplot2-style palette
 ```
 
 # Introduction
-
-The R package **FEISTY** is to document the FEITY model and for further
-model development and research. This document mainly describes the
-FEISTY model scheme and indicates the corresponding functions in R implementation [@petrik2019bottom; @van2021emergent].
-
-
-# The structure of main parameters
-
-Several functions to create suitable parameter inputs are included:
-
--   setupBasic creates a basic three-species setup as described in
-    Petrik et al (2019)
--   setupBasic2 creates a basic three-species setup as setupBasic(), but
-    generalised to: more realistic sizes, Generalized size-based
-    feeding, the possiblity of more then 3 size groups in each group
--   setupVertical makes a basic four-species setup that distinguishes
-    between visual and twilight predators and that includes vertical
-    distribution of zooplankton
--   setupPelagicSpecies makes a basic setup with just pelagic fish, and
-    with feeding preferences according to the size ratios of predators
-    and prey.
-
-blabla
-
-## Example
-
-The model is first run with the default 3-functional group prameters,
-created with *setupBasic()*. Then two similar parameter datasets are
-created, with rates doubled or halved.
-
-```{r}
-p <- setupBasic()
-knitr::kable(p$resources, digits=2)
-knitr::kable(p$fishes, digits=2)
-knitr::kable(p$groups, digits=2)
-```
-
-Function *paramAddPhysiology* is used to change the allometric rates:
-
-```{r}
-p2 <- paramAddPhysiology(p, ac = 40, am = 8, ae=140)
-
-p3 <- paramAddPhysiology(p, ac = 10, am = 2, ae=35)
-```
-
-The model can now be run for all parameter sets; the reulst for the last
-20 years are shown.
-
-```{r, fig.width=8, fig.height=8}
-out1 <- simulateFEISTY(p=p,  times=seq(0, 200, length.out=1000),bCust=T)
-out2 <- simulateFEISTY(p=p2, times=seq(0, 200, length.out=1000),bCust=T)
-out3 <- simulateFEISTY(p=p3, times=seq(0, 200, length.out=1000),bCust=T)
-# plot(out1, out2, out3, which=5:12, lty=1, lwd=2, subset=time>180)
-# plot(out1, out2, out3, which=c("smallZoo", "largeZoo", "smallBenthos", 
-#   "totBiomass.smallPel", "totBiomass.largePel",  "totBiomass.Demersals"), 
-#   lty=1, lwd=2, subset=time>180)
-```
-
-\newpage
+This vignette provides a comprehensive description of the model equations, parameters, and numerical implementation used in the **FEISTY** model system [@petrik2019bottom; @van2021emergent; @zhao2024FEISTY]. Further, it provides a few examples at the end.
 
 # The FEISTY model
-
-## Size spectrum
-
-The fish size span of a functional type is logarithmically discretized
-into $n$ continuous size bins. Each size bin shares the same ratio $z$
-between the upper boundary size and lower boundary size:
-\begin{equation}
-z = \exp \left( \frac{\ln (w_{max}) - \ln (w_{min})}{n} \right)
-\end{equation} 
-where $w_{min}$ and $w_{max}$ are smallest and largest fish in a functional type. There are $n+1$ boundaries of $n$ size bins, including all lower boundary sizes ($m_{l,i}$) and upper boundary sizes ($m_{u,i}$). 
-\begin{equation}
-m_{b,i} =  \exp( \ln(w_{min}) + (i-1) \ln(z)), \hspace{1.5cm}  i\in[1,n+1]
-\end{equation} 
-\begin{equation}
-m_{l,i} =  m_{b,i}, \hspace{5.5cm}  i\in[1,n]
-\end{equation}
-\begin{equation}
-m_{u,i} =  m_{b,i+1}, \hspace{5.1cm}  i\in[1,n]
-\end{equation}
-The geometric meansize of each size class $m_{i}$ is:
-\begin{equation}
-m_{i} =  \exp ( \ln(m_{l,i}) + 0.5(\ln(z)) ), \hspace{2.2cm}  i\in[1,n]
-\end{equation}
-which will be comprehensively used for calculations, for instance,
-physiological rates and size-based feeding preference.\
-The size spectrum generation is done by calling the function
-`paramAddGroup()`. Also, see the source code of `makeGrid()`.
 
 ## Biomass dynamics
 
 ### Fish dynamics
 
 The biomass of each size class of a functional type of fish ($B_i$,
-$gWW~ m^{-2}$) changes over time ($t$) according to source and sink of
-energy [@deRoos2008; @petrik2019bottom]:
+gWW m$^{-2}$) [^1] changes over time ($t$) according to source and sink of
+energy [@deRoos2008]:
+
+[^1]: gWW: gram wet weight. From now on, we use "g" to represent "gWW" for simplicity.
+
 \begin{equation}
-\dfrac{dB_{i}}{dt} =  J_{in,i}  + (\nu_{i} - \rho_i -\mu_i)B_i - J_{out,i},
+\dfrac{\mathrm{d}B_{i}}{\mathrm{d}t} =  J_{\mathrm{in},i}  + (\nu_{i} - \rho_i -\mu_i)B_i - J_{\mathrm{out},i},
 \end{equation}
 where $\nu_{i}$ is the rate of available energy for growth and
 reproduction, $\rho_i$ is the rate of reproduction, and $\mu_i$
-($year^{-1}$) is the total mortality rate. The size of fish increases as
-a result of growth. The grown fish biomass fluxes out of the current
-size class to the next size class (excluding the largest fish). The
-energy fluxing out of a size class $i$ is 
+(year$^{-1}$) is the total mortality rate. The size of fish increases as
+a result of growth. The grown flux out of the current
+size class enters the next size class (excluding the largest fish). The
+growth flux out of a size class $i$ is 
 \begin{equation}
-J_{out,i} = \gamma_i B_i,
+J_{\mathrm{out},i} = \gamma_i B_i,
 \end{equation}
-where $\gamma_i$ represents the growth rate ($year^{-1}$). The energy
-fluxing in a size class includes two part for the smallest fish and
+where $\gamma_i$ is the growth rate (year$^{-1}$). The growth
+flux to a size class includes two parts for the smallest fish and
 other sizes, respectively: 
 \begin{equation}
-    J_{in,i} =
+    J_{\mathrm{in},i} =
   \begin{cases}
-\epsilon_r \left(  J_{out,n} + \sum\limits_i \rho_i B_i \right),      & \text{$ i=1 $} \\
-     J_{out,i-1}, & \text{$ i > 1$} 
+\epsilon_r \left(  J_{\mathrm{out},n} + \sum\limits_i \rho_i B_i \right),      & \text{$ i=1 $} \\
+     J_{\mathrm{out},i-1}, & \text{$ i > 1$} 
   \end{cases}
 \end{equation} 
-where $\epsilon_r$ is the reproduction efficiency. The energy fluxing
+where $\epsilon_r$ is the reproduction efficiency. The flux
 into the smallest fish class ($i=1$) is from the reproduction of each
-size class of fish that can reproduce and the energy fluxing out of the
-largest fish class ($J_{out,n}$) because it cannot grow larger. For
-larger fish ($i > 1$), the energy fluxing into the size class $i$ is
+size class of mature fish plus the growth flux out of the
+largest fish class ($J_{\mathrm{out},n}$) because they cannot grow larger. For
+larger fish ($i > 1$), the growth flux into the size class $i$ is
 from the growth of the previous neighboring size class ($i-1$).
 
 ### Resource dynamics
 
 The resource $i$ biomass evolves over time according to a chemostat-like
-growth and a consumption by predators, which is the default resource
-dynamic mode in four internal setups [@petrik2019bottom;
-@van2021emergent]:
+growth and consumption by predators, which is the default resource
+dynamic mode in four internal setups:
 
 \begin{equation}
-\dfrac{dR_{i}}{dt} =  r(K_i - R_i ) - \mu_{p,i} R_i,
+\dfrac{\mathrm{d}R_{i}}{\mathrm{d}t} =  r(K_i - R_i ) - \mu_{\mathrm{p},i} R_i,
 \end{equation}
 
-where $R$ is the state variable of a resource, $K$ is the carry capacity
-($gWW ~ m^{-2}$), and $r$ is the growth rate which is constant value
-($1~year^{-1}$). $\mu_{p}$ represents the predation mortality on a
+where $R$ is the state variable of a resource, $K$ is the carrying capacity
+(g m$^{-2}$), and $r$ is the growth rate which is a constant value
+(1 year$^{-1}$). $\mu_{\mathrm{p}}$ represents the predation mortality on the
 resource. Alternatively, we provide the logistic growth strategy for
 resources:
 
 \begin{equation}
-\frac{dR_i}{dt}=r_i \cdot R_i \cdot (1-\frac{R_i}{K_i}) - \mu_{p,i} \cdot R_i,
+\frac{\mathrm{d}R_i}{\mathrm{d}t}=r_i \cdot R_i \cdot (1-\frac{R_i}{K_i}) - \mu_{\mathrm{p},i} \cdot R_i,
 \end{equation}
 which can be set in `paramAddResource()` function.
 
-## Physiological rate
+## Physiological rates
 
-In the FEISTY model, there are three main biological rates based on the
-allometric scaling relationship of the body size (ref?). The
-mass-specific maximum consumption rate $C_{max,i}$ ($year^{-1}$), the
-mass-specific clearance rate $V_{i}$ ($m^{2}~gWW^{-1}~year^{-1}$), and the
-mass-specific metabolic rate $M_i$ ($year^{-1}$) for each fish size
-class are temperature-dependent:
+There are three main biological rates based on the allometric scaling relationship of the body size: the
+mass-specific maximum consumption rate $C_{\mathrm{max},i}$ (year$^{-1}$), the
+mass-specific clearance rate $V_{i}$ (m$^{2}$ g$^{-1}$ year$^{-1}$), and the
+mass-specific metabolic rate $M_i$ (year$^{-1}$):
 \begin{equation}
-C_{max,i} = k_{T} \cdot a_{c} \cdot m_{i}^{b_{c}}  \label{eq:maxconsump}
+C_{\mathrm{max},i} = k_{\mathrm{T},i} \cdot a_{\mathrm{c}} \cdot m_{i}^{b_{\mathrm{c}}}  \label{eq:maxconsump}
 \end{equation}
 \begin{equation}
-V_{i} = k_{T} \cdot a_{e} \cdot m_{i}^{b_{e}}      \label{eq:clearance}
+V_{i} = k_{\mathrm{T},i} \cdot a_{\mathrm{e}} \cdot m_{i}^{b_{\mathrm{e}}}      \label{eq:clearance}
 \end{equation}
 \begin{equation}
-M_i = k_{TM} \cdot a_{m} \cdot m_{i}^{b_{m}}       \label{eq:metabolism}
+M_i = k_{\mathrm{TM},i} \cdot a_{\mathrm{m}} \cdot m_{i}^{b_{\mathrm{m}}}       \label{eq:metabolism}
 \end{equation}
-where $k_{T}$ and $k_{TM}$
-are scaling factors of temperature effects (see Section **Temperature
-effects**). $a_{c}$, $a_{e}$, and $a_{m}$ are intercepts of each
-biological rate, respectively; $b_{c}$, $b_{e}$, $b_{m}$ are exponents.
+Here $k_{\mathrm{T},i}$ and $k_{\mathrm{TM},i}$
+are scaling factors of temperature effects of each size class (see Section **Temperature
+effects**). $a_{\mathrm{c}}$, $a_{\mathrm{e}}$, and $a_{\mathrm{m}}$ are factors for each
+biological rate; $b_{\mathrm{c}}$, $b_{\mathrm{e}}$, and $b_{\mathrm{m}}$ are exponents.
 These biological rates determine the energy gained from predation and
-costs due to basal metabolism (see Section **Energy budget**).\
-In code implementation, these basic biological rates of fish (without
+costs due to basal metabolism (see Section **Energy budget**).
+
+In the code implementation, these basic biological rates of fish (without
 temperature effects) are assigned by the `paramAddPhysiology()` function.
 The temperature effects on biological rates are added subsequently (see
-Section **Temperature effects**).
+Section **Temperature effects**). Note, though, these are all done internally by the “setup” functions.
 
 ## Energy budget
 
-For a given size of fish $i$, the mass-specific available energy for
+For a given size of fish $m_i$, the mass-specific available energy for
 growth or reproduction (rate) $\nu_{i}$ is the result of the
 mass-specific energy from assimilated food (rate) minus the
 mass-specific metabolic rate:
 \begin{equation}
-\nu_{i} = \epsilon_\alpha f_i C_{max,i} - M_i
+\nu_{i} = \epsilon_\alpha f_i C_{\mathrm{max},i} - M_i
 \end{equation}
 where $\epsilon_\alpha$ is the assimilation efficiency. The mass-specific
 feeding level $f_i$ (dimensionless) describes how much food a predator
 can eat relative to the maximum consumption capability, ranging from 0
 to 1: 
 \begin{equation}
-f_{i} = \frac{E_{i}}{E_{i}+C_{max,i}}
+f_{i} = \frac{E_{i}}{E_{i}+C_{\mathrm{max},i}}
 \end{equation}
-Therefore, the mass-specific consumption rate $f_i C_{max,i}$ is based on type II
+Therefore, the mass-specific consumption rate $f_i C_{\mathrm{max},i}$ is based on type II
 functional response. The feeding behavior of a predator is a consequence
-of encountering prey. The mass-specific encounter rate ($year^{-1}$)
+of encountering prey. The mass-specific encounter rate (year$^{-1}$)
 $E_{i}$ of a predator $i$ is:
 \begin{equation}
 E_{i} = V_{i}  \sum_{j} \theta_{i,j} B_j,
 \end{equation}
 where $\theta_{i,j}$
 denotes the feeding preference of a predator $i$ on a prey $j$ (see
-Section **?**). $B_j$ represents the biomass of a prey $j$ including
-zooplankton, benthos or fish. Therefore, the $\sum_{j} \theta_{i,j} B_j$
-represents the biomass of all available prey of a predator.
+Section **Predation**). $B_j$ represents the biomass of a prey $j$ including
+zooplankton, benthos, or fish. Therefore, the $\sum_{j} \theta_{i,j} B_j$
+represents the biomass of all prey available to a predator.
 
-# Reproduction and growth
+## Reproduction and growth
 
-When the assimilated energy is still surplus after meeting the demand of
+When the assimilated energy is still positive after meeting the demand of
 the basal metabolism, fish can conduct growth and reproduction. The
-reproductive rate ($year^{-1}$) of each size class of fish is:
+reproductive rate (year$^{-1}$) of each size class of fish is:
 \begin{equation}
 \rho_i =
   \begin{cases}
@@ -247,24 +164,23 @@ reproduction process. It can be either assigned with constants manually
 (setupBasic and setupVertical [@petrik2019bottom; @van2021emergent]) or
 by a sigmoid function (setupBasic2 and setupVertical2):
 \begin{equation}
-\psi_i = \left(1+\left(\frac{m_{c,i}}{m_{mature}}\right)^{-5} \right)^{-1}
+\psi_i = \left(1+\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{mature}}}\right)^{-5} \right)^{-1}
 \end{equation}
-$m_{mature}$ is the half-maturation size of a functional type, which
-means fish reach 50% maturity level at $m_{mature}$.
+$m_{\mathrm{mature}}$ is the half-maturation size of a functional type, which
+means fish reach 50% maturity level at $m_{\mathrm{mature}}$.
 \begin{equation}
-m_{mature} = \eta_{mature} w_{max}
+m_{\mathrm{mature}} = \eta_{\mathrm{mature}} M
 \end{equation}
-where $\eta_{mature}$ is the
+where $\eta_{\mathrm{mature}}$ is the
 coefficient determining the half-maturation size relative to the max
 size of a functional type.
 
-The rest fraction of the available energy $\nu_{i}$ is invested in
-growth: 
+The remaining fraction of the available energy ($\nu_{i}$) is invested in growth:
 \begin{equation}
 \kappa_i = 1 - \psi_i
 \end{equation}
-The growth rate of a specific size
-class $i$ is: 
+
+Then the growth from the current size class ($i$) to next neighboring size class ($i+1$) can be calculated [@deRoos2008]:
 \begin{equation}
  \gamma_i =
   \begin{cases}
@@ -272,38 +188,53 @@ class $i$ is:
      0, & \text{$ \nu_i \leq 0 $} 
   \end{cases}
 \end{equation}
-The detail can be found in [@deRoos2008]. $\mu_i$ is the total
-mortality including the predation mortality rate ($\mu_{p,i}$),
-background mortality rate ($\mu_{p,i}$), and fishing mortality rate
-($\mu_{f,i}$): 
+
+$\mu_i$ is the total mortality including the predation mortality rate ($\mu_{\mathrm{p},i}$),
+background mortality rate ($\mu_{\mathrm{b},i}$), and fishing mortality rate ($\mu_{\mathrm{f},i}$): 
 \begin{equation}
-\mu_i = \mu_{p,i}+\mu_{b,i}+\mu_{f,i}
+\mu_i = \mu_{\mathrm{p},i}+\mu_{\mathrm{b},i}+\mu_{\mathrm{f},i}
 \end{equation}
-All size classes of fish a same background mortality rate value within a
-functional group and the default value is 0.1 $year^{-1}$. The details of
-predation and fishing are in the sections below.
+All size classes of fish experience a background mortality. The details of
+predation and fishing are in the sections below. 
 
-# Predation
+## Predation
 
-In the non-vertical distribution version (setupBasic and setupBasic2)
+The second core element of FEISTY, besides the equation for biomass dynamics, is the specification of how each size class interacts via predation. This is specified in the feeding preference matrix (also known as a food-web matrix) $\theta_{i,j}$ where each element is a number between 0 and 1 which denotes how much a fish class $i$ preys on a prey class $j$. The feeding preference function is either based on size preference or derived from size preference coupling with the vertical habitat of each functional group. All of them are combined with additional modifications to account for feeding specializations.
+
+Once the feeding preference is ready, the predation mortality of a prey
+$j$ can be calculated.
+\begin{equation}
+\mu_{\mathrm{p},j} = \sum_i  \frac{V_i \theta_{i,j}  B_i}{E_i+C_{\mathrm{max},i}} C_{\mathrm{max},i}
+\end{equation}
+
+In the vertical distribution setups, $\theta_{i,j}$ is the product of
+size-based preference ($\theta_{\mathrm{s},i,j}$) and vertical overlap ($\theta_{\mathrm{v},i,j}$)
+\begin{equation}
+\theta_{i,j} = \theta_{\mathrm{s},i,j} \cdot\theta_{\mathrm{v},i,j} 
+\label{eq:verttheta}
+\end{equation}
+The calculation of $\theta_{\mathrm{s},i,j}$ follows Eq. \ref{eq:errorpreference} in setupVertical and Eq. \ref{eq:lognormalpreference} in setupVertical2. The detailed description of $\theta_{\mathrm{v},i,j}$ in the Section **Vertical overlap**.
+
+### Size preference
+In the non-vertical distribution version (`setupBasic` and `setupBasic2`)
 $\theta_{i,j}$ refers to the feeding preference based on the size
-preference. The value of $\theta_{i,j}$ can be assigned manually
+preference. In vertical distribution versions, it is named $\theta_{s,i,j}$ for differentiation purposes. The value of $\theta_{i,j}$ can be assigned manually
 (setupBasic, see Table 2 in [@petrik2019bottom]). It also can be
-calculated following functions either based on the log-normal
+calculated by following functions either based on the log-normal
 distribution:
 
 \begin{equation}
  \theta_{i, j} =
   \begin{cases}
-\exp\left( -\frac{\left(\log\left(\frac{m_{c,i}}{\beta \cdot m_{c,j}}\right)\right)^2}{(2 \cdot \sigma)^2} \right), & \text{$ m_{i} > m_{j} $}   \\
+\exp\left( -\frac{\left(\log\left(\frac{m_{\mathrm{c},i}}{\beta \cdot m_{\mathrm{c},j}}\right)\right)^2}{(2 \cdot \sigma)^2} \right), & \text{$ m_{i} > m_{j} $}   \\
      0, & \text{$ m_{i} \leq m_{j} $} 
   \end{cases}
 \label{eq:lognormalpreference}
 \end{equation}
 
-or based on the error function [@van2021emergent]: ????????? 
+or based on the error function [@van2021emergent]:
 \begin{equation}
-\theta_{i, j} = \frac{\sqrt{\frac{\pi}{2}} \cdot \sigma \cdot \left( \text{erf}\left(\frac{\log(m_{u,j}) - \log\left(\frac{m_{c,i}}{\beta}\right)}{\sqrt{2} \cdot \sigma}\right) - \text{erf}\left(\frac{\log(m_{l,j}) - \log\left(\frac{m_{c,i}}{\beta}\right)}{\sqrt{2} \cdot \sigma}\right) \right)}{\log(m_{u,j}) - \log(m_{l,j})}
+\theta_{i, j} = \frac{\sqrt{\frac{\pi}{2}} \cdot \sigma \cdot \left( \text{erf}\left(\frac{\log(m_{\mathrm{u},j}) - \log\left(\frac{m_{\mathrm{c},i}}{\beta}\right)}{\sqrt{2} \cdot \sigma}\right) - \text{erf}\left(\frac{\log(m_{\mathrm{l},j}) - \log\left(\frac{m_{\mathrm{c},i}}{\beta}\right)}{\sqrt{2} \cdot \sigma}\right) \right)}{\log(m_{\mathrm{u},j}) - \log(m_{\mathrm{l},j})}
 \label{eq:errorpreference}
 \end{equation}
 $\beta$ is preferred predator-prey mass ratio, and $\sigma$ is the
@@ -311,186 +242,364 @@ size preference width for feeding. The size-preference function
 selection and the values of $\beta$ and $\sigma$ can be defined by the
 function `paramSizepref()`.
 
-In vertical distribution version, $\theta_{i,j}$ is the product of
-size-based preference ($\theta_{s,i,j}$) and vertical overlap ($\theta_{v,i,j}$):
-\begin{equation}
-\theta_{i,j} = \theta_{s,i,j} \cdot\theta_{v,i,j} 
-\end{equation}
-The calculation of $\theta_{s,i,j}$ follows Eq. \ref{eq:lognormalpreference} in setupVertical and Eq. \ref{eq:errorpreference} in setupVertical2. The detailed description of $\theta_{v,i,j}$ in the Section **Vertical overlap**.
+### Vertical overlap
+Concise introduction...
+**Daniël Please add more.**
 
-Once the feeding preference is ready, the predation mortality of a prey
-$j$ can be calculated:
+water column discretization
 \begin{equation}
-\mu_{p,j} = \sum_i  \frac{V_i \theta_{i,j}  B_i}{E_i+C_{max,i}} C_{max,i}
+z_{\mathrm{\zeta}} =  0+\zeta, \hspace{1.5cm}  \zeta\in[0,z_{\mathrm{b}}]
+\end{equation}
+where $\zeta$ is each depth of a water column (integer value), ranging from $0$ (surface) to $z_{\mathrm{bottom}}$ (sea floor).
+
+
+$z_{\mathrm{dvm}}$ is the representative depth where there is max biomass when functional types or size classes conduct the diel vertical migration.
+
+\begin{equation}
+  z_{\mathrm{dvm}} =
+  \begin{cases}
+     z_{\mathrm{photc}} + 500, & \text{ $z_{\mathrm{bottom}} \geq z_{\mathrm{photic}} + 500$ } \\
+     z_{\mathrm{bottom}}, & \text{ $ z_{\mathrm{photic}} + 500 > z_{\mathrm{bottom}} > z_{\mathrm{shelf}} $ } \\
+     0, & \text{$ z_{\mathrm{bottom}} \leq z_{\mathrm{shelf}} $ }      
+  \end{cases}
+\label{eq:zdvm}
 \end{equation}
 
-In practice, the feeding preference setting is more complex, since it plays a vital role in the coexistence of various functional types. when the feeding preference $\theta_{i,j}$ is initially calculated as a function (e.g., Eq. \ref{eq:lognormalpreference}), sometimes it needs to be revised or corrected manually according to specific rules, such as cannibalism, habitats, feeding habits, and visibility. Here I introduce how the feeding preference $\theta_{i,j}$ is further processed in setupBasic2.
+For demersal fish, the vertical habitats are different.
+\begin{equation}
+  z_{\mathrm{dvmdem}} =
+  \begin{cases}
+     z_{\mathrm{dvm}}, & \text{ $ z_{\mathrm{bottom}} - z_{\mathrm{dvm}} < 1200 $ } \\
+     z_{\mathrm{bottom}} - 1200, & \text{ $ 1200 \leq z_{\mathrm{bottom}} - z_{\mathrm{dvm}} <1500 $ } \\
+     z_{\mathrm{bottom}}, & \text{ $ z_{\mathrm{bottom}} - z_{\mathrm{dvm}} \geq 1500 $ }      
+  \end{cases}
+\label{eq:zdvmdem}
+\end{equation}
+
+The vertical range of the vertical distribution of each organism $\omega_i$ increases with body mass:
+\begin{equation}
+  \omega_i = \omega_0 + \tau \cdot \log_{10}\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{c},0}}\right)
+\end{equation}
+
+where $\omega_0$ is the baseline range of the vertical distribution and $\tau$ is the range-increasing factor of vertical distribution. $m_{\mathrm{c},0}$ denotes the minimum geometric mean size within all organisms in the simulation (typically small mesozooplankton). Note, for benthic resources, $\omega_i = \omega_0$ to constrain them to the bottom.
+
+a function to generate vertical distributions (a normal distribution)............
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{1}{\sqrt{2\pi\omega_i^2}} \cdot \exp\left(-\frac{(z_{\mathrm{\zeta}} - z_{\mathrm{loc},\mathrm{x},i})^2}{2\omega_i^2}\right)\\
+  \label{eq:vertdist1}
+\end{equation}
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{x},i}}{\sum\limits_{\mathrm{\zeta}} \theta_{\mathrm{\zeta},\mathrm{x},i}}
+  \label{eq:vertdist2}
+\end{equation}
+
+$x$ is either day or night. $z_{\mathrm{loc},\mathrm{x},i}$ is the representative depth that the maximum biomass is. Some functional types or size classes have two representative depths $z_{\mathrm{loc},\mathrm{x},i}$. Consequently, they need to be calculated twice (Eq. \ref{eq:vertdist1} and \ref{eq:vertdist2}) and the vertical distribution is the averaged value, which shows a bimodal shape of the vertical distribution. The description of $z_{\mathrm{loc},\mathrm{x},i}$ of different functional types and size classes can be found in (...................).
+
+Predator-prey vertical overlap
+
+The less value between vertical distribution values of a specific predator $i$ and a prey $j$ at depth $\zeta$ at daytime or nighttime $x$ $\min(\theta_{\mathrm{\zeta},\mathrm{x},i}, \theta_{\mathrm{\zeta},\mathrm{x},j})$ represents their vertical overlap level. The depth-integration gives the synthetic vertical overlap value of predator $i$ to a prey $j$ at day or night $\theta_{\mathrm{v},\mathrm{x},i,j}$:
+
+\begin{equation}
+  \theta_{\mathrm{v},\mathrm{x},i,j} = \sum\limits_{\mathrm{\zeta}}\min(\theta_{\mathrm{\zeta},\mathrm{x},i},\theta_{\mathrm{\zeta},\mathrm{x},j})
+\end{equation}
+
+The light conditions of a location where visual predators stay in a water column influence their prey-capturing performances. Small pelagics and large pelagics are visual predators whose predation ability is better in light-rich waters during the day and worse in dark conditions such as night or the twilight zone. These traits are reflected by the modified vertical overlap values. Therefore, according to habitats at day and night (Table \ref{tab:vertloc}) the vertical overlap data is further modified by multiplying the visual scaling factor $\theta_{\mathrm{visual}}$:
+
+\begin{equation}
+  \theta_{\mathrm{v},x,i,j} = \theta_{\mathrm{v},x,i,j} \cdot \theta_{\mathrm{visual}} .
+\end{equation}
+
+All small pelagics and small- and medium-size class [^2] large pelagics always stay at the surface regardless of day and night, so their daytime vertical overlap on all prey ($\theta_{\mathrm{v},day,i,j}$) is enhanced ($\theta_{\mathrm{visual}}=1.5$). Correspondingly, their nighttime vertical overlap ($\theta_{\mathrm{v},night,i,j}$) is decreased ($\theta_{\mathrm{visual}}=0.5$).
+
+[^2]: small-, medium-, and large-size classes of fish are distinguished by comparison between the geometric mean mass value ($m_{\mathrm{c},i}$) and boundary mass value ($m_{\mathrm{medium}}$ or $m_{\mathrm{large}}$). Small-size class: $m_{\mathrm{c},i} < m_{\mathrm{medium}}$.
+Medium-size class: $m_{\mathrm{medium}} \leq m_{\mathrm{c},i} \leq m_{\mathrm{large}}$.
+Large-size class: $m_{\mathrm{c},i} > m_{\mathrm{large}}$. Default $m_{\mathrm{medium}} = 0.5 \mathrm{g}$ and $m_{\mathrm{large}} = 250 \mathrm{g}$ .
+
+Half of large-size class large pelagics stay at the twilight zone ($z_{\mathrm{dvm}}$) at daytime, so their vertical overlap at daytime ($\theta_{\mathrm{v},day,i,j}$) on all mesopelagic fish and bathypelagic fish is reduced ($\theta_{\mathrm{visual}}=0.5$).
+
+Ultimately, the total vertical overlap is the average value of day and night vertical overlap values.
+
+\begin{equation}
+  \theta_{\mathrm{v},i,j} = \frac{\theta_{\mathrm{v},\mathrm{day},i,j}+\theta_{\mathrm{v},\mathrm{night},i,j}}{2}
+  \label{eq:}
+\end{equation}
+
+This can be used for the calculation of feeding preference ($\theta_{i,j}$) in Eq. \ref{eq:verttheta}. Note $\theta_{i,j}$ still needs to be further modified according to feeding behaviours (see Section **Modification**).
+
+*Zooplankton resources*\
+Zooplankton resources (small and large mesozooplankton) are supposed to be divided into two types in terms of whether they can conduct the diel vertical migration if water column conditions allow. During the daytime, half of them move to deep water to avoid predation ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). Another half is in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = 0$). At nighttime, they stay at the surface ($z_{\mathrm{loc},\mathrm{x},i} = 0$).
+
+*Benthic resources*\
+Benthos is benthic-living ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$). To ensure they stay close to the sea floor, their vertical distribution width is kept as the baseline value $\omega_i=\omega_0$.
+
+*Small pelagics*\
+They always stay in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
+
+*Mesopelagics*\
+Mesopelagic fish stay at the midwater during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, they migrate to the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$).
+
+*Large pelagics*\
+During the daytime, Large pelagics perform differently according to their size. The small- and medium-size classes are at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$). The large-size classes are divided into two groups: half of them are always in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = 0$), and half in midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). 
+They all move to the surface during night ($z_{\mathrm{loc},\mathrm{night},i} = 0$)
+
+*Bathpelagics*\
+All bathypelagic fish stay at the dvm depth during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, the small- and medium-size classes are always at the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Large-size classes are in midwater ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$).
+
+*Demersals*
+
+During daytime, small demersals are at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$); medium demersals are at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{bottom}}$); large demersals are at midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvmdem}}$).
+At night, small demersal fish are at the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Medium and large demersal fish are at the bottom ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
+
+\begin{table}[htbp]
+
+\centering
+\caption{ Biomass representative depth for each size class $z_{\mathrm{loc},\mathrm{x},i}$ at day and night. $z_{\mathrm{dvm}}$ and $z_{\mathrm{dvmdem}}$ can be found in Eq. \ref{eq:zdvm} and \ref{eq:zdvmdem}.}
+\label{tab:vertloc}
+
+\begin{tabular}{ l l l p{2cm} l l p{2cm}}
+\hline
+ & \multicolumn{3}{l}{Day} & \multicolumn{3}{l}{Night} \\
+   \cline{2-7} 
+Resources\\
+\hline
+Zooplankton$^a$ & \multicolumn{3}{l}{0 and $z_{\mathrm{dvm}}$} & \multicolumn{3}{l}{0} \\
+Benthos & \multicolumn{3}{l}{$z_{\mathrm{bottom}}$} & \multicolumn{3}{l}{$z_{\mathrm{bottom}}$} \\
+   \cline{2-7}
+&\\   
+Fish & Small & Medium & Large & Small & Medium & Large \\
+\hline
+Small pelagic fish & 0 & 0 & / & 0 & 0 & / \\
+Mesopelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & / & 0 & 0 & / \\
+Large pelagic fish & 0 & 0 & 0 and $z_{\mathrm{dvm}}$ & 0 & 0 & 0 \\
+Bathypelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & 0 & 0 & $z_{\mathrm{dvm}}$ \\
+Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$$^e$ \\
+
+\hline
+\multicolumn{7}{l}{\footnotesize $^a$ Zooplankton include small and large mesozooplankton} \\
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} < z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. In such cases, $z_{\mathrm{dvmdem}}=0$.}
+
+\end{tabular}
+\end{table}
+
+
+### Modifications
+
+Basic2
+
+The feeding preference is further modified to facilitate the coexistence of various functional types. Here we show how the feeding preference $\theta_{i,j}$ is further processed in setupBasic2.
 
 Forage fish and large pelagic fish live in the pelagic zone during their whole lifetime. Demersal fish habitats are different in terms of their sizes and water depth. Small demersal fish are pelagic status while medium demersal fish are benthic-living. Pelagic-living organisms do not interact with benthic-living organisms and vice versa.
 
-**Forage fish**\
+*Forage fish*\
 The feeding preference from forage fish and large pelagic fish to benthic resources and medium demersal fish are corrected to 0.
 
-**Large pelagic fish**\
-The feeding preference from large pelagic fish to benthic resources and medium demersal fish is corrected to 0.
-Large pelagic fish have reduced feeding preference on forage fish ($\theta_A \cdot \theta_{i,j}$).
+*Large pelagic fish*\
+The feeding preference from large pelagic fish to benthic resources and medium demersal fish is corrected to 0. Large pelagic fish have a reduced feeding preference for forage fish ($\theta_{\mathrm{A}} \cdot \theta_{i,j}$).
 
-**Demersal fish**\
-The feeding preference from small demersal fish to benthic resources is corrected to 0.\
-Medium demersal fish only feed on benthos and themselves (cannibalism). Therefore, their feeding preference on zooplankton and all fish excluding themselves is corrected to 0.\
-In shallow water ($<~200 m$), large demersal fish swim over the water column, meaning they can eat both pelagic and benthic organisms. Their feeding preference on forage fish was down-regulated: $\theta_A \cdot \theta_D \cdot \theta_{i,j}$. Their feeding preference on large pelagic fish was down-regulated: $\theta_D \cdot \theta_{i,j}$.\
-When water is deep ($>~200 m$), large demersal fish is fully benthic-living. So the feeding preference of large demersals on all pelagic prey is corrected to 0, including forage fish, large pelagic fish, zooplankton, and small demersal fish. They only can feed on benthos, medium demersals, and themselves.
+*Demersal fish*\
+The feeding preference from small demersal fish to benthic resources is corrected to 0.
+Medium demersal fish only feed on benthos and themselves (cannibalism). Therefore, their feeding preference on zooplankton and all fish excluding themselves is corrected to 0.
+In shallow water ($<~200$ m), large demersal fish swim over the water column, meaning they can eat both pelagic and benthic organisms. However, we assume that they are less efficient at attacking pelagic prey and hence their feeding preference on forage fish is down-regulated: $\theta_{\mathrm{A}} \cdot \theta_{\mathrm{D}} \cdot \theta_{i,j}$; similarly for their feeding preference on large pelagic fish: $\theta_{\mathrm{D}} \cdot \theta_{i,j}$.
+In deeper waters ($>~200$ m), large demersal fish is fully benthic-living. So the feeding preference of large demersals on all pelagic prey is corrected to 0, including forage fish, large pelagic fish, zooplankton, and small demersal fish. They only can feed on benthos, medium demersals, and themselves.
 
+**Vertical and Vertical2**
 
-# Vertical overlap
+It is assumed all pelagic functional types (forage fish, mesopelagics, large pelagics, and bathypelagics) and small demersal fish (pelagic-living) do not consume benthos ($\theta_{i,j}=0$). Also, their feeding preference on medium demersal fish (benthic-living) is reduced by multiplying 0.25 ($\theta_{i,j}=\theta_{i,j} \cdot 0.25$).
+Medium and large demersal fish are assumed not to eat zooplankton ($\theta_{i,j}=0$).
+To maintain the coexistence between large pelagic predators and small fish, some benefits in predation avoidance are assigned to medium-size forage fish and medium-size mesopelagic fish by a similar method in [@petrik2019bottom].
+Large-size classes of pelagic-living functional fish groups (large pelagic fish, bathypelagic fish, and demersal fish) have reduced feeding preference on medium-size forage fish and medium-size mesopelagic fish ($\theta_{i,j}=\theta_{i,j} \cdot 0.5$). 
 
-**To be done...**
+## Fishing mortality
 
-
-
-
-# Fishing
-
-The fishing mortality rate $\mu_{f,i}$ of a particular size class of
+The fishing mortality rate $\mu_{\mathrm{f},i}$ of a particular size class of
 fish $i$ can be either determined by constant values or by a fishing
-selectivity function ??????: 
+selectivity function [@andersen2019fish, Chapter 5]:
 \begin{equation}
-\mu_{f,i}=\psi_{f,i}F
+\mu_{\mathrm{f},i}=\psi_{\mathrm{f},i}F_{\mathrm{max}}
 \label{eq:fishing}
 \end{equation}
-where $F$ is the baseline fishing mortality rate ($year^{-1}$) of a functional type of
-fish. $\psi_{f,i}$ denotes the size-based fishing selectivity following
+where $F_{\mathrm{max}}$ is the baseline fishing mortality rate (year$^{-1}$) of a functional type of
+fish. $\psi_{\mathrm{f},i}$ denotes a trawl-based fishing selectivity following
 a sigmoid function:
 \begin{equation}
-\psi_{f,i} = \left(1+\left(\frac{m_{c,i}}{m_{fishing}}\right)^{-3} \right)^{-1}
+\psi_{\mathrm{f},i} = \left(1+\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{fishing}}}\right)^{-3} \right)^{-1}
 \end{equation}
-where $m_{fishing}$ indicates the fish with this size is under 50% harvesting rate.
+where $m_{\mathrm{fishing}}$ indicates the fish with this size is under 50% harvesting rate.
 \begin{equation}
-m_{fishing}=\eta_{F} w_{max}
+m_{\mathrm{fishing}}=\eta_{\mathrm{F}} M
 \end{equation}
-where $\eta_{F}$ controls the weight of fish with 50% harvesting rate relative to the max weight of the functional type.
+where $\eta_{\mathrm{F}}$ controls the weight of fish with a 50% harvesting rate relative to the max weight of the functional type.
 The fishing mortality rate can be assigned by the function `setFishing()`.
 
-# Temperature effects
-The temperature effects on the mass-specific maximum consumption rate $C_{max,i}$, the mass-specific clearance rate $V_{i}$, and the mass-specific metabolic rate $M_i$ (Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}) are based on the use of $Q_{10}$ coefficient, which describes the exponential variation of rates every 10\textdegree{}C.
+## Temperature effects
+The temperature effects on the mass-specific maximum consumption rate $C_{\mathrm{max},i}$, the mass-specific clearance rate $V_{i}$, and the mass-specific metabolic rate $M_i$ (Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}) are based on the use of the $Q_{10}$ coefficient, which describes the exponential variation of rates every 10\textdegree{}C.
 
 The general equation for the temperature scaling factor $k$ is:
 \begin{equation}
-k = Q_{10}^{\frac{T-T_{ref}}{10}} \label{eq:Tscfac}
+k = Q_{10}^{\frac{T-T_{\mathrm{ref}}}{10}} \label{eq:Tscfac}
 \end{equation}
-where $T_{ref}$ is the reference temperature and $T$ is the environment temperature.
-According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_p$ (e.g., all forage fish); for fish always in the benthic zone $T=T_b$ (e.g., medium-size demersal fish). $k_{T}$ is temperature scaling factor for $C_{max,i}$ and $V_{i}$; $k_{TM}$ is temperature scaling factor for $M_i$. To calculate them, different $Q_{10}$ factors are required (Table xx). The temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., setupBasic and setupBasic2. Technically, it also can be used in customized setups.
+where $T_{\mathrm{ref}}$ is the reference temperature and $T$ is the environment temperature.
+According to the different functional types of fish and their sizes, fish habitats change. For fish staying in the pelagic zone, $T=T_{\mathrm{p}}$ (e.g., all forage fish); for fish always in the benthic zone $T=T_{\mathrm{b}}$ (e.g., medium-size demersal fish). Through introducing different $Q_{10}$ coefficients (Table \ref{tab:defaultparam}), various temperature scaling factors $k$ can be obtained. $k_{\mathrm{T}}$ is the temperature scaling factor for $C_{\mathrm{max},i}$, and $V_{i}$; $k_{\mathrm{TM}}$ is the temperature scaling factor for $M_i$.
 
-In setupBasic and setupBasic2, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_p$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_p$). Medium demersals live at the bottom ($T_b$). Large demersals also stay in the bottom if the water is deep ($>~200 m$). However, in shallow water ($<~200 m$), due to their better swimming abilities, the large demersals migrate over the water column for feeding. To better describe the temperature effects on large demersals, the effective temperature is introduced (see
-Section (**Real-time effective temperature**).
+**setupBasic and setupBasic2**
 
-In setupVertical, fish have a new trait axis of vertical distribution.
+In `setupBasic` and `setupBasic2`, there are three functional types of fish: forage fish (small pelagic fish), large pelagic fish, and demersal fish. Forage fish and large pelagics are always in the pelagic water, so the $T_{\mathrm{p}}$ is consistently applied. Demersal fish habitats change according to size. Small demersal is in a pelagic status ($T_{\mathrm{p}}$). Medium demersals live at the bottom ($T_{\mathrm{b}}$). Large demersals also stay in the bottom if the water is deep ($>~200$ m). However, in shallow water ($<~200$ m), due to their better swimming abilities, the large demersals migrate over the water column for feeding. In code implementation, temperature effects on biological rates are done by the function `paramTeffect()`. Note this function only works on non-vertical distribution setups, i.e., `setupBasic` and `setupBasic2`. Moreover, to better describe the temperature effects on large demersals, the effective temperature is introduced (see Section **Real-time effective temperature**).
 
-T profile
-The implementation is hard-coded, embedded in the function `setupVertical()`
+**setupVertical**
 
-**To be done...**
+In setupVertical, fish have a new trait axis of vertical distribution. Temperature effects on physiological rates of each size class are based on where fish stay in a water column (environmental temperature). Therefore the total vertical distribution data needs to be calculated initially:
 
-To simplify the temperature input, three temperature inputs ($T_p$, $T_m$, $T_b$) are required rather than the water column temperature profile in setupVertical2. Effective temperature of different size classes of each functional type are the averaged values of temperatures of their approximate vertical positions of day ($T_{day}$) and night ($T_{night}$).
 \begin{equation}
-T_e = \frac{T_{day}+T_{night}}{2}
+  \theta_{\mathrm{\zeta},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{day},i}+\theta_{\mathrm{\zeta},\mathrm{night},i}}{2}
 \end{equation}
 
-Note this $T_e$ is different from the one in the Section **Real-time effective temperature**. The implementation is hard coded in the function `setupVertical2()`. 
+Then the temperature scaling factor of each size class in a discretized water column can be obtained according to their vertical distribution:
 
-**Small pelagics**\
-They always stay in the pelagic water ($T_{day}=T_{night}=T_p$).
+\begin{equation}
+k_{\mathrm{\zeta},i} = \theta_{\mathrm{\zeta},i} \cdot Q_{10}^{\frac{T_{\mathrm{\zeta}}-T_{\mathrm{ref}}}{10}}
+\end{equation}
 
-**Mesopelagics**\
+where the water column temperature profile ranging from the surface (0 m) to the bottom, which can be obtained from observational data products or earth system model outputs. Finally, the scaling factor is integrated over the vertical distribution.
+
+\begin{equation}
+k_{i} = \sum\limits_{\mathrm{\zeta}} k_{\mathrm{\zeta},i}
+\end{equation}
+
+$k_{i}$ can be used in  temperature effects on physiological rates Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}. The implementation is hard-coded, and embedded in the function `setupVertical()`.
+
+
+
+**setupVertical2**
+
+To simplify the temperature input, three temperature inputs ($T_{\mathrm{p}}$, $T_{\mathrm{m}}$, $T_{\mathrm{b}}$) are required rather than the water column temperature profile in setupVertical2. The effective temperature of different size classes of each functional type are the averaged values of temperatures of their approximate vertical positions of day ($T_{\mathrm{day}}$) and night ($T_{\mathrm{night}}$).
+\begin{equation}
+T_{\mathrm{e}} = \frac{T_{\mathrm{day}}+T_{\mathrm{night}}}{2}
+\end{equation}
+
+Note this $T_{\mathrm{e}}$ is different from the one in the Section **Real-time effective temperature**. Then $T_{\mathrm{e}}$ is taken into Eq. \ref{eq:Tscfac} as $T$, and so the temperature-dependent physiological rates (Eq. \ref{eq:maxconsump}, \ref{eq:clearance}, \ref{eq:metabolism}) are updated. The implementation is hard-coded in the function `setupVertical2()`. 
+
+*Small pelagics*\
+They always stay in the pelagic water ($T_{\mathrm{day}}=T_{\mathrm{night}}=T_{\mathrm{p}}$).
+
+*Mesopelagics*\
 At daytime, where mesopelagic fish stay depends on the water column depth and photic conditions:
 \begin{equation}
- T_{day} =
+ T_{\mathrm{day}} =
   \begin{cases}
-     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
-     T_b, & \text{$ dvm = bottom $} \\
-     T_p, & \text{$ dvm = 0 $}      
+     T_{\mathrm{m}}, & \text{$ z_{\mathrm{dvm}} \neq z_{\mathrm{bottom}} $ and $ z_{\mathrm{dvm}} \neq 0 $ } \\
+     T_{\mathrm{b}}, & \text{$ z_{\mathrm{dvm}} = z_{\mathrm{bottom}} $} \\
+     T_{\mathrm{p}}, & \text{$ z_{\mathrm{dvm}} = 0 $}      
   \end{cases}
 \label{eq:xxxxxxxx}
 \end{equation}
-During night time, they are in the pelagic water ($T_{night}=T_p$).
+During night time, they are in the pelagic water ($T_{\mathrm{night}}=T_{\mathrm{p}}$).
 
-**Large pelagics**\
+*Large pelagics*\
 The large-size classes of large pelagic fish are split into two groups: half of them are always in the pelagic zone, and the habitat of the other half depends on the water column conditions. So their daytime temperature could be the average of two environmental temperatures. If the water column does not support the existence of dvm they all stay in the pelagic zone. 
 
 \begin{equation}
- T_{day} =
+ T_{\mathrm{day}} =
   \begin{cases}
-     \frac{T_{m}+T_{p}}{2}, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
-     \frac{T_{b}+T_{p}}{2}, & \text{$ dvm = bottom $} \\
-     T_p, & \text{$ dvm = 0 $}      
+     \frac{T_{\mathrm{m}}+T_{\mathrm{p}}}{2}, & \text{$ z_{\mathrm{dvm}} \neq z_{\mathrm{bottom}} $ and $ z_{\mathrm{dvm}} \neq 0 $ } \\
+     \frac{T_{\mathrm{b}}+T_{\mathrm{p}}}{2}, & \text{$ z_{\mathrm{dvm}} = z_{\mathrm{bottom}} $} \\
+     T_{\mathrm{p}}, & \text{$ z_{\mathrm{dvm}} = 0 $}      
   \end{cases}
 \label{eq:xxxxxxx}
 \end{equation}
 
-All the large pelagics in non-large sizes (small and medium) are in pelagic water the during daytime ($T_{day}=T_p$).\
-During night time, all of them regardless of size are in the pelagic water ($T_{night}=T_p$).
+All the large pelagics in non-large sizes (small and medium) are in pelagic water the during daytime ($T_{\mathrm{day}}=T_{\mathrm{p}}$).\
+During nighttime, all of them regardless of size are in the pelagic water ($T_{\mathrm{night}}=T_{\mathrm{p}}$).
 
-**Bathypelagics**\
-Bathypelagic fish stay at the dvm depth, bottom or pelagic zone, depending on the water column depth and photic conditions at daytime:
+*Bathypelagics*\
+Bathypelagic fish stay at the dvm depth, bottom, or pelagic zone, depending on the water column depth and photic conditions at daytime:
 \begin{equation}
- T_{day} =
+ T_{\mathrm{day}} =
   \begin{cases}
-     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
-     T_b, & \text{$ dvm = bottom $} \\
-     T_p, & \text{$ dvm = 0 $} 
+     T_{\mathrm{m}}, & \text{$ z_{\mathrm{dvm}} \neq z_{\mathrm{bottom}} $ and $ z_{\mathrm{dvm}} \neq 0 $ } \\
+     T_{\mathrm{b}}, & \text{$ z_{\mathrm{dvm}} = z_{\mathrm{bottom}} $} \\
+     T_{\mathrm{p}}, & \text{$ z_{\mathrm{dvm}} = 0 $} 
   \end{cases}
 \label{eq:xxxxxxx2}
 \end{equation}
 
-At night, small and medium bathypelagics are in the pelagic water ($T_{night}=T_p$), but the habitats of large bathypelagics varies with water column conditions: 
+At nighttime, small and medium bathypelagics are in the pelagic water ($T_{\mathrm{night}}=T_{\mathrm{p}}$), but the habitats of large bathypelagics varies with water column conditions: 
 \begin{equation}
- T_{night} =
+ T_{\mathrm{night}} =
   \begin{cases}
-     T_m, & \text{$ dvm \neq bottom $ and $ dvm \neq 0 $ } \\
-     T_b, & \text{$ dvm = bottom $} \\
-     T_p, & \text{$ dvm = 0 $}  
+     T_{\mathrm{m}}, & \text{$ z_{\mathrm{dvm}} \neq z_{\mathrm{bottom}} $ and $ z_{\mathrm{dvm}} \neq 0 $ } \\
+     T_{\mathrm{b}}, & \text{$ z_{\mathrm{dvm}} = z_{\mathrm{bottom}} $} \\
+     T_{\mathrm{p}}, & \text{$ z_{\mathrm{dvm}} = 0 $}  
   \end{cases}
 \label{eq:xxxxxx}
 \end{equation}
 
-**Demersals**\
-Small demersals are pelagic-living ($T_{day}=T_{night}=T_p$); medium demersals are benthic-living ($T_{day}=T_{night}=T_b$).
-Large demersal fish habitats varies according to the water column conditions.
+*Demersals*\
+Small demersals are pelagic-living ($T_{\mathrm{day}}=T_{\mathrm{night}}=T_{\mathrm{p}}$); medium demersals are benthic-living ($T_{\mathrm{day}}=T_{\mathrm{night}}=T_{\mathrm{b}}$).
+Large demersal fish habitats vary according to the water column conditions.
 
 \begin{equation}
- T_{day} =
+ T_{\mathrm{day}} =
   \begin{cases}
-     T_m, & \text{$ (bottom - dvm) < 1500 $ and $ bottom \geq photic $} \\
-     T_b, & \text{$ (bottom - dvm) \geq 1500 $ } \\
-     \frac{T_{b}+T_{p}}{2}, & \text{$ bottom < photic $} 
+     T_{\mathrm{m}}, & \text{$ (z_{\mathrm{bottom}} - z_{\mathrm{dvm}}) < 1500 $ and $ z_{\mathrm{bottom}} \geq z_{\mathrm{photic}} $} \\
+     T_{\mathrm{b}}, & \text{$ (z_{\mathrm{bottom}} - z_{\mathrm{dvm}}) \geq 1500 $ } \\
+     \frac{T_{\mathrm{b}}+T_{\mathrm{p}}}{2}, & \text{$ z_{\mathrm{bottom}} < z_{\mathrm{photic}} $} 
   \end{cases}
 \label{eq:xxxxxx2}
 \end{equation}
 
 \begin{equation}
- T_{night} =
+ T_{\mathrm{night}} =
   \begin{cases}
-     T_b, & \text{$ bottom \geq photic $}  \\
-     \frac{T_{b}+T_{p}}{2}, & \text{$ bottom < photic $} 
+     T_{\mathrm{b}}, & \text{$ z_{\mathrm{bottom}} \geq z_{\mathrm{photic}} $}  \\
+     \frac{T_{\mathrm{b}}+T_{\mathrm{p}}}{2}, & \text{$ z_{\mathrm{bottom}} < z_{\mathrm{photic}} $} 
   \end{cases}
 \label{eq:xxxxxx3}
 \end{equation}
 
-
-
-## Real-time effective temperature
-Following [@petrik2019bottom], in shallow water ($<~200 m$) the large demersal fish ($m_{c,i}>250~gWW$ as default)
+### Real-time effective temperature
+Following [@petrik2019bottom], in shallow water ($<~200$ m) the large demersal fish ($m_{\mathrm{c},i}>250$ g as default)
 migrate vertically within a day rather than staying at the bottom constantly. They are assumed to spend a fraction of time $\lambda$ in the pelagic zone and the rest of time $1-\lambda$ at the bottom according to the abundance of prey in these two zones.
 \begin{equation}
-\lambda = \frac{B_{pelprey}}{B_{allprey}}
+\lambda = \frac{B_{\mathrm{pelprey}}}{B_{\mathrm{allprey}}}
 \end{equation}
-where $B_{pelprey}$ denotes the total biomass of pelagic prey for large demersal fish, $B_{allprey}$ is the total biomass of all prey for large demersal fish. A simple case can be found in Eq. 15 in [@petrik2019bottom].\
+where $B_{\mathrm{pelprey}}$ denotes the total biomass of pelagic prey for large demersal fish, $B_{\mathrm{allprey}}$ is the total biomass of all prey for large demersal fish. A simple case can be found in Eq. 15 in [@petrik2019bottom].\
 Therefore, the temperature for large demersals is defined based on their time spent in the pelagic zone and benthic zone, which is called effective temperature:
 \begin{equation} 
-T_e = T_p \cdot \lambda + T_b \cdot (1 - \lambda)
+T_{\mathrm{e}} = T_{\mathrm{p}} \cdot \lambda + T_{\mathrm{b}} \cdot (1 - \lambda)
 \end{equation}
-$T_e$ is updated each time step during the time integration, along with the temperature-dependent biological rates, which are handled by the function `updateET()`. In code implementation, `updateET()` is called every time step in `derivativesFEISTYR()`. The effective temperature scheme is forced turned on in `setupBasic()` [@petrik2019bottom]; it is an option in `setupBasic2()`.
+$T_{\mathrm{e}}$ is updated each time step during the time integration, along with the temperature-dependent biological rates, which are handled by the function `updateET()`. In code implementation, `updateET()` is called every time step in `derivativesFEISTYR()`. The effective temperature scheme is forced turned on in `setupBasic()` [@petrik2019bottom]; it is an option in `setupBasic2()`.
 
+
+## Setup of the size spectrum grid
+
+The fish size span of a functional type is logarithmically discretized
+into $n$ continuous size bins. Each size bin shares the same ratio $z$
+between the upper boundary size and lower boundary size:
+\begin{equation}
+z = \exp \left( \frac{\ln (M) - \ln (M_{0})}{n} \right)
+\end{equation} 
+where $M_{0}$ and $M$ are the smallest and largest fish in a functional type (boundary size). There are $n+1$ boundaries of $n$ size bins ($m_{\mathrm{b},i}$), including all lower boundary sizes ($m_{\mathrm{l},i}$) and upper boundary sizes ($m_{\mathrm{u},i}$). 
+\begin{equation}
+m_{\mathrm{b},i} =  \exp( \ln(M_{0}) + (i-1) \ln(z)), \hspace{1.5cm}  i\in[1,n+1]
+\end{equation} 
+\begin{equation}
+m_{\mathrm{l},i} =  m_{\mathrm{b},i}, \hspace{5.5cm}  i\in[1,n]
+\end{equation}
+\begin{equation}
+m_{\mathrm{u},i} =  m_{\mathrm{b},i+1}, \hspace{5.1cm}  i\in[1,n]
+\end{equation}
+The geometric mean size of each size class $m_{i}$ is:
+\begin{equation}
+m_{i} =  \exp ( \ln(m_{\mathrm{l},i}) + 0.5(\ln(z)) ), \hspace{2.2cm}  i\in[1,n]
+\end{equation}
+which can be comprehensively used for calculations, for instance,
+physiological rates and size-based feeding preference.\
+The size spectrum generation is done by calling the function
+`paramAddGroup()`. Also, see the source code of `makeGrid()`.
+
+\newpage
 
 # Default parameters
 
@@ -498,46 +607,181 @@ $T_e$ is updated each time step during the time integration, along with the temp
 
 \centering
 \caption{Main parameters of FEISTY}
+\label{tab:defaultparam}
 
 \begin{tabular}{lp{8cm}lp{1cm}lp{1cm}lp{1cm}lp{1cm}l}
 \hline
-Symbol & Description & \multicolumn{4}{c}{Value} & Unit \\
+Symbol & Description & \multicolumn{4}{c}{Value$^a$} & Unit \\
                          \cline{3-6}
        &             & \multicolumn{1}{c}{B1} & \multicolumn{1}{c}{B2} & \multicolumn{1}{c}{V1} & \multicolumn{1}{c}{V2} & \\
 \hline
-$a_c$ & Intercept for mass-specific maximum consumption rate & \multicolumn{4}{c}{20} & $g^{-b_{c}}yr^{-1}$ \\
-$b_c$ & Exponent for mass-specific maximum consumption rate & \multicolumn{4}{c}{-0.25} & / \\
-$a_e$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & $m^2 g^{-b_{e}-1}yr^{-1}$ \\
-$b_e$ & Exponent for mass-specific clearance rate & \multicolumn{4}{c}{-0.2} & / \\
-$a_m$ & Intercept for mass-specific metabolism rate & \multicolumn{2}{c}{4.015} & \multicolumn{2}{c}{0.2*$a_c$} & $g^{-b_{m}}yr^{-1}$ \\
-$b_m$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}{-0.175} & / \\
-$\epsilon_{\alpha}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
-$\epsilon_{r}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\
-$\mu_b$ & Background mortality & \multicolumn{4}{c}{0.1} & $yr^{-1}$ \\
-$F$ & Baseline fishing mortality rate & /$^e$ & \multicolumn{3}{c}{0} & $yr^{-1}$ \\
-$\eta_{mature}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
-$\eta_{fishing}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
-$\theta_A$ & Large fish preference on forage fish$^b$ & \multicolumn{2}{c}{0.5} & / & / & / \\
-$\theta_D$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
-$T_{ref}$ & reference temperature & \multicolumn{4}{c}{10} & \textdegree{}C \\
-$Q_{10}$ & Rate of change for every 10\textdegree{}C increase for clearance rate and maximum consumption & \multicolumn{4}{c}{1.88} & / \\
-$Q_{10m}$ & Rate of change for every 10\textdegree{}C increase for metabolism & \multicolumn{2}{c}{2.35} & \multicolumn{2}{c}{1.88} & / \\
-$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & gWW \\
+$a_\mathrm{c}$ & Intercept for mass-specific maximum consumption rate & \multicolumn{4}{c}{20} & g$^{-b_{\mathrm{c}}}$yr$^{-1}$ \\
+$b_\mathrm{c}$ & Exponent for mass-specific maximum consumption rate & \multicolumn{4}{c}{-0.25} & / \\
+$a_\mathrm{e}$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & m$^2$g$^{-b_{\mathrm{e}}-1}$yr$^{-1}$ \\
+$b_\mathrm{e}$ & Exponent for mass-specific clearance rate & \multicolumn{4}{c}{-0.2} & / \\
+$a_\mathrm{m}$ & Intercept for mass-specific metabolism rate & \multicolumn{4}{c}{0.2*$a_{\mathrm{c}}$} & g$^{-b_{\mathrm{m}}}$yr$^{-1}$ \\
+$b_\mathrm{m}$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}{-0.175} & / \\
+$\epsilon_{\mathrm{\alpha}}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
+$\epsilon_{\mathrm{r}}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\
+$\mu_\mathrm{b}$ & Background mortality & \multicolumn{4}{c}{0.1} & yr$^{-1}$ \\
+$F_{\mathrm{max}}$ & Maximum fishing mortality rate & \multicolumn{4}{c}{0$^b$} & yr$^{-1}$ \\
+$\eta_{\mathrm{mature}}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
+$\eta_{\mathrm{fishing}}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
+$\theta_\mathrm{A}$ & Large fish preference on forage fish$^d$ & \multicolumn{2}{c}{0.5} & / & / & / \\
+$\theta_\mathrm{D}$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
+$\omega_0$ & baseline range of the vertical distribution & \multicolumn{2}{c}{/} & \multicolumn{2}{c}{10} & / \\
+$\tau$ & range-increasing factor of vertical distribution & \multicolumn{2}{c}{/} & \multicolumn{2}{c}{10} & / \\
+$T_{\mathrm{ref}}$ & reference temperature & \multicolumn{4}{c}{10} & \textdegree{}C \\
+$Q_{\mathrm{10}}$ & Rate of change for every 10\textdegree{}C increase for clearance rate and maximum consumption & \multicolumn{4}{c}{1.88} & / \\
+$Q_{\mathrm{10m}}$ & Rate of change for every 10\textdegree{}C increase for metabolism & \multicolumn{2}{c}{2.35} & \multicolumn{2}{c}{1.88} & / \\
+$aaa$ & xxx & 0.1 & 0.2 & 0.3 & 0.4 & g \\
 $\beta$ & Preferred predator:prey mass ratio & / & \multicolumn{3}{c}{400} & / \\
 $\sigma$ & Width of size preference for feeding & / & \multicolumn{3}{c}{1.3} & / \\
-$aaa$ & Continental shelf depth & / & / & \multicolumn{2}{c}{250} & m \\
-$aaa$ & Photic zone depth & / & / & \multicolumn{2}{c}{150} & m \\
+$z_{\mathrm{shelf}}$ & Continental shelf depth & / & / & \multicolumn{2}{c}{250} & m \\
+$z_{\mathrm{photic}}$ & Photic zone depth & / & / & \multicolumn{2}{c}{150} & m \\
+$m_{\mathrm{medium}}$ & boundary size of small/medium fish class & \multicolumn{4}{c}{0.5} & g \\
+$m_{\mathrm{large}}$ & boundary size of medium/large fish class  & \multicolumn{4}{c}{250} & g \\
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ B1: setupBasic1, B2: setupBasic2, V1: setupVertcal1, V2: setupVertcal2.} \\
-\multicolumn{7}{l}{\footnotesize $^b$ In B1, $\theta_A$ only poses on medium forage fish (the second size class).
-                                      In B2, $\theta_A$ works on all forage fish.} \\
-\multicolumn{7}{l}{\footnotesize $^e$ In B1, Eq. \ref{eq:fishing} does not apply. $\mu_{f,i}$ are constant values: Small fish 0 $yr^{-1}$, Medium fish 0.03 $yr^{-1}$, Large fish 0.3 $yr^{-1}$.}\\
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ In B1, the fishing mortality can also be assigned manually [@petrik2019bottom] (Eq. \ref{eq:fishing} does not apply). $\mu_{f,i}$ are constant values: Small fish 0 yr$^{-1}$, Medium fish 0.03 yr$^{-1}$, Large fish 0.3 yr$^{-1}$.}\\
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^c$ Maturity level $\psi_i$ is assigned manually in default B1. Only the last stage of each functional type has a value of 0.5 others are 0.} \\
+\multicolumn{7}{l}{\footnotesize $^d$ Fishing  mortality $\mu_{f,i}$ is 0 in default B1.} \\
+\multicolumn{7}{l}{\footnotesize $^e$ In B1, $\theta_{\mathrm{A}}$ only poses on medium forage fish (the second size class).
+                                      In B2, $\theta_{\mathrm{A}}$ works on all forage fish.} \\
 
 \end{tabular}
 \end{table}
 
+# Demonstration
+
+## The structure of main parameters
+
+**FESITY** includes four setups which each specifies the available functional groups and their parameters:
+
+-   setupBasic creates a basic three-functional type setup as described in [@petrik2019bottom].
+-   setupBasic2 creates the same three-functional type setup as setupBasic(), but
+    it allows more size numbers in each functional type, size-based maturity, generalized size-based feeding preference, and size-based fishing mortality.
+-   setupVertical makes a basic five-functional type setup that includes vertical distribution of resources and fish  [@van2021emergent].
+-   setupVertical2 is the same as setupVertical but different it allows more size numbers in each functional type, size-based maturity, generalized size-based feeding preference, size-based fishing mortality, and simpler temperature input.
+
+## Basic simulation and visualization 
+Here we demonstrate some examples of the basic usage of simulating FEISTY and visualization.
+Before a FEISTY simulation, first, we need to generate a full parameter set:
+
+```{r}
+p <- setupBasic(szprod = 70,   # small mesozooplankton production
+                lzprod = 70,   # large mesozooplankton production
+                bprodin  = 5, # benthos production
+                depth  = 150,  # water column depth [m]
+                Tp     = 17,   # pelagic layer averaged temperature [Celsius]
+                Tb     = 12)    # sea floor temperature [Celsius]
+```
+
+This parameter set contains three functional types according to [@petrik2019bottom], created by `setupBasic()`. Once the parameter set is ready, we can run the simulation by `simulateFEISTY()`:
+
+```{r}
+sim <- simulateFEISTY(p=p,  times=seq(0, 500, length.out=500), USEdll = T)
+```
+
+This simulation runs 500 years based on the parameter set `p` we defined above and the time series output is in every year. `USEdll = T` denotes an almost identical parameter will be generated in the Fortran dll based on the arguments provided in `setupBasic()` and the core computation will be done by the Fortran dll and ultimately the results will be returned to R. Then we can visualize the simulation result. To get a overview, we can use `plotSimulation()` which demonstrates much information though a figure collection:
+
+```{r, fig.width=8, fig.height=8}
+plotSimulation(sim)
+```
+
+This figure collection includes `plotSpectra()`, `plotRates()`, `plotNetwork()`, and `plotBiomasstime()`. Each of these can be called independently. For instance:
+
+```{r, fig.width=8, fig.height=7}
+plotBiomasstime(sim)
+```
+
+```{r, fig.width=8, fig.height=7}
+plotRates(sim)
+```
+
+## Fishing mortality assignment
+
+For simplicity, arguments of fishing in `setupbasic()` and `setupVertical()` only allow assigning fishing mortality to all functional types. Although the parameter set has been generated by calling setup functions e.g., `setupVertical()`, it is feasible to overwrite parameters manually. As a result, we can assign fishing mortality for a specific functional type afterward.
+
+```{r}
+p=setupVertical2(szprod= 120,
+                 lzprod = 120,
+                 dfpho=200, 
+                 depth = 700, 
+                 nStages = 9, 
+                 F=0) # no fishing for all size classes
+names(p$mortF)=p$stagenames
+df=data.frame(mortF_original=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]]))
+# assign 0.2/year as the maximum fishing mortality to small pelagic fish
+p=setFishing(p=p,F=0.2,etaF=0.05,groupidx=c(1))
+# assign 0.3/year as the maximum fishing mortality to demersal fish
+p=setFishing(p=p,F=0.3,etaF=0.05,groupidx=c(5))
+df=cbind(df,data.frame(mortF_new=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]])))
+knitr::kable(df,caption="Fishing mortality before and after assignment")
+df=data.frame("Stage"=1:length(p$ix[[1]]), "mortF"=p$mortF[p$ix[[1]]],"Groups"="smallPel")
+df=rbind(df,data.frame("Stage"=1:length(p$ix[[5]]), 
+                       "mortF"=p$mortF[p$ix[[5]]],"Groups"="demersals"))
+df$Groups=factor(df$Groups,levels=c("smallPel","demersals"))
+# plot of fishing mortality of small pelagics and demersals
+fig=ggplot(df, aes(x = Stage, y = mortF, color = Groups))+
+    geom_line(linewidth = 0.7,alpha=0.9)+
+    geom_point(size=1.5,alpha=0.9)+
+  labs(x = expression("Stage"), y = expression("Fishing mortality"~(yr^{-1}))) +
+  scale_color_manual(values = c("red", "black"),labels=c("Small pelagics","Demersals")) +
+  scale_x_continuous(breaks = unique(df$Stage))+
+      theme(panel.background = element_rect(fill = "white"),
+          panel.border = element_rect(color = "black", fill = NA),
+          axis.line = element_line(color = "black"),
+          #legend.title = element_blank(),
+          legend.key = element_rect(fill = "transparent", color = "transparent"),
+          legend.position = "bottom")
+  
+fig
+
+```
+
+Note since we manually changed the parameter set generated by the ready-to-use function `setupXXX()`, here we must use `bCust = T`, which means we want to run the simulation based on a parameter set we customized. The only difference from `USEdll = T` is that all core parameters for simulation will be transmitted from R to Fortran dll rather than generated in Fortran.
+
+```{r}
+sim=simulateFEISTY(p = p, tEnd = 200, bCust = T)
+```
+
+There are ready-to-use functions to visualize fishery-related results. They display yield and spawning stock biomass changes over time.
+
+```{r}
+plotYieldtime(sim)
+```
+
+```{r}
+plotSSBtime(sim)
+```
+
+## Bottom-up control examples
+
+
+**Daniël Please add more.**
+
+One of main objectives of FEISTY model is illustrating the bottom-up mechanisms of fish communities. Here we demonstrate two setups with oligotrophic conditions eutrophic conditions based on `setupVertical2`.
+
+```{r}
+p1=setupVertical2(depth=1000,szprod=5, lzprod=5,dfpho = 130) # oligotrophic 1000 meter
+p2=setupVertical2(depth=1000,szprod=100, lzprod=100,dfpho =380) # eutrophic 1000 meter
+```
+
+In the oligotrophic water, small pelagic fish, midwater predators, and demersal fish cannot survive (panel f), since the resource productions are low and cannot provide enough food for them (panel d).
+```{r, fig.width=8, fig.height=7}
+sim1=simulateFEISTY(p=p1,tEnd=500)
+plotSimulation(sim1)
+```
+
+On the contrary, in the eutrophic water, high resource productions can support the existence of all five functional types albeit the water is deep (panel f). All fish have feeding levels that are higher than their critical feeding levels (panel d).
+```{r, fig.width=8, fig.height=7}
+sim2=simulateFEISTY(p=p2,tEnd=500)
+plotSimulation(sim2)
+```
+
+\newpage
 
 # References
 

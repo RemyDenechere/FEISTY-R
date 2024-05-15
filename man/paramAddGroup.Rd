@@ -2,7 +2,7 @@
 % Please edit documentation in R/FEISTY_parms.R
 \name{paramAddGroup}
 \alias{paramAddGroup}
-\title{Add parameters of a functional type}
+\title{Add functional type Parameters}
 \usage{
 paramAddGroup(p, nStages, mMin, mMax, mMature=NA, mortF=0, mort0=0.1, u0=1, name=NA)
 }
@@ -11,18 +11,18 @@ paramAddGroup(p, nStages, mMin, mMax, mMature=NA, mortF=0, mort0=0.1, u0=1, name
 
 \item{nStages}{Number of stages for this functional type.}
 
-\item{mMin}{Minimum size (mass) of this functional type (boundary value), in gram wet weight [gWW].}
+\item{mMin}{Minimum size (mass) of this functional type (boundary value), in gram wet weight [g].}
 
-\item{mMax}{Maximum size (mass) of this functional type (boundary value), in gram wet weight [gWW].}
+\item{mMax}{Maximum size (mass) of this functional type (boundary value), in gram wet weight [g].}
 
-\item{mMature}{Size [gWW] at which fish has a 50\% maturity level, which will be used for maturity level calculation based on an S-shape function.\cr
+\item{mMature}{Size [g] at which fish has a 50\% maturity level, which will be used for maturity level calculation based on an S-shape function.\cr
 If NA, only the last size class is 50\% mature; others are 0.}
 
 \item{mortF}{Fishing mortality for all size classes [1/year]. Default value 0, indicating no fishing.}
 
 \item{mort0}{Natural mortality (background mortality) for all size groups [1/year]. Default value 0.1.}
 
-\item{u0}{Initial biomass value of all size classes [gWW/m2]. Default value 1.}
+\item{u0}{Initial biomass value of all size classes [g/m2]. Default value 1.}
 
 \item{name}{The name (acronym) of the functional type. If not provided, a default name is assigned.}
 }
@@ -69,9 +69,11 @@ p <- paramAddResource(p,
      mUpper = c(0.001, 0.5, 125, 125),
      mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000), 0.25*sqrt(500)))
 # add the first functional type
-p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, mortF=0, mort0 = 0.1, name = "smallfish")
+p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, 
+                   mortF=0, mort0 = 0.1, name = "smallfish")
 # add the second functional type
-p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, mortF=0, mort0 = 0.1, name = "largefish")
+p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
+                   mortF=0, mort0 = 0.1, name = "largefish")
 
 }
 \seealso{
@@ -80,5 +82,5 @@ p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0
 \code{\link{paramSizepref}} Size Preference Matrix Calculation
 }
 \author{
-Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

@@ -4,22 +4,32 @@
 \alias{paramAddResource}
 \title{Add Resource Parameters}
 \usage{
-paramAddResource (p, K, r=1, dynamics=c("chemostat", "logistic"), mc, mLower = NA, mUpper = NA, names=NA, u0=NA, ixpelR, ixbenR)
+paramAddResource (p, 
+                         K, 
+                         r=1, 
+                         dynamics="chemostat", 
+                         mc, 
+                         mLower = NA, 
+                         mUpper = NA, 
+                         names=NA, 
+                         u0=NA, 
+                         ixpelR=NA, 
+                         ixbenR=NA)
 }
 \arguments{
 \item{p}{Parameter list to be updated.}
 
-\item{K}{A vector of carrying capacities of all resources [gww/m2].}
+\item{K}{A vector of carrying capacities of all resources [g/m2].}
 
 \item{r}{A vector containing each resource nudging rate (growth rate) [1/year], default 1, does not recommend other values.}
 
 \item{dynamics}{The type of resource dynamics, either "chemostat" or "logistic".}
 
-\item{mc}{A vector containing each resource geometric mean weight [gww].}
+\item{mc}{A vector containing each resource geometric mean weight [g].}
 
-\item{mLower}{A vector containing the lower limit of each resource weight [gww]. Optional, depending on the size-based preference calculation function.}
+\item{mLower}{A vector containing the lower limit of each resource weight [g]. Optional, depending on the size-based preference calculation function.}
 
-\item{mUpper}{A vector containing the upper limit of each resource weight [gww]. Optional, depending on the size-based preference calculation function.}
+\item{mUpper}{A vector containing the upper limit of each resource weight [g]. Optional, depending on the size-based preference calculation function.}
 
 \item{names}{A character vector of each resource name (acronym). Optional, if not provided, default names are assigned, e.g., Resource_1 and Resource_2.}
 
@@ -65,12 +75,13 @@ p = paramAddResource (p=p, K=c(50,100,150,200,250), r=c(1,1,1,1,1), dynamics="ch
    mc= c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000), 0.25*sqrt(500), 1e-07*sqrt(500)),
    mLower = c(2e-06,0.001, 0.5e-03, 0.25, 1e-07),
    mUpper = c(0.001, 0.5, 125, 125, 5e-05),
-   names=c("smallZoo", "largeZoo", "smallBenthos", "largeBenthos", "Phytoplankton"), u0=c(100,100,200,200,200))
+   names=c("smallZoo", "largeZoo", "smallBenthos", "largeBenthos", "Phytoplankton"), 
+   u0=c(100,100,200,200,200))
 
 }
 \seealso{
-\code{\link{paramAddGroup}} Add Parameters of One Functional Type
+\code{\link{paramAddGroup}} Add parameters for one functional type
 }
 \author{
-Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

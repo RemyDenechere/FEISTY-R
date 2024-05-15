@@ -7,18 +7,20 @@
 plotNetwork(sim)
 }
 \arguments{
-\item{sim}{The dataframe of FEISTY simulation results.}
+\item{sim}{The data frame of FEISTY simulation results.}
 }
 \description{
 Makes a plot with all feeding interactions of fish functional groups and 
-resources. The size of the biomass circles and feeding fluxes are divided by 
-the maximum biomass or flux and re-scaled with the cube root.
-The function works on the four prepared setups or revised 
-versions based on these four setups. If customized setups by users have 
-more resources and/or fish functional types, this plot function may need to be updated.
+resources.
 }
 \details{
-To be added.
+The round patterns and lines between them represent biomass and feeding fluxes.
+The size of the round patterns (biomass) and lines (feeding fluxes) are divided by 
+the maximum biomass or flux and re-scaled with the cube root.
+The function works on the four prepared setups or revised versions based on these four setups. 
+If customized setups by users have more resources and/or fish functional types, this plot function may not work.
+In setupBasic and setupBasic2, There is no Y-axis.
+In setypVertical and setupVertcal2, Y-axis represent locations of relative surface and bottom to avoid overlap of dot symbols.
 }
 \examples{
 sim=simulateFEISTY()
@@ -29,5 +31,5 @@ plotNetwork(sim)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
+CCCC, BBBB, DDDD
 }

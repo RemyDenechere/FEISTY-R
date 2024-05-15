@@ -18,25 +18,25 @@ derivativesFEISTYR(t, u, p, FullOutput=TRUE)
 \value{
 If \code{FullOutput} is 'TRUE', a list containing the following components:
 \itemize{
-\item deriv: a vector of derivatives [gWW/m2/year] of all resources and all functional type size classes.
+\item deriv: a vector of derivatives [g/m2/year] of all resources and all functional type size classes.
 \item f: a vector containing feeding levels [-] of all resources (0) and all size classes of functional types.
 \item mortpred: a vector containing predation mortality rate [1/year] of all resources and all size classes of functional types.
-\item g: Net growth rate [1/year] of all size classes of functional types. Resources not included.
-\item Repro: Energy used for reproduction of all size classes of functional types, rate [gWW/m2/year]. Resources not included.
-\item Fin: Biomass flux into each size class [gWW/m2/year]. Resources not included.
-\item Fout: Biomass flux out of each size class [gWW/m2/year]. Resources not included.
-\item totMort: a vector containing total mortality [gWW/m2/year] of each functional type, 
+\item g: Net growth rate (the fraction of available energy invested in growth) [1/year]. It includes all size classes of functional types. Resources not included.
+\item Repro: Energy used for reproduction of all size classes of functional types [g/m2/year]. Resources not included.
+\item Fin: Biomass flux into each size class [g/m2/year]. Resources not included.
+\item Fout: Biomass flux out of each size class [g/m2/year]. Resources not included.
+\item totMort: a vector containing total mortality [g/m2/year] of each functional type, 
 which includes predation mortality, background mortality, and fishing mortality.
-\item totGrazing: a vector containing total grazing [gWW/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level)
-To be simply, the food intake before assimilation.
-\item totLoss: a vector containing all biomass loss [gWW/m2/year] of each functional type, including unassimilated food and metabolism.
-They are released to environments. where is energy loss from reproduction (1-epsRepro), to be fixed.
-\item totRepro: a vector containing total energy used for reproduction [gWW/m2] of each functional type.
-\item totRecruit: a vector containing total recruitment [gWW/m2] of each functional type. 
-TotRecruit = TotRepro * epsRepro (reproduction efficiency)
-\item totBiomass: a vector containing total biomass [gWW/m2] of each functional type.
-  }
-If \code{FullOutput = FALSE}, only returns \code{deriv}.
+\item totGrazing: a vector containing total grazing (food intake before assimilation) [g/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level).
+\item totLoss: a vector containing total biomass loss [g/m2/year] of each functional type, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
+The reproduction cost here also include the energy loss (1-epsRepro) from the flux out of the last size class (invested in reproduction) of each functional type.
+These loss are supposed to be released to environments.
+\item totRepro: a vector containing total energy used for reproduction [g/m2/year] of each functional type (before multiplying the reproduction efficiency epsRepro).
+\item totRecruit: a vector containing total recruitment [g/m2/year] of each functional type. 
+totRecruit = totRepro * epsRepro (reproduction efficiency)
+\item totBiomass: a vector containing total biomass [g/m2] of each functional type. 
+}
+If \code{FullOutput = FALSE}, it only returns derivatives of resources and all size classes.
 }
 \description{
 This function calculates the derivatives of state variables in FEISTY model in R. 
@@ -47,7 +47,7 @@ Note that calculating derivatives in R is much slower than doing it with Fortran
 This function is designed to simulate the dynamics of marine resources and fish populations in FEISTY model in R. 
 The derivative calculation of resources can be based on different types of dynamics (chemostat or logistic).
 Negative state variables and NA values are revised to zero to prevent computational errors.
-ODE solving is conducted by package deSolve.
+ODE solving is conducted by package deSolve. The equations are documented in the vignette.
 More theories can be found in de Roos et al. (2008) and Petrik et al. (2019).
 }
 \examples{
@@ -70,5 +70,5 @@ de Roos, A. M., Schellekens, T., Van Kooten, T., Van De Wolfshaar, K., Claessen,
 \code{\link{simulateFEISTY}} The main function for running FEISTY simulations
 }
 \author{
-Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

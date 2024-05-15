@@ -4,20 +4,30 @@
 \alias{setupBasic2}
 \title{setupBasic2}
 \usage{
-setupBasic2(szprod = 100, lzprod = 100, bprodin = NA, dfbot = NA, depth = 100, Tp = 10, Tb = 8, 
-nStages=9, etaMature=0.25, F=0, etaF=0.05, bET=TRUE)
+setupBasic2(szprod = 100, 
+                   lzprod = 100, 
+                   bprodin = NA, 
+                   dfbot = NA, 
+                   depth = 100, 
+                   Tp = 10, 
+                   Tb = 8, 
+                   nStages=9, 
+                   etaMature=0.25, 
+                   Fmax=0, 
+                   etaF=0.05, 
+                   bET=TRUE)
 }
 \arguments{
-\item{szprod}{Small zooplankton productivity. \cr
-Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
-Therefore, it is described as small zooplankton productivity [gww/m2/year]. \code{lzprod} and \code{bprod} are same.}
+\item{szprod}{Small mesozooplankton productivity. \cr
+Actually, this represents small mesozooplankton carrying capacity [g/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
+Therefore, it is described as small mesozooplankton productivity [g/m2/year]. \code{lzprod} and \code{bprod} are same.}
 
-\item{lzprod}{Large zooplankton productivity.}
+\item{lzprod}{Large mesozooplankton productivity.}
 
-\item{bprodin}{Benthic organism productivity input [gww/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
+\item{bprodin}{Benthic organism productivity input [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
 The benthic productivity `bprod` equals `bprodin`.}
 
-\item{dfbot}{Detrital flux reaching the bottom [gww/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
+\item{dfbot}{Detrital flux reaching the bottom [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
 It will multiply the trophic transfer efficiency (10\%) to get the benthic productivity `bprod`. If both are NAs then `bprod = 5`.}
 
 \item{depth}{Water column depth [meter]. depth>=200 is characterized as deep water, and depth<200 is characterized as shallow water. 
@@ -27,28 +37,29 @@ depth=300 and depth=1000 do not have any different effects on simulations.}
 
 \item{Tb}{Bottom water temperature [Celsius].}
 
-\item{nStages}{size number of large fish functional groups (e.g., large pelagic fish, demersal fish, and bathypelagic fish). 
-The size number of small fish functional groups (e.g., small  pelagic fish and mesopelagic fish) is \code{round(2/3*nStages)}. 
+\item{nStages}{Size number of large fish functional groups (e.g., large pelagic fish, demersal fish, and midwater predators). 
+The size number of small fish functional groups (e.g., small pelagic fish and mesopelagic fish) is \code{round(2/3*nStages)}. 
 Generally, \code{nStages} is multiples of 3 (e.g., \code{nStages = 3, 6, 9, or 12}...).}
 
 \item{etaMature}{The coefficient determines the fish size \code{mMature} with a 50\% maturity level. 
 \code{mMature = etaMature * mMax},  where \code{mMax} is the largest fish size (boundary) of a fish functional group. See \code{\link{paramAddGroup}}. 
 In van Denderen et al. (2021), it was 0.002.}
 
-\item{F}{Baseline fishing mortality [1/year]. \cr
-If \code{F} is 0, there is no fishing mortality.\cr 
-If \code{F} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function.
-See source code of \code{\link{setFishing}}.}
+\item{Fmax}{Maximum fishing mortality [1/year]. \cr
+If \code{Fmax} is 0, there is no fishing mortality.\cr 
+If \code{Fmax} is assigned a value greater than 0, fishing mortality will be set by multiplying the fishing selectivity \code{psi} which is based on a S-shape function. See source code of \code{\link{setFishing}}.\cr
+Note here it only allows assigning fishing mortality to all functional types based on the `Fmax` input. 
+If users want to assign fishing mortality to specific functional types with different `Fmax` and `etaF`, it can be done by calling \code{\link{setFishing}} later on. Details are in \code{\link{setFishing}}.}
 
 \item{etaF}{The coefficient determining the fish size \code{mFishing} with 50\% fishing selectivity. See source code of \code{\link{setFishing}}.}
 
-\item{bET}{Logical flag, controlling whether use effective temperature effects on the large demersal fish. See Petrik et al., 2019.}
+\item{bET}{Logical flag, controlling whether use effective temperature effects on the large demersal fish. See Petrik et al., 2019. See `updateET` source code in FEISTY_parms.R.}
 }
 \value{
 Additional parameters added by the function \code{\link{paramInit}}:
 \itemize{
-\item szprod, Small zooplankton productivity, from parameter input.
-\item lzprod, Large zooplankton productivity, from parameter input.
+\item szprod, Small mesozooplankton productivity, from parameter input.
+\item lzprod, Large mesozooplankton productivity, from parameter input.
 \item bprodin, Benthic organism productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfbot, Detrital flux reaching the bottom, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item bprod, Benthic organism productivity, from calculation based on `bprodin` or `dfbot`.
@@ -71,7 +82,7 @@ Added by the function \code{\link{setupBasic2}}:
 \item setup, name (character) of this setup
 }
 
-Other parameters returned can be found in \code{\link{paramInit}}, \code{\link{paramAddResource}}, \code{\link{paramAddGroup}},
+Other returned parameters can be found in \code{\link{paramInit}}, \code{\link{paramAddResource}}, \code{\link{paramAddGroup}},
 \code{\link{paramAddPhysiology}}, \code{\link{paramTeffect}}, \code{\link{setFishing}}, and \code{\link{paramSizepref}}.
 }
 \description{
@@ -79,7 +90,7 @@ Other parameters returned can be found in \code{\link{paramInit}}, \code{\link{p
 }
 \details{
 The setupBasic2 makes a revised three-species setup (small pelagic fish, large pelagic fish, and demersal fish) based on Petrik et al. (2019). 
-There are three resources: small zooplankton, large zooplankton, benthos, and a spare position in the state variable vector. \cr
+There are three resources: small mesozooplankton, large mesozooplankton, benthos, and a spare position in the state variable vector. \cr
 Main revision:
 \itemize{
 \item Allowing more size numbers in each functional type. See \code{\link{paramAddGroup}}.
@@ -112,15 +123,25 @@ Large-size demersal fish do not eat pelagic prey, only eat benthic resources, me
 
 }
 
-Small, medium, and large fish are differentiated according to `mMedium = 0.5gww` and `mLarge = 250gww`. \cr
+Small, medium, and large fish are differentiated according to `mMedium = 0.5g` and `mLarge = 250g`. \cr
 `mMedium`: The boundary weight (mass) between small fish (mc <= mMedium) and medium fish (mMedium < mc < mLarge). \cr
 `mLarge`: The boundary weight (mass) between medium fish (mMedium < mc < mLarge) and large fish (mc >= mLarge).
 
 }
 }
 \examples{
-p=setupBasic2(szprod = 200, lzprod = 150, bprodin = 15, dfbot = NA, depth = 300, Tp = 10, Tb = 9, 
-nStages=6, etaMature=0.25, F=0, etaF=0.05, bET=TRUE)
+p=setupBasic2(szprod = 200, 
+              lzprod = 150, 
+              bprodin = 15, 
+              dfbot = NA, 
+              depth = 300, 
+              Tp = 10, 
+              Tb = 9, 
+              nStages=6, 
+              etaMature=0.25, 
+              Fmax=0, 
+              etaF=0.05, 
+              bET=TRUE)
 sim=simulateFEISTY(p=p)
 plotSimulation(sim)
 
@@ -139,5 +160,5 @@ Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. 
 \code{\link{simulateFEISTY}} The main function to run FEISTY simulations
 }
 \author{
-Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

@@ -53,11 +53,14 @@ p <- paramAddResource(p,
      mUpper = c(0.001, 0.5, 125),
      mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000)))
 # add the first functional type
-p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, mortF=0, mort0 = 0.1, name = "smallfish")
+p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, 
+                   mortF=0, mort0 = 0.1, name = "smallfish")
 # add the second functional type
-p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, mortF=0, mort0 = 0.1, name = "largefish")
+p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
+                   mortF=0, mort0 = 0.1, name = "largefish")
 # add the third functional type
-p <- paramAddGroup(p, nStages = 9, mMin = 0.1, mMax = 500000, mMature = 500000*0.25, mortF=0, mort0 = 0.1, name = "giantfish")
+p <- paramAddGroup(p, nStages = 9, mMin = 0.1, mMax = 500000, mMature = 500000*0.25, 
+                   mortF=0, mort0 = 0.1, name = "giantfish")
 # add physiological parameters for three functional types (smallfish, largefish and giantfish)
 p <- paramAddPhysiology(p, 
      ac = 20, bc = -0.25,       
@@ -73,7 +76,7 @@ p$theta <- paramSizepref(p=p,
 # Run the simulation for this customized FEISTY setup.           
  sim=simulateFEISTY(bCust=TRUE,p=p, tEnd=100)
 # Plot dynamics of resources and small fish.
- plot(sim, sim, which=1:6, lty=1, mfrow=c(2,3), subset=time >= 0)       
+      
 
 }
 \references{
@@ -82,5 +85,5 @@ van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emer
 Andersen, K. H., & Visser, A. W. (2023). From cell size and first principles to structure and function of unicellular plankton communities. Progress in Oceanography, 213, 102995.
 }
 \author{
-Yixin Zhao
+DDDD
 }

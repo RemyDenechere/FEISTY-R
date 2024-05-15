@@ -1,26 +1,84 @@
 ## ----setup, include=FALSE-----------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE) # for printing the examples
 if (!require(FEISTY)) devtools::install_github("Kenhasteandersen/FEISTY@R-Package")
 library(FEISTY)
+library(ggplot2)
 palette("ggplot2")  # ggplot2-style palette
 
 ## -----------------------------------------------------------------------------
-p <- setupBasic()
-knitr::kable(p$resources, digits=2)
-knitr::kable(p$fishes, digits=2)
-knitr::kable(p$groups, digits=2)
+p <- setupBasic(szprod = 70,   # small mesozooplankton production
+                lzprod = 70,   # large mesozooplankton production
+                bprodin  = 5, # benthos production
+                depth  = 150,  # water column depth [m]
+                Tp     = 17,   # pelagic layer averaged temperature [Celsius]
+                Tb     = 12)    # sea floor temperature [Celsius]
 
 ## -----------------------------------------------------------------------------
-p2 <- paramAddPhysiology(p, ac = 40, am = 8, ae=140)
-
-p3 <- paramAddPhysiology(p, ac = 10, am = 2, ae=35)
+sim <- simulateFEISTY(p=p,  times=seq(0, 500, length.out=500), USEdll = T)
 
 ## ----fig.width=8, fig.height=8------------------------------------------------
-out1 <- simulateFEISTY(p=p,  times=seq(0, 200, length.out=1000),bCust=T)
-out2 <- simulateFEISTY(p=p2, times=seq(0, 200, length.out=1000),bCust=T)
-out3 <- simulateFEISTY(p=p3, times=seq(0, 200, length.out=1000),bCust=T)
-# plot(out1, out2, out3, which=5:12, lty=1, lwd=2, subset=time>180)
-# plot(out1, out2, out3, which=c("smallZoo", "largeZoo", "smallBenthos", 
-#   "totBiomass.smallPel", "totBiomass.largePel",  "totBiomass.Demersals"), 
-#   lty=1, lwd=2, subset=time>180)
+plotSimulation(sim)
+
+## ----fig.width=8, fig.height=7------------------------------------------------
+plotBiomasstime(sim)
+
+## ----fig.width=8, fig.height=7------------------------------------------------
+plotRates(sim)
+
+## -----------------------------------------------------------------------------
+p=setupVertical2(szprod= 120,
+                 lzprod = 120,
+                 dfpho=200, 
+                 depth = 700, 
+                 nStages = 9, 
+                 F=0) # no fishing for all size classes
+names(p$mortF)=p$stagenames
+df=data.frame(mortF_original=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]]))
+# assign 0.2/year as the maximum fishing mortality to small pelagic fish
+p=setFishing(p=p,F=0.2,etaF=0.05,groupidx=c(1))
+# assign 0.3/year as the maximum fishing mortality to demersal fish
+p=setFishing(p=p,F=0.3,etaF=0.05,groupidx=c(5))
+df=cbind(df,data.frame(mortF_new=c(p$mortF[p$ix[[1]]],p$mortF[p$ix[[5]]])))
+knitr::kable(df,caption="Fishing mortality before and after assignment")
+df=data.frame("Stage"=1:length(p$ix[[1]]), "mortF"=p$mortF[p$ix[[1]]],"Groups"="smallPel")
+df=rbind(df,data.frame("Stage"=1:length(p$ix[[5]]), 
+                       "mortF"=p$mortF[p$ix[[5]]],"Groups"="demersals"))
+df$Groups=factor(df$Groups,levels=c("smallPel","demersals"))
+# plot of fishing mortality of small pelagics and demersals
+fig=ggplot(df, aes(x = Stage, y = mortF, color = Groups))+
+    geom_line(linewidth = 0.7,alpha=0.9)+
+    geom_point(size=1.5,alpha=0.9)+
+  labs(x = expression("Stage"), y = expression("Fishing mortality"~(yr^{-1}))) +
+  scale_color_manual(values = c("red", "black"),labels=c("Small pelagics","Demersals")) +
+  scale_x_continuous(breaks = unique(df$Stage))+
+      theme(panel.background = element_rect(fill = "white"),
+          panel.border = element_rect(color = "black", fill = NA),
+          axis.line = element_line(color = "black"),
+          #legend.title = element_blank(),
+          legend.key = element_rect(fill = "transparent", color = "transparent"),
+          legend.position = "bottom")
+  
+fig
+
+
+## -----------------------------------------------------------------------------
+sim=simulateFEISTY(p = p, tEnd = 200, bCust = T)
+
+## -----------------------------------------------------------------------------
+plotYieldtime(sim)
+
+## -----------------------------------------------------------------------------
+plotSSBtime(sim)
+
+## -----------------------------------------------------------------------------
+p1=setupVertical2(depth=1000,szprod=5, lzprod=5,dfpho = 130) # oligotrophic 1000 meter
+p2=setupVertical2(depth=1000,szprod=100, lzprod=100,dfpho =380) # eutrophic 1000 meter
+
+## ----fig.width=8, fig.height=7------------------------------------------------
+sim1=simulateFEISTY(p=p1,tEnd=500)
+plotSimulation(sim1)
+
+## ----fig.width=8, fig.height=7------------------------------------------------
+sim2=simulateFEISTY(p=p2,tEnd=500)
+plotSimulation(sim2)
 

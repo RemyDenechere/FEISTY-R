@@ -4,20 +4,28 @@
 \alias{paramAddPhysiology}
 \title{Add Physiological Parameters}
 \usage{
-paramAddPhysiology(p, ac = 20, bc = -0.25, am = 0.011*365, bm = -0.175, ae = 70, be = -0.2, epsRepro = 0.01, epsAssim = 0.7)
+paramAddPhysiology(p, 
+                          ac = 20, 
+                          bc = -0.25, 
+                          am = 0.2*20, 
+                          bm = -0.175, 
+                          ae = 70, 
+                          be = -0.2, 
+                          epsRepro = 0.01, 
+                          epsAssim = 0.7)
 }
 \arguments{
 \item{p}{The parameter to be updated.}
 
-\item{ac}{Maximum consumption coefficient [g^bc year-1)].}
+\item{ac}{Maximum consumption coefficient [g^-bc year-1)].}
 
 \item{bc}{Maximum consumption exponent [-].}
 
-\item{am}{Metabolism coefficient [g^bm year-1].}
+\item{am}{Metabolism coefficient [g^-bm year-1] 20\% of `ac`.}
 
 \item{bm}{Metabolism exponent [-].}
 
-\item{ae}{Clearance rate (encounter rate) coefficient [m2 g^be year-1].}
+\item{ae}{Clearance rate (encounter rate) coefficient [m2 g^(-be-1) year-1].}
 
 \item{be}{Clearance rate (encounter rate) exponent [-].}
 
@@ -62,13 +70,15 @@ p <- paramAddResource(p,
      mUpper = c(0.001, 0.5, 125),
      mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000)))
 # add the first functional type
-p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, mortF=0, mort0 = 0.1, name = "smallfish")
+p <- paramAddGroup(p, nStages = 3, mMin = 0.1, mMax = 100, mMature = 100*0.25, 
+                   mortF=0, mort0 = 0.1, name = "smallfish")
 # add the second functional type
-p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, mortF=0, mort0 = 0.1, name = "largefish")
+p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
+                   mortF=0, mort0 = 0.1, name = "largefish")
 # add physiological parameters for two functional types (smallfish and largefish)
 p <- paramAddPhysiology(p, 
      ac = 20, bc = -0.25,       
-     am = 0.011*365, bm = -0.175,      
+     am = 0.2*20, bm = -0.175,      
      ae = 70, be = -0.2,        
      epsRepro = 0.01, 
      epsAssim = 0.7)
@@ -78,5 +88,5 @@ p <- paramAddPhysiology(p,
 \code{\link{paramTeffect}} Add temperature effects
 }
 \author{
-Ken H. Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

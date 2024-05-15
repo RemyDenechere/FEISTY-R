@@ -1,6 +1,6 @@
 ---
 title: "FishErIes Size and functional TYpe model (FEISTY) in R"
-author: "Yixin Zhao, Ken H. Andersen, and Karline Soetaert"
+author: "DDDD, AAAA, CCCC, and EEEE"
 date: " 2024"
 output:
   pdf_document:
@@ -175,21 +175,22 @@ where $\eta_{\mathrm{mature}}$ is the
 coefficient determining the half-maturation size relative to the max
 size of a functional type.
 
-The remaining fraction of the available energy $\nu_{i}$ is invested in growth $\gamma_i$ [@deRoos2008]: 
-\begin{equation}
- \gamma_i =
-  \begin{cases}
-\frac{ (1 - \psi_i) \nu_i - \mu_i }{1-(1/z)^{1-\mu_i/\kappa_i \nu_i}}, & \text{$ \nu_i > 0 $}   \\
-     0, & \text{$ \nu_i \leq 0 $} 
-  \end{cases}
-\end{equation}
-$\kappa_i$ represents the fraction of the available energy ($\nu_{i}$) invested in growth.
+The remaining fraction of the available energy ($\nu_{i}$) is invested in growth:
 \begin{equation}
 \kappa_i = 1 - \psi_i
 \end{equation}
+
+Then the growth from the current size class ($i$) to next neighboring size class ($i+1$) can be calculated [@deRoos2008]:
+\begin{equation}
+ \gamma_i =
+  \begin{cases}
+\frac{ \kappa_i \nu_i - \mu_i }{1-(1/z)^{1-\mu_i/\kappa_i \nu_i}}, & \text{$ \nu_i > 0 $}   \\
+     0, & \text{$ \nu_i \leq 0 $} 
+  \end{cases}
+\end{equation}
+
 $\mu_i$ is the total mortality including the predation mortality rate ($\mu_{\mathrm{p},i}$),
-background mortality rate ($\mu_{\mathrm{b},i}$), and fishing mortality rate
-($\mu_{\mathrm{f},i}$): 
+background mortality rate ($\mu_{\mathrm{b},i}$), and fishing mortality rate ($\mu_{\mathrm{f},i}$): 
 \begin{equation}
 \mu_i = \mu_{\mathrm{p},i}+\mu_{\mathrm{b},i}+\mu_{\mathrm{f},i}
 \end{equation}
@@ -618,7 +619,7 @@ $a_\mathrm{c}$ & Intercept for mass-specific maximum consumption rate & \multico
 $b_\mathrm{c}$ & Exponent for mass-specific maximum consumption rate & \multicolumn{4}{c}{-0.25} & / \\
 $a_\mathrm{e}$ & Intercept for mass-specific clearance rate & \multicolumn{4}{c}{70} & m$^2$g$^{-b_{\mathrm{e}}-1}$yr$^{-1}$ \\
 $b_\mathrm{e}$ & Exponent for mass-specific clearance rate & \multicolumn{4}{c}{-0.2} & / \\
-$a_\mathrm{m}$ & Intercept for mass-specific metabolism rate & \multicolumn{2}{c}{4.015} & \multicolumn{2}{c}{0.2*$a_{\mathrm{c}}$} & g$^{-b_{\mathrm{m}}}$yr$^{-1}$ \\
+$a_\mathrm{m}$ & Intercept for mass-specific metabolism rate & \multicolumn{4}{c}{0.2*$a_{\mathrm{c}}$} & g$^{-b_{\mathrm{m}}}$yr$^{-1}$ \\
 $b_\mathrm{m}$ & Exponent for mass-specific metabolism rate & \multicolumn{4}{c}{-0.175} & / \\
 $\epsilon_{\mathrm{\alpha}}$ & Assimilation efficiency & \multicolumn{4}{c}{0.7} & / \\
 $\epsilon_{\mathrm{r}}$ & Reproduction efficiency & \multicolumn{4}{c}{0.01} & / \\

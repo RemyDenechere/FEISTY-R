@@ -2,21 +2,27 @@
 % Please edit documentation in R/FEISTY_setup.R
 \name{setupBasic}
 \alias{setupBasic}
-\title{setupBasic (Petrik et al., 2019)}
+\title{setupBasic}
 \usage{
-setupBasic(szprod = 100, lzprod = 100, bprodin = NA, dfbot = NA, depth = 100, Tp = 10, Tb = 8)
+setupBasic(szprod = 100, 
+                  lzprod = 100, 
+                  bprodin = NA, 
+                  dfbot = NA, 
+                  depth = 100, 
+                  Tp = 10, 
+                  Tb = 8)
 }
 \arguments{
-\item{szprod}{Small zooplankton productivity. \cr
-Actually, this represents small zooplankton carrying capacity [gww/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
-Therefore, it is described as small zooplankton productivity [gww/m2/year]. \code{lzprod} and \code{bprod} are same.}
+\item{szprod}{Small mesozooplankton productivity. \cr
+Actually, this represents small mesozooplankton carrying capacity [g/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
+Therefore, it is described as small mesozooplankton productivity [g/m2/year]. \code{lzprod} and \code{bprod} are same.}
 
-\item{lzprod}{Large zooplankton productivity [gww/m2/year].}
+\item{lzprod}{Large mesozooplankton productivity [g/m2/year].}
 
-\item{bprodin}{Benthic organism productivity input [gww/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
+\item{bprodin}{Benthic organism productivity input [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
 The benthic productivity `bprod` equals `bprodin`.}
 
-\item{dfbot}{Detrital flux reaching the bottom [gww/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
+\item{dfbot}{Detrital flux reaching the bottom [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
 It will multiply the trophic transfer efficiency (10\%) to get the benthic productivity `bprod`. If both are NAs then `bprod = 5`.}
 
 \item{depth}{Water column depth [meter]. depth>=200 is characterized as deep water, and depth<200 is characterized as shallow water. 
@@ -29,8 +35,8 @@ depth=300 and depth=1000 do not have any different effects on simulations.}
 \value{
 Additional parameters added by the function \code{\link{paramInit}}:
 \itemize{
-\item szprod, Small zooplankton productivity, from parameter input.
-\item lzprod, Large zooplankton productivity, from parameter input.
+\item szprod, Small mesozooplankton productivity, from parameter input.
+\item lzprod, Large mesozooplankton productivity, from parameter input.
 \item bprodin, Benthic organism productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfbot, Detrital flux reaching the bottom, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item bprod, Benthic organism productivity, from calculation based on `bprodin` or `dfbot`.
@@ -39,7 +45,7 @@ Additional parameters added by the function \code{\link{paramInit}}:
 \item Tb, Bottom water temperature, from parameter input.
 \item mMedium, The boundary weight (mass) between small fish (mc <= mMedium) and medium fish (mMedium < mc < mLarge).
 \item mLarge, The boundary weight (mass) between medium fish (mMedium < mc < mLarge) and large fish (mc >= mLarge).
-\item bET, Logical flag, which is always TRUE as described in Petrik et al., 2019.
+\item bET, Logical flag, which is always TRUE as described in Petrik et al., 2019. See `updateET` source code in FEISTY_parms.R.
 }
 
 Added by the  function \code{\link{setupBasic}}:
@@ -55,11 +61,17 @@ Other parameters returned can be found in \code{\link{paramInit}}, \code{\link{p
 \code{setupBasic} creates a basic three-species setup as described by Petrik et al. (2019).
 }
 \details{
-The setupBasic makes a basic three-species setup (small pelagic fish, large pelagic fish, and demersal fish) as described in Petrik et al (2019). 
-There are three resources: small zooplankton, large zooplankton, benthos, and a spare position in the state variable vector.
+The setupBasic makes a basic three-species setup (small pelagic fish, large pelagic fish, and demersal fish) as described in Petrik et al. (2019). 
+There are three resources: small mesozooplankton, large mesozooplankton, benthos, and a spare position in the state variable vector.
 }
 \examples{
-p=setupBasic(szprod = 200, lzprod = 150, bprodin = 15, dfbot = NA, depth = 300, Tp = 10, Tb = 9)
+p=setupBasic(szprod = 200, 
+             lzprod = 150,
+             bprodin = 15, 
+             dfbot = NA, 
+             depth = 300, 
+             Tp = 10, 
+             Tb = 9)
 sim=simulateFEISTY(p=p)
 plotSimulation(sim)
 
@@ -76,5 +88,5 @@ Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. 
 \code{\link{simulateFEISTY}} The main function to run FEISTY simulations
 }
 \author{
-Ken H Andersen, Karline Soetaert <karline.soetaert@nioz.nl>, Yixin Zhao
+AAAA, EEEE, DDDD
 }

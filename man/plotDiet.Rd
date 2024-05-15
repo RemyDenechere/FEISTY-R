@@ -16,7 +16,8 @@ based on these four setups. If customized setups by users have more resources
 and/or fish functional types, this plot function needs to be updated.
 }
 \details{
-To be added.
+Each column indicates the feeding level ranging from 0 to 1 of a predator. 
+The sub-columns with different colors in a column represent the proportions of each prey in the predator's diet.
 }
 \examples{
 sim=simulateFEISTY()
@@ -27,5 +28,5 @@ plotDiet(sim)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
+CCCC, BBBB, DDDD
 }
