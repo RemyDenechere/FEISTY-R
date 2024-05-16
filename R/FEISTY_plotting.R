@@ -1030,13 +1030,13 @@ get_legend_new <- function(plot, legend = NULL) {
   return(NULL)
 }
 
-#' Plot simulation results
+#' Plot FEISTY simulation results (S3)
 #' 
 #' This function is a shortcut of \code{\link{plotSimulation}}.
 #' 
 #' @details See \code{\link{plotSimulation}}.
 #' 
-#' @usage plot(sim)
+#' @method plot FEISTY
 #' 
 #' @param sim The data frame of FEISTY simulation results.
 #' 

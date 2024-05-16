@@ -2,9 +2,9 @@
 % Please edit documentation in R/FEISTY_plotting.R
 \name{plot.FEISTY}
 \alias{plot.FEISTY}
-\title{Plot simulation results}
+\title{Plot FEISTY simulation results (S3)}
 \usage{
-plot(sim)
+\method{plot}{FEISTY}(sim)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
