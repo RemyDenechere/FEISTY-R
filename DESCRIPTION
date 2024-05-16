@@ -1,10 +1,10 @@
 Package: FEISTY
 Version: 1.0
 Title: FishErIes Size and functional TYpe model (FEISTY)
-Author: Ken Haste Andersen <khand@dtu.dk>
-        Karline Soetaert <karline.soetaert@nioz.nl>
-        Yixin Zhao
-Maintainer: Yixin Zhao <yixzh@aqua.dtu.dk>
+Author: AAAA <email@email.com>
+        EEEE <email@email.com>
+        DDDD <email@email.com>
+Maintainer: DDDD <email@email.com>
 Depends: R (>= 3.5.0)
 Imports: deSolve, ggplot2, pracma, scales, cowplot, shiny, shinyjs
 Suggests: knitr, rmarkdown
