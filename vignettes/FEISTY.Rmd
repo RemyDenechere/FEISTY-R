@@ -194,20 +194,13 @@ predation and fishing are described in the sections below.
 
 ## Predation
 
-FEISTY specifies of how each size class (and zooplankton and benthic prey resources) interact via predator-prey interactions in a feeding preference matrix (also known as a food-web matrix). In this matrix, each element $\theta_{i,j}$ is a number between 0 and 1, which denotes how much a fish class $i$ preys on a prey class $j$. The feeding preference function is either based on size preference or derived from size preference coupling with the vertical habitat of each functional group (detailed in the Section **Vertical overlap**). For some combinations of predator and prey, additional modifications are included to account for feeding specializations (described below).
+FEISTY specifies of how each size class (and zooplankton and benthic prey resources) interact via predator-prey interactions in a feeding preference matrix (also known as a food-web matrix). In this matrix, each element $\theta_{i,j}$ is a number between 0 and 1, which denotes how much a fish class $i$ preys on a prey class $j$. The feeding preference function is either based on size preference (see Section **Size preference**) or derived from size preference coupling with the vertical habitat of each functional group (see Section **Vertical overlap**). For some combinations of predator and prey, additional modifications are included to account for feeding specializations (see Section **Modifications to the preference matrix**).
 
 Once the preference matrix is established, the predation mortality of a prey $j$ can be calculated:
 \begin{equation}
 \mu_{\mathrm{p},j} = \sum_i  \frac{V_i \theta_{i,j}  B_i}{E_i+C_{\mathrm{max},i}} C_{\mathrm{max},i}
 \end{equation}
 
-In the vertical distribution setups, $\theta_{i,j}$ is the product of
-size-based preference ($\theta_{\mathrm{s},i,j}$) and vertical overlap ($\theta_{\mathrm{v},i,j}$)
-\begin{equation}
-\theta_{i,j} = \theta_{\mathrm{s},i,j} \cdot\theta_{\mathrm{v},i,j} 
-\label{eq:verttheta}
-\end{equation}
-The calculation of $\theta_{\mathrm{s},i,j}$ follows Eq. \ref{eq:errorpreference} in setupVertical and Eq. \ref{eq:lognormalpreference} in setupVertical2. The detailed description of $\theta_{\mathrm{v},i,j}$ in the Section **Vertical overlap**.
 
 ### Size preference
 In the non-vertical setups (setupBasic and setupBasic2)
@@ -244,6 +237,48 @@ z_{\mathrm{\zeta}} =  0+\zeta, \hspace{1.5cm}  \zeta\in[0,z_{\mathrm{b}}]
 \end{equation}
 where $\zeta$ is each depth of a water column (integer value), ranging from $0$ (surface) to $z_{\mathrm{bottom}}$ (sea floor).
 
+The vertical distribution of each size class and functional type $i$ is described as a unimodal distribution:
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{1}{\sqrt{2\pi\omega_i^2}} \cdot \exp\left(-\frac{(z_{\mathrm{\zeta}} - z_{\mathrm{loc},\mathrm{x},i})^2}{2\omega_i^2}\right)\\
+  \label{eq:vertdist1}
+\end{equation}
+
+where $\omega_i$ gives the vertical range of the vertical distribution of each size class and functional type, $\mathrm{x}$ is either day or night, and $z_{\mathrm{loc},\mathrm{x},i}$ is the defined water column depth with the maximum biomass concentration. Some size classes in some functional types have two depths with the maximum biomass concentration $z_{\mathrm{loc},\mathrm{x},i}$. Consequently, they need to be calculated twice and the vertical distribution is the averaged value, which shows a bimodal shape of the vertical distribution. The final vertical distribution in either day or night at each depth of the water column $\mathrm{\zeta}$ is re-scaled so that the sum over the water column is equal to one:
+
+\begin{equation}
+  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{x},i}}{\sum\limits_{\mathrm{\zeta}} \theta_{\mathrm{\zeta},\mathrm{x},i}}
+  \label{eq:vertdist2}
+\end{equation}
+
+The vertical range of the vertical distribution of each organism $\omega_i$ increases with body mass as larger individuals typically have a wider habitat range:
+\begin{equation}
+  \omega_i = \omega_0 + \tau \cdot \log_{10}\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{c},0}}\right)
+\end{equation}
+
+where $\omega_0$ is the baseline range of the vertical distribution and $\tau$ is the range-increasing factor of vertical distribution. $m_{\mathrm{c},0}$ denotes the reference size to which all organisms are scaled in the simulation (typically small mesozooplankton).
+
+Vertical overlap between predator and prey is then estimated as the lowest value between vertical distribution values of a specific predator $i$ and a prey $j$ at depth $\zeta$ at daytime or nighttime $\mathrm{x}$ $\min(\theta_{\mathrm{\zeta},\mathrm{x},i}, \theta_{\mathrm{\zeta},\mathrm{x},j})$. The depth-integration gives the synthetic vertical overlap value of predator $i$ to a prey $j$ at day or night $\theta_{\mathrm{v},\mathrm{x},i,j}$:
+
+\begin{equation}
+  \theta_{\mathrm{v},\mathrm{x},i,j} = \sum\limits_{\mathrm{\zeta}}\min(\theta_{\mathrm{\zeta},\mathrm{x},i},\theta_{\mathrm{\zeta},\mathrm{x},j})
+\end{equation}
+
+Ultimately, the total vertical overlap is the averaged value of the synthetic day and night vertical overlap values:
+
+\begin{equation}
+  \theta_{\mathrm{v},i,j} = \frac{\theta_{\mathrm{v},\mathrm{day},i,j}+\theta_{\mathrm{v},\mathrm{night},i,j}}{2}
+  \label{eq:vertover}
+\end{equation}
+
+This depth integrated vertical overlap value $\theta_{\mathrm{v},i,j}$ is combined with the size-based preference $\theta_{\mathrm{s},i,j}$ and used for the calculation of feeding preference $\theta_{i,j}$:
+\begin{equation}
+\theta_{i,j} = \theta_{\mathrm{s},i,j} \cdot\theta_{\mathrm{v},i,j} 
+\label{eq:verttheta}
+\end{equation}
+
+
+
 
 $z_{\mathrm{dvm}}$ is the representative depth where there is max biomass when functional types or size classes conduct the diel vertical migration.
 
@@ -268,55 +303,20 @@ For demersal fish, the vertical habitats are different.
 \label{eq:zdvmdem}
 \end{equation}
 
-The vertical range of the vertical distribution of each organism $\omega_i$ increases with body mass:
-\begin{equation}
-  \omega_i = \omega_0 + \tau \cdot \log_{10}\left(\frac{m_{\mathrm{c},i}}{m_{\mathrm{c},0}}\right)
-\end{equation}
 
-where $\omega_0$ is the baseline range of the vertical distribution and $\tau$ is the range-increasing factor of vertical distribution. $m_{\mathrm{c},0}$ denotes the minimum geometric mean size within all organisms in the simulation (typically small mesozooplankton). Note, for benthic resources, $\omega_i = \omega_0$ to constrain them to the bottom.
+### Vertical habitats of resources and fish
+Regardless of water conditions, Benthos are concentrated at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$) and to ensure they remain closely associated with the sea floor, their vertical range is kept as the baseline value $\omega_i=\omega_0$ (used in Eq. \ref{eq:vertdist1}).
 
-a function to generate vertical distributions (a normal distribution)............
-
-\begin{equation}
-  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{1}{\sqrt{2\pi\omega_i^2}} \cdot \exp\left(-\frac{(z_{\mathrm{\zeta}} - z_{\mathrm{loc},\mathrm{x},i})^2}{2\omega_i^2}\right)\\
-  \label{eq:vertdist1}
-\end{equation}
-
-\begin{equation}
-  \theta_{\mathrm{\zeta},\mathrm{x},i} = \frac{\theta_{\mathrm{\zeta},\mathrm{x},i}}{\sum\limits_{\mathrm{\zeta}} \theta_{\mathrm{\zeta},\mathrm{x},i}}
-  \label{eq:vertdist2}
-\end{equation}
-
-$x$ is either day or night. $z_{\mathrm{loc},\mathrm{x},i}$ is the representative depth that the maximum biomass is. Some functional types or size classes have two representative depths $z_{\mathrm{loc},\mathrm{x},i}$. Consequently, they need to be calculated twice (Eq. \ref{eq:vertdist1} and \ref{eq:vertdist2}) and the vertical distribution is the averaged value, which shows a bimodal shape of the vertical distribution. The description of $z_{\mathrm{loc},\mathrm{x},i}$ of different functional types and size classes can be found in (...................).
-
-Predator-prey vertical overlap
-
-The less value between vertical distribution values of a specific predator $i$ and a prey $j$ at depth $\zeta$ at daytime or nighttime $x$ $\min(\theta_{\mathrm{\zeta},\mathrm{x},i}, \theta_{\mathrm{\zeta},\mathrm{x},j})$ represents their vertical overlap level. The depth-integration gives the synthetic vertical overlap value of predator $i$ to a prey $j$ at day or night $\theta_{\mathrm{v},\mathrm{x},i,j}$:
-
-\begin{equation}
-  \theta_{\mathrm{v},\mathrm{x},i,j} = \sum\limits_{\mathrm{\zeta}}\min(\theta_{\mathrm{\zeta},\mathrm{x},i},\theta_{\mathrm{\zeta},\mathrm{x},j})
-\end{equation}
-
-The light conditions of a location where visual predators stay in a water column influence their prey-capturing performances. Small pelagics and large pelagics are visual predators whose predation ability is better in light-rich waters during the day and worse in dark conditions such as night or the twilight zone. These traits are reflected by the modified vertical overlap values. Therefore, according to habitats at day and night (Table \ref{tab:vertloc}) the vertical overlap data is further modified by multiplying the visual scaling factor $\theta_{\mathrm{visual}}$:
-
-\begin{equation}
-  \theta_{\mathrm{v},x,i,j} = \theta_{\mathrm{v},x,i,j} \cdot \theta_{\mathrm{visual}} .
-\end{equation}
-
-All small pelagics and small- and medium-size class [^2] large pelagics always stay at the surface regardless of day and night, so their daytime vertical overlap on all prey ($\theta_{\mathrm{v},day,i,j}$) is enhanced ($\theta_{\mathrm{visual}}=1.5$). Correspondingly, their nighttime vertical overlap ($\theta_{\mathrm{v},night,i,j}$) is decreased ($\theta_{\mathrm{visual}}=0.5$).
+The vertical habitat strategy of fish depends on seafloor depth and varies between fish functional types. Small and large pelagics and demersal fish make up the fish community in shelf regions, i.e. regions < 250 meters in depth. In these regions, zooplankton prey, small and large pelagics are distributed in the upper water column with a maximum concentration at the surface of the water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). Demersal fish change their vertical distribution throughout ontogeny [^2]: small-size classes feed in the upper water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$), medium-size classes feed at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$), and large-size classes, if the water column is full of light ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), exhibit cross-habitat feeding between the bottom and the surface waters all the day with maximum concentrations at the surface and the bottom (two $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: 0 and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. If ($z_{\mathrm{bottom}} > z_{\mathrm{photic}}$) large demersal fish stay at surface waters during daytime ($z_{\mathrm{loc},\mathrm{day},i} = 0$) and bottom at night ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
 
 [^2]: small-, medium-, and large-size classes of fish are distinguished by comparison between the geometric mean mass value ($m_{\mathrm{c},i}$) and boundary mass value ($m_{\mathrm{medium}}$ or $m_{\mathrm{large}}$). Small-size class: $m_{\mathrm{c},i} < m_{\mathrm{medium}}$.
 Medium-size class: $m_{\mathrm{medium}} \leq m_{\mathrm{c},i} \leq m_{\mathrm{large}}$.
 Large-size class: $m_{\mathrm{c},i} > m_{\mathrm{large}}$. Default $m_{\mathrm{medium}} = 0.5 \mathrm{g}$ and $m_{\mathrm{large}} = 250 \mathrm{g}$ .
 
+
+
 Half of large-size class large pelagics stay at the twilight zone ($z_{\mathrm{dvm}}$) at daytime, so their vertical overlap at daytime ($\theta_{\mathrm{v},day,i,j}$) on all mesopelagic fish and bathypelagic fish is reduced ($\theta_{\mathrm{visual}}=0.5$).
 
-Ultimately, the total vertical overlap is the average value of day and night vertical overlap values.
-
-\begin{equation}
-  \theta_{\mathrm{v},i,j} = \frac{\theta_{\mathrm{v},\mathrm{day},i,j}+\theta_{\mathrm{v},\mathrm{night},i,j}}{2}
-  \label{eq:}
-\end{equation}
 
 This can be used for the calculation of feeding preference ($\theta_{i,j}$) in Eq. \ref{eq:verttheta}. Note $\theta_{i,j}$ still needs to be further modified according to feeding behaviours (see Section **Modification**).
 
@@ -366,16 +366,16 @@ Small pelagic fish & 0 & 0 & / & 0 & 0 & / \\
 Mesopelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & / & 0 & 0 & / \\
 Large pelagic fish & 0 & 0 & 0 and $z_{\mathrm{dvm}}$ & 0 & 0 & 0 \\
 Bathypelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & 0 & 0 & $z_{\mathrm{dvm}}$ \\
-Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$$^e$ \\
+Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$$^b$ \\
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ Zooplankton include small and large mesozooplankton} \\
-\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} < z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. In such cases, $z_{\mathrm{dvmdem}}=0$.}
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. In such cases, $z_{\mathrm{dvmdem}}=0$.}
 
 \end{tabular}
 \end{table}
 
-### Vertical distribution
+
 
 
 ### Modifications to the preference matrix
@@ -394,11 +394,18 @@ Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{
 
 `setupVertical and setupVertical2`
 
+* Small and large pelagics are visual predators whose predation ability is better in light-rich waters during the day and worse in dark conditions such as night or the twilight zone. Therefore, according to habitats (Table \ref{tab:vertloc}), the vertical overlap is modified by multiplying it with a visual scaling factor $\theta_{\mathrm{visual}}$:
+\begin{equation}
+  \theta_{\mathrm{v},x,i,j} = \theta_{\mathrm{v},x,i,j} \cdot \theta_{\mathrm{visual}} .
+\end{equation}
+During daytime, the vertical overlap of all small and large pelagics on all preys in surface waters ($\theta_{\mathrm{v},day,i,j}$) is enhanced ($\theta_{\mathrm{visual}}=1.5$); the vertical overlap ($\theta_{\mathrm{v},day,i,j}$) of large size classes of large pelagics on the preys in the twilight zone ($z_{\mathrm{dvm}}$) (mesopelagic fish and midwater predators) is reduced ($\theta_{\mathrm{visual}}=0.5$). At night, their vertical overlap on all preys ($\theta_{\mathrm{v},night,i,j}$) is decreased ($\theta_{\mathrm{visual}}=0.5$). Note this modification is done before Eq. \ref{eq:vertover}.
+
 *	The feeding preference from all size-classes that are pelagic-living (small pelagics, mesopelagics, large pelagics, midwater predators and small size classes of demersal fish) to benthic resources are set to 0. In addition, their feeding preference on medium demersal fish (benthic-living) is reduced ($\theta_{i,j}=\theta_{i,j} \cdot 0.25$).
 
 *	The feeding preference of medium and large demersal fish to zooplankton resources are set to 0.
 
 * All large-size classes of pelagic-living functional fish groups (large pelagic fish, bathypelagic fish, and demersal fish) have reduced feeding preference on medium-size forage fish and medium-size mesopelagic fish ($\theta_{i,j}=\theta_{i,j} \cdot \theta_{\mathrm{A}}$). 
+
 
 ## Fishing mortality
 
@@ -629,7 +636,7 @@ $m_{\mathrm{large}}$ & boundary size of medium/large fish class  & \multicolumn{
 \multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ In B1, the fishing mortality can also be assigned manually [@petrik2019bottom] (Eq. \ref{eq:fishing} does not apply). $\mu_{f,i}$ are constant values: Small fish 0 yr$^{-1}$, Medium fish 0.03 yr$^{-1}$, Large fish 0.3 yr$^{-1}$.}\\
 \multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^c$ Maturity level $\psi_i$ is assigned manually in default B1. Only the last stage of each functional type has a value of 0.5 others are 0.} \\
 \multicolumn{7}{l}{\footnotesize $^d$ Fishing  mortality $\mu_{f,i}$ is 0 in default B1.} \\
-\multicolumn{7}{l}{\footnotesize $^e$ In B1, $\theta_{\mathrm{A}}$ only poses on medium-sized classes of small pelagic fish (the second size class).
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^e$ In B1, $\theta_{\mathrm{A}}$ only poses on medium-sized classes of small pelagic fish (the second size class).
                                       In B2, $\theta_{\mathrm{A}}$ works on all small pelagic fish. 
                                       In V1 and V2, $\theta_{\mathrm{A}}$ works on medium-sized classes of small pelagic and mesopelagic fish.} \\
 
