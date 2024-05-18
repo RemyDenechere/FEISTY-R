@@ -278,9 +278,16 @@ This depth integrated vertical overlap value $\theta_{\mathrm{v},i,j}$ is combin
 \end{equation}
 
 
+### Vertical habitats of resources and fish
+Regardless of water conditions, Benthos are concentrated at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$) and to ensure they remain closely associated with the sea floor, their vertical range is kept as the baseline value $\omega_i=\omega_0$ (used in Eq. \ref{eq:vertdist1}).
 
+The vertical habitat strategy of fish depends on seafloor depth and varies between fish functional types. Small and large pelagics and demersal fish make up the fish community in shelf regions, i.e. regions < 250 meters in depth. In these regions, zooplankton prey, small and large pelagics are distributed in the upper water column with a maximum concentration at the surface of the water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). Demersal fish change their vertical distribution throughout ontogeny [^2]: small-size classes feed in the upper water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$), medium-size classes feed at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$), and large-size classes, if the water column is full of light ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), exhibit cross-habitat feeding between the bottom and the surface waters all the day with maximum concentrations at the surface and the bottom (two $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: 0 and $z_{\mathrm{bottom}}$), resulting in a normal distribution centered at the middle of the water column. If ($z_{\mathrm{bottom}} > z_{\mathrm{photic}}$) large demersal fish stay at surface waters during daytime ($z_{\mathrm{loc},\mathrm{day},i} = 0$) and bottom at night ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
 
-$z_{\mathrm{dvm}}$ is the representative depth where there is max biomass when functional types or size classes conduct the diel vertical migration.
+[^2]: small-, medium-, and large-size classes of fish are distinguished by comparison between the geometric mean mass value ($m_{\mathrm{c},i}$) and boundary mass value ($m_{\mathrm{medium}}$ or $m_{\mathrm{large}}$). Small-size class: $m_{\mathrm{c},i} < m_{\mathrm{medium}}$.
+Medium-size class: $m_{\mathrm{medium}} \leq m_{\mathrm{c},i} \leq m_{\mathrm{large}}$.
+Large-size class: $m_{\mathrm{c},i} > m_{\mathrm{large}}$. Default $m_{\mathrm{medium}} = 0.5 \mathrm{g}$ and $m_{\mathrm{large}} = 250 \mathrm{g}$ .
+
+In slope and open ocean regions, some zooplankton resources and size classes of specific fish functional types conduct diel vertical migration to the depth $z_{\mathrm{dvm}}$ ($z_{\mathrm{dvmdem}}$ for large demersal fish, described later), which is the representative depth of maximum biomass concentration:
 
 \begin{equation}
   z_{\mathrm{dvm}} =
@@ -292,7 +299,13 @@ $z_{\mathrm{dvm}}$ is the representative depth where there is max biomass when f
 \label{eq:zdvm}
 \end{equation}
 
-For demersal fish, the vertical habitats are different.
+The migrating part of the zooplankton community is at depth during the day and at the surface at night, whereas the remaining zooplankton stay at the surface waters the whole day ($z_{\mathrm{loc},\mathrm{day},i} = 0~and~z_{\mathrm{dvm}}$; $z_{\mathrm{loc},\mathrm{night},i} = 0$). As a result, during the day, zooplankton have a bimodal distribution with maximum concentration depths at the surface and in the twilight zone.\
+Small pelagics are distributed in the upper water column with a maximum concentration at the surface water ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). \
+Mesopelagic fish follow the day/night vertical movement of the migrating zooplankton with a maximum concentration at similar depths ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$; $z_{\mathrm{loc},\mathrm{night},i} = 0$).\
+Large pelagics, perform differently throughout ontogeny. The small- and medium-size classes are distributed in the upper water column with a maximum concentration at the surface at day and night ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). The large size-classes have a bimodal distribution during the day, where half are distributed in the upper water column with a maximum concentration at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$), and the other half have a maximum concentration in the midwater ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$). At night, they are distributed in the upper water column ($z_{\mathrm{loc},\mathrm{night},i} = 0$). \
+Small- and medium-size classes of midwater predators have the same vertical distribution as mesopelagic fish ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$; $z_{\mathrm{loc},\mathrm{night},i} = 0$). Large midwater predators have a maximum concentration in midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$). \
+Small demersals are distributed in the upper water column with a maximum concentration at the surface both day and night ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). Medium demersal fish are distributed near the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$). Large demersal fish have a vertical habitat strategy that differs from the other groups. At night, large demersal fish are at the bottom ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$), while during the day, the depth of maximum concentration $z_{\mathrm{dvmdem}}$ is:
+
 \begin{equation}
   z_{\mathrm{dvmdem}} =
   \begin{cases}
@@ -303,51 +316,12 @@ For demersal fish, the vertical habitats are different.
 \label{eq:zdvmdem}
 \end{equation}
 
-
-### Vertical habitats of resources and fish
-Regardless of water conditions, Benthos are concentrated at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$) and to ensure they remain closely associated with the sea floor, their vertical range is kept as the baseline value $\omega_i=\omega_0$ (used in Eq. \ref{eq:vertdist1}).
-
-The vertical habitat strategy of fish depends on seafloor depth and varies between fish functional types. Small and large pelagics and demersal fish make up the fish community in shelf regions, i.e. regions < 250 meters in depth. In these regions, zooplankton prey, small and large pelagics are distributed in the upper water column with a maximum concentration at the surface of the water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). Demersal fish change their vertical distribution throughout ontogeny [^2]: small-size classes feed in the upper water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$), medium-size classes feed at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$), and large-size classes, if the water column is full of light ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), exhibit cross-habitat feeding between the bottom and the surface waters all the day with maximum concentrations at the surface and the bottom (two $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: 0 and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. If ($z_{\mathrm{bottom}} > z_{\mathrm{photic}}$) large demersal fish stay at surface waters during daytime ($z_{\mathrm{loc},\mathrm{day},i} = 0$) and bottom at night ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
-
-[^2]: small-, medium-, and large-size classes of fish are distinguished by comparison between the geometric mean mass value ($m_{\mathrm{c},i}$) and boundary mass value ($m_{\mathrm{medium}}$ or $m_{\mathrm{large}}$). Small-size class: $m_{\mathrm{c},i} < m_{\mathrm{medium}}$.
-Medium-size class: $m_{\mathrm{medium}} \leq m_{\mathrm{c},i} \leq m_{\mathrm{large}}$.
-Large-size class: $m_{\mathrm{c},i} > m_{\mathrm{large}}$. Default $m_{\mathrm{medium}} = 0.5 \mathrm{g}$ and $m_{\mathrm{large}} = 250 \mathrm{g}$ .
-
-
-
-Half of large-size class large pelagics stay at the twilight zone ($z_{\mathrm{dvm}}$) at daytime, so their vertical overlap at daytime ($\theta_{\mathrm{v},day,i,j}$) on all mesopelagic fish and bathypelagic fish is reduced ($\theta_{\mathrm{visual}}=0.5$).
-
-
-This can be used for the calculation of feeding preference ($\theta_{i,j}$) in Eq. \ref{eq:verttheta}. Note $\theta_{i,j}$ still needs to be further modified according to feeding behaviours (see Section **Modification**).
-
-*Zooplankton resources*\
-Zooplankton resources (small and large mesozooplankton) are supposed to be divided into two types in terms of whether they can conduct the diel vertical migration if water column conditions allow. During the daytime, half of them move to deep water to avoid predation ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). Another half is in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = 0$). At nighttime, they stay at the surface ($z_{\mathrm{loc},\mathrm{x},i} = 0$).
-
-*Benthic resources*\
-Benthos is benthic-living ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$). To ensure they stay close to the sea floor, their vertical distribution width is kept as the baseline value $\omega_i=\omega_0$.
-
-*Small pelagics*\
-They always stay in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
-
-*Mesopelagics*\
-Mesopelagic fish stay at the midwater during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, they migrate to the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$).
-
-*Large pelagics*\
-During the daytime, Large pelagics perform differently according to their size. The small- and medium-size classes are at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$). The large-size classes are divided into two groups: half of them are always in the surface water ($z_{\mathrm{loc},\mathrm{day},i} = 0$), and half in midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). 
-They all move to the surface during night ($z_{\mathrm{loc},\mathrm{night},i} = 0$)
-
-*Bathpelagics*\
-All bathypelagic fish stay at the dvm depth during daytime ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvm}}$). At night, the small- and medium-size classes are always at the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Large-size classes are in midwater ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{dvm}}$).
-
-*Demersals*
-
-During daytime, small demersals are at the surface ($z_{\mathrm{loc},\mathrm{day},i} = 0$); medium demersals are at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{bottom}}$); large demersals are at midwater ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{dvmdem}}$).
-At night, small demersal fish are at the surface ($z_{\mathrm{loc},\mathrm{night},i} = 0$). Medium and large demersal fish are at the bottom ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
+Table \ref{tab:vertloc} showed a summary of vertical habitats for different resources and functional types.
 
 \begin{table}[htbp]
 
 \centering
-\caption{ Biomass representative depth for each size class $z_{\mathrm{loc},\mathrm{x},i}$ at day and night. $z_{\mathrm{dvm}}$ and $z_{\mathrm{dvmdem}}$ can be found in Eq. \ref{eq:zdvm} and \ref{eq:zdvmdem}.}
+\caption{ Representative depth of maximum biomass of each size class $z_{\mathrm{loc},\mathrm{x},i}$ at day and night. $z_{\mathrm{dvm}}$ and $z_{\mathrm{dvmdem}}$ can be found in Eq. \ref{eq:zdvm} and \ref{eq:zdvmdem}.}
 \label{tab:vertloc}
 
 \begin{tabular}{ l l l p{2cm} l l p{2cm}}
@@ -374,8 +348,6 @@ Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{
 
 \end{tabular}
 \end{table}
-
-
 
 
 ### Modifications to the preference matrix
