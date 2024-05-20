@@ -20,8 +20,6 @@
 #' @param ... No arguments are required for this shiny application. See 'Examples' below.
 #'
 #' @return This Shiny application does not return values.
-#' 
-#' @examples webFEISTY()
 #'
 #' @seealso 
 #' \code{\link{setupBasic}} The setup following Petrik et al. (2019) \cr

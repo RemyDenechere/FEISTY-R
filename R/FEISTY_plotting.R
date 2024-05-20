@@ -758,6 +758,8 @@ plotSimulation = function(sim) {
 #'
 #' @usage plotSimulationShiny(sim)
 #' 
+#' @param sim The data frame of FEISTY simulation results.
+#' 
 #' @aliases plotSimulationShiny
 #' 
 #' @seealso 
