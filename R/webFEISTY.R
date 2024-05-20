@@ -17,7 +17,7 @@
 #' @usage
 #' webFEISTY(...)
 #'
-#' @param ... No arguments are required for this shiny application. See 'Examples' below.
+#' @param ... No arguments are required for this shiny application. Just enter webFEISTY().
 #'
 #' @return This Shiny application does not return values.
 #'
