@@ -6,12 +6,12 @@ library(ggplot2)
 palette("ggplot2")  # ggplot2-style palette
 
 ## -----------------------------------------------------------------------------
-p <- setupBasic(szprod = 70,   # small mesozooplankton production
-                lzprod = 70,   # large mesozooplankton production
-                bprodin  = 5, # benthos production
+p <- setupBasic(szprod = 50,   # small mesozooplankton production
+                lzprod = 50,   # large mesozooplankton production
+                bprodin  = 8,  # benthos production
                 depth  = 150,  # water column depth [m]
                 Tp     = 17,   # pelagic layer averaged temperature [Celsius]
-                Tb     = 12)    # sea floor temperature [Celsius]
+                Tb     = 12)   # sea floor temperature [Celsius]
 
 ## -----------------------------------------------------------------------------
 sim <- simulateFEISTY(p=p,  times=seq(0, 500, length.out=500), USEdll = T)
@@ -62,7 +62,7 @@ fig
 
 
 ## -----------------------------------------------------------------------------
-sim=simulateFEISTY(p = p, tEnd = 200, bCust = T)
+sim=simulateFEISTY(p = p, tEnd = 200, USEdll = T, bCust = T)
 
 ## -----------------------------------------------------------------------------
 plotYieldtime(sim)

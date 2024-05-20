@@ -6,6 +6,7 @@ output:
   pdf_document:
     latex_engine: pdflatex
     keep_tex: true
+    extra_dependencies: ["float"]
 vignette: >
   %\VignetteIndexEntry{FishErIes Size and functional TYpe model (FEISTY) in R}
   %\VignetteEncoding{UTF-8}
@@ -32,9 +33,9 @@ This vignette provides a comprehensive description of the model equations, param
 
 The FEISTY model framework is designed to be mechanistic, simple and fast, generally applicable globally, and compatible with biogeochemical model principles. It is based on ordinary differential equations and careful accounting of mass balancing. The model structures fish around functional types (aka. functional groups or guilds) based on traits instead of representing specific species. This simplification, together with the mechanistic basis, allows for projections into novel environments, e.g., climate change projections.
 
-The current FEISTY implementation includes four setups that define which fish functional types are present and how they predate upon one another. Two "Basic" setups contain three functional types: small and large pelagic fish species and demersal species [@petrik2019bottom].  Two "Vertical" setups augment the model with two additional functional types, mesopelagic fish and midwater predators, and further automatizes the calculation of the interaction between the functional types based on their vertical overlap [@van2021emergent]. Versions "2" of the Basic and Vertical setups modify the published setups with minor parameter and structural changes. All setups are detailed below.
+The current FEISTY implementation includes four setups that define which fish functional types are present and how they predate upon one another. Two "Basic" setups contain three functional types: small and large pelagic fish species and demersal species [@petrik2019bottom].  Two "Vertical" setups augment the model with two additional functional types, mesopelagic fish and midwater predators, and further automatize the calculation of the interaction between the functional types based on their vertical overlap [@van2021emergent]. The Basic and Vertical setups with the suffix "2" modify the published setups with minor parameter and structural changes. All setups are detailed below.
 
-Regardless of the setup type the biomass dynamics follow the same set of equations, which is detailed in the next section. The differences between the setups lie in how they interaction between the types and sizes are determined, which is detailed in the section "Predation".
+Regardless of the setup type the biomass dynamics follow the same set of equations, which is detailed in the next section. The differences between the setups lie in how the interactions between the types and sizes are determined, which is detailed in the section "Predation".
 
 
 ## Biomass dynamics
@@ -318,7 +319,7 @@ Small demersals are distributed in the upper water column with a maximum concent
 
 Table \ref{tab:vertloc} showed a summary of vertical habitats for different resources and functional types.
 
-\begin{table}[htbp]
+\begin{table}[H]
 
 \centering
 \caption{ Representative depth of maximum biomass of each size class $z_{\mathrm{loc},\mathrm{x},i}$ at day and night. $z_{\mathrm{dvm}}$ and $z_{\mathrm{dvmdem}}$ can be found in Eq. \ref{eq:zdvm} and \ref{eq:zdvmdem}.}
@@ -617,9 +618,7 @@ $m_{\mathrm{large}}$ & boundary size of medium/large fish class  & \multicolumn{
 
 # Demonstration
 
-## The structure of main parameters
-
-**FESITY** includes four setups which each specifies the available functional groups and their parameters:
+FESITY includes four setups which each specifies the available functional groups and their parameters:
 
 -   setupBasic creates a basic three-functional type setup as described in [@petrik2019bottom].
 -   setupBasic2 creates the same three-functional type setup as setupBasic(), but
