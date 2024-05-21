@@ -6,6 +6,9 @@
 \usage{
 plotSimulationShiny(sim)
 }
+\arguments{
+\item{sim}{The data frame of FEISTY simulation results.}
+}
 \description{
 This function is designed to give the figures in the `General` tab in the Shiny App. 
 It can be called independently.

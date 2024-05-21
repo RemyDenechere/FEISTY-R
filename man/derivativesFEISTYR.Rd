@@ -30,7 +30,7 @@ which includes predation mortality, background mortality, and fishing mortality.
 \item totGrazing: a vector containing total grazing (food intake before assimilation) [g/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level).
 \item totLoss: a vector containing total biomass loss [g/m2/year] of each functional type, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
 The reproduction cost here also include the energy loss (1-epsRepro) from the flux out of the last size class (invested in reproduction) of each functional type.
-These loss are supposed to be released to environments.
+These losses are supposed to be released to environments.
 \item totRepro: a vector containing total energy used for reproduction [g/m2/year] of each functional type (before multiplying the reproduction efficiency epsRepro).
 \item totRecruit: a vector containing total recruitment [g/m2/year] of each functional type. 
 totRecruit = totRepro * epsRepro (reproduction efficiency)
@@ -41,14 +41,14 @@ If \code{FullOutput = FALSE}, it only returns derivatives of resources and all s
 \description{
 This function calculates the derivatives of state variables in FEISTY model in R. 
 It is used for time integration of FEISTY simulations or getting rates by computing derivatives of one time step.
-Note that calculating derivatives in R is much slower than doing it with Fortran.
+Note that calculating derivatives in R is much slower than with Fortran.
 }
 \details{
 This function is designed to simulate the dynamics of marine resources and fish populations in FEISTY model in R. 
 The derivative calculation of resources can be based on different types of dynamics (chemostat or logistic).
 Negative state variables and NA values are revised to zero to prevent computational errors.
 ODE solving is conducted by package deSolve. The equations are documented in the vignette.
-More theories can be found in de Roos et al. (2008) and Petrik et al. (2019).
+More information can be found in de Roos et al. (2008) and Petrik et al. (2019).
 }
 \examples{
 # Parameter list preparation

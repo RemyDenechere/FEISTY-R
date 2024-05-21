@@ -14,12 +14,12 @@ setupBasic(szprod = 100,
 }
 \arguments{
 \item{szprod}{Small mesozooplankton productivity. \cr
-Actually, this represents small mesozooplankton carrying capacity [g/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
-Therefore, it is described as small mesozooplankton productivity [g/m2/year]. \code{lzprod} and \code{bprod} are same.}
+The parameter represents small mesozooplankton carrying capacity [g/m2] and multiplied with the growth rate \bold{r}, which is always 1 [1/yr], it gives the maximum resource productivity [g/m2/year]. 
+Therefore, it is termed small mesozooplankton productivity [g/m2/year]. \code{lzprod} and \code{bprod} are same.}
 
 \item{lzprod}{Large mesozooplankton productivity [g/m2/year].}
 
-\item{bprodin}{Benthic organism productivity input [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
+\item{bprodin}{Benthic productivity input [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
 The benthic productivity `bprod` equals `bprodin`.}
 
 \item{dfbot}{Detrital flux reaching the bottom [g/m2/year]. Default NA. Input either of `bprodin` or `dfbot`.
@@ -37,9 +37,9 @@ Additional parameters added by the function \code{\link{paramInit}}:
 \itemize{
 \item szprod, Small mesozooplankton productivity, from parameter input.
 \item lzprod, Large mesozooplankton productivity, from parameter input.
-\item bprodin, Benthic organism productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
+\item bprodin, Benthic productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfbot, Detrital flux reaching the bottom, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
-\item bprod, Benthic organism productivity, from calculation based on `bprodin` or `dfbot`.
+\item bprod, Benthic productivity input, from calculation based on `bprodin` or `dfbot`.
 \item depth, Water column depth, from parameter input.
 \item Tp, Pelagic water temperature, from parameter input.
 \item Tb, Bottom water temperature, from parameter input.

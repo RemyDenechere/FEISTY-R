@@ -10,7 +10,7 @@ plotBiomasstime(sim)
 \item{sim}{The data frame of FEISTY simulation results.}
 }
 \description{
-It displays the time series of total biomass for each fish functional type and zooplankton
+Displays the time series of total biomass for each fish functional type and zooplankton
 and benthic resources.
 }
 \details{

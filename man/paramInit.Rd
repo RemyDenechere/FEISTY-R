@@ -13,15 +13,15 @@ paramInit(...)
 A parameter list is initialized with some basic blank values, vectors, matrices, and sublists.
 \itemize{
 \item ..., as input parameters in \code{paramInit(...)}
-\item nResources, the total number of resources, will be updated later
-\item nGroups, the total number of fish functional groups, will be updated later
-\item nStages, the total number of resources + fish stages, will be updated later
-\item groupnames, a character vector of names of resources and each fish functional group, will be updated later
-\item stagenames, a character vector of names of resources and each fish stage (functional group), will be updated later
-\item theta, a matrix for the feeding preference of each predator x to each prey y, will be updated later
-\item ix, index lists for size classes of each fish functional type (sublists), will be updated later
-\item ixFish, a vector containing indices for all fish, will be updated later
-\item ixR, a vector containing indices for all resources, will be updated later
+\item nResources, the total number of resources; value is 0 and updated later by other function(s)
+\item nGroups, the total number of fish functional groups; value is 0 and updated later by other function(s)
+\item nStages, the total number of resources + fish stages; value is 0 and updated later by other function(s)
+\item groupnames, a character vector of names of resources and each fish functional group; value is NA and updated later by other function(s)
+\item stagenames, a character vector of names of resources and each fish stage (functional group); value is NA and updated later by other function(s)
+\item theta, a matrix for the feeding preference of each predator x to each prey y; value is NA and updated later by other function(s)
+\item ix, index lists for size classes of each fish functional type (sublists); value is NA and updated later by other function(s)
+\item ixFish, a vector containing indices for all fish; value is empty list and updated later by other function(s)
+\item ixR, a vector containing indices for all resources; value is NA and updated later by other function(s)
 \item my_palette, default color palettes for all functional types
 \item my_names, default full name and acronyms of all functional types
 }

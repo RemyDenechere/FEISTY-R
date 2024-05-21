@@ -16,8 +16,8 @@ based on these four setups. If customized setups by users have more resources
 and/or fish functional types, this plot function needs to be updated.
 }
 \details{
-Each column indicates the feeding level ranging from 0 to 1 of a predator. 
-The sub-columns with different colors in a column represent the proportions of each prey in the predator's diet.
+Each bar indicates the feeding level ranging from 0 to 1 of a predator. 
+The different colors in each bar represent the proportions of each prey in the predator's diet.
 }
 \examples{
 sim=simulateFEISTY()

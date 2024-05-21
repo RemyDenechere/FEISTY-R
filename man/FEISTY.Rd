@@ -5,26 +5,26 @@
 \alias{FEISTY}
 \title{FEISTY: FishErIes Size and functional TYpe model.}
 \description{
-FEISTY is a size- and trait-based model of marine higher trophic level dynamics (fish and cephalopods).
-The model is described in the publications:  Petrik et al., 2019 and van Denderen et al., 2020.
+FEISTY is a size- and trait-based model of marine higher trophic level dynamics.
+The model is described in the publications: Petrik et al., 2019 and van Denderen et al., 2020.
 This package is developed for FEISTY model simulations and development and includes modifications to 
 the published setups. It also includes a Shiny app interface.
 }
 \details{
 The package provides four setups for FEISTY, including two published setups and their revised versions.
-Furthermore, this package allows users to customize their setups to simulate and develop their new ideas within the FEISTY model frame.
+Furthermore, this package allows users to customize their setups to simulate and develop their new ideas within the FEISTY framework.
 Functions of parameter setting are offered for customization.
 
 The fish in FEISTY are defined by their functional type, size, and maturity stage. 
-The number of fish functional types is defined by each of the predefined setups (see below), but can also be adapted by the user.
-The physiological rates of each size class are based on allometry using the mass (gram wet weight) of each size class. 
-The fish eat on resources of zooplankton or benthos, or, for larger size classes, on smaller fish. 
+The number of fish functional types is defined by each of the pre-defined setups (see below), but can also be adapted by the user.
+The physiological rates of each size class are based on allometric mass-scaling (in gram wet weight) of each size class. 
+The fish prey on resources of zooplankton or benthos, or, for larger size classes, on smaller fish. 
 
-Each fish functional type is modeled as a collection of size classes, with smaller classes growing into larger size classes. 
+Each fish functional type is modeled as a collection of size classes, with smaller size classes growing into larger classes. 
 Fish size classes are defined using logarithmic size bins between the offspring (egg) size and the asymptotic size.
 The stage-structured formulation is described in de Roos et al. (2008).
 
-The package provides two simulation approaches: either using a compiled Fortran code (very fast) or running everything in R (slow, but easier to modify).
+The package provides two simulation approaches: 1) a compiled Fortran code (very fast) or, 2) runs in R (slow, but easier to modify).
 Both rely on the \link{deSolve} package. 
 
 The package operates with two main structures: the parameters structure and the simulation structure. \cr
@@ -35,7 +35,7 @@ This structure contains all the information of the simulation and can be passed 
 \examples{
 # A simulation can be as simple as:
   sim = simulateFEISTY()
-  plotSimulation(sim)
+  plot(sim)
 
 }
 \references{

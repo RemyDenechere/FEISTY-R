@@ -10,7 +10,7 @@ plotSpectra(sim)
 \item{sim}{The data frame of FEISTY simulation results.}
 }
 \description{
-It makes a plot of the biomass of all functional types over the size spectrum.
+Makes a plot of the biomass of all functional types over the size spectrum.
 Data is averaged over the last 40\% simulation time.
 }
 \details{

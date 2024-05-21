@@ -22,12 +22,12 @@ setupVertical2(szprod = 80, lzprod = 80,
 }
 \arguments{
 \item{szprod}{Small mesozooplankton productivity. \cr
-Actually, this represents small mesozooplankton carrying capacity [g/m2] but it will multiply the growth rate \bold{r} which is always 1 [1/yr]. 
+The parameter represents small mesozooplankton carrying capacity [g/m2] and multiplied with the growth rate \bold{r}, which is always 1 [1/yr], it gives the maximum resource productivity [g/m2/year].
 Therefore, it is described as small mesozooplankton productivity [g/m2/year]. \code{lzprod} is the same.}
 
 \item{lzprod}{Large mesozooplankton productivity.}
 
-\item{bprodin}{Benthic organism productivity input [g/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
+\item{bprodin}{Benthic productivity input [g/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
 The benthic productivity `bprod` equals `bprodin`.}
 
 \item{dfbot}{Detrital flux reaching the bottom [g/m2/year]. Default NA. Input either of `bprodin`, `dfbot` or `dfpho`.
@@ -75,10 +75,10 @@ Additional parameters added by function \code{\link{paramInit}}:
 \itemize{
 \item szprod, Small mesozooplankton productivity, from parameter input.
 \item lzprod, Large mesozooplankton productivity, from parameter input.
-\item bprodin, Benthic organism productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
+\item bprodin, Benthic productivity input, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfbot, Detrital flux reaching the bottom, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
 \item dfpho, Detrital flux out of the photic zone, from parameter input. If input is NA, the returned value is -1 for passing to FORTRAN.
-\item bprod, Benthic organism productivity, from calculation based on `bprodin` or `dfbot`, or `dfpho`.
+\item bprod, Benthic productivity, from calculation based on `bprodin` or `dfbot`, or `dfpho`.
 \item bottom, Water column depth, from parameter input (depth).
 \item photic, Photic zone depth, from parameter input.
 \item shelfdepth, continental shelf depth. from parameter input.

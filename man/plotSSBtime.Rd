@@ -10,7 +10,7 @@ plotSSBtime(sim)
 \item{sim}{The data frame of FEISTY simulation results.}
 }
 \description{
-It displays the time series of spawning stock biomass (SSB) for each functional type.
+Displays the time series of spawning stock biomass (SSB) for each functional type.
 }
 \details{
 X-axis is time. Y-axis is the SSB data in the log10 scale.

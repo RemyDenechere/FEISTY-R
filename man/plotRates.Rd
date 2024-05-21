@@ -13,12 +13,12 @@ plotRates(sim)
 Plots growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
 }
 \details{
-Note the growth rate here denotes the fraction of the available energy can be invested in growth (Eq. 15 in vignette), 
+The growth rate here denotes the fraction of the available energy that can be invested in growth (Eq. 15 in vignette), 
 which is not the growth rate from a size class to the next neighboring class (Eq. 16 in vignette).
 
-Mortality panel displays the total mortality, background mortality, fishing mortality and predation mortality. 
+The mortality panel displays the total mortality, which is the sum of background mortality, fishing mortality and predation mortality. 
 
-Feeding levels calculation is in Eq. 10 in vignettes.
+The feeding level calculation is in Eq. 10 in vignettes.
 
 Data are averaged over a selected time period (last 40% of the simulation time).
 }

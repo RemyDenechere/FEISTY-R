@@ -19,7 +19,7 @@ It makes a plot combo for the simulation results, including \code{\link{plotSpec
 \examples{
 sim=simulateFEISTY()
 plotSimulation(sim)
-# We provide a short cut to call plotSimulation(sim).
+# A short cut to call plotSimulation(sim) is provided.
 plot(sim)
 
 }

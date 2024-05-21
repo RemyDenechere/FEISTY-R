@@ -48,17 +48,17 @@ This function is specifically designed for `setupBasic` and `setupBasic2`.
 }
 \details{
 The function calculates temperature effects on physiological rates (metabolism, clearance rate, and maximum consumption rate) using 
-the Q10 theory, which states that a physiological process rate increases by a factor of Q10 for every 10 Celsius rise in temperature.
+the Q10 temperature coefficient: a physiological process rate increases by a factor of Q10 for every 10 Celsius increase in temperature.
 The effects are applied differently in terms of living habitats (pelagic and demersal) and water depth (shallow and deep).
 
 The function requires a specific structure in the input parameter list `p`, such as
 indices of all fish and vectors for saved baseline values of physiological rates (\code{Vsave}, \code{Cmaxsave}, \code{metabolismsave}).
-Therefore it only can be called after \code{\link{paramAddPhysiology}}.
+Therefore it can only be called after \code{\link{paramAddPhysiology}}.
 `Tp` and `Tb` are required in the input parameter list, or this function will not work.
 It might not work in customized setups other than \code{\link{setupBasic}} and \code{\link{setupBasic2}}.
 }
 \examples{
-# Just an example, data may not make sense.
+# Example and values are provided solely for illustrative purposes.
 # Create a FEISTY setup by setupBasic2.
 p1 = setupBasic2(szprod = 100, lzprod = 100, bprodin = 5, depth = 100, Tp = 10, Tb = 8, 
 nStages=9, etaMature=0.25, F=0, etaF=0.05)
