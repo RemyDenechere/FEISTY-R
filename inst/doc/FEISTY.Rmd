@@ -282,7 +282,7 @@ This depth integrated vertical overlap value $\theta_{\mathrm{v},i,j}$ is combin
 ### Vertical habitats of resources and fish
 Regardless of water conditions, Benthos are concentrated at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$) and to ensure they remain closely associated with the sea floor, their vertical range is kept as the baseline value $\omega_i=\omega_0$ (used in Eq. \ref{eq:vertdist1}).
 
-The vertical habitat strategy of fish depends on seafloor depth and varies between fish functional types. Small and large pelagics and demersal fish make up the fish community in shelf regions, i.e. regions < 250 meters in depth. In these regions, zooplankton prey, small and large pelagics are distributed in the upper water column with a maximum concentration at the surface of the water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). Demersal fish change their vertical distribution throughout ontogeny [^2]: small-size classes feed in the upper water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$), medium-size classes feed at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$), and large-size classes, if the water column is full of light ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), exhibit cross-habitat feeding between the bottom and the surface waters all the day with maximum concentrations at the surface and the bottom (two $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: 0 and $z_{\mathrm{bottom}}$), resulting in a normal distribution centered at the middle of the water column. If ($z_{\mathrm{bottom}} > z_{\mathrm{photic}}$) large demersal fish stay at surface waters during daytime ($z_{\mathrm{loc},\mathrm{day},i} = 0$) and bottom at night ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
+The vertical habitat strategy of fish depends on seafloor depth and varies between fish functional types. Small and large pelagics and demersal fish make up the fish community in shelf regions, i.e. regions < 250 meters in depth. In these regions, zooplankton prey, small and large pelagics are distributed in the upper water column with a maximum concentration at the surface of the water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$). Demersal fish change their vertical distribution throughout ontogeny [^2]: small-size classes feed in the upper water column ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = 0$), medium-size classes feed at the bottom ($z_{\mathrm{loc},\mathrm{day},i} = z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$), and large-size classes, if the water column is full of light ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), exhibit cross-habitat feeding between the bottom and the surface waters all the day with maximum concentrations at the surface and the bottom (two $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: 0 and $z_{\mathrm{bottom}}$). If ($z_{\mathrm{bottom}} > z_{\mathrm{photic}}$) large demersal fish stay at surface waters during daytime ($z_{\mathrm{loc},\mathrm{day},i} = 0$) and bottom at night ($z_{\mathrm{loc},\mathrm{night},i} = z_{\mathrm{bottom}}$).
 
 [^2]: small-, medium-, and large-size classes of fish are distinguished by comparison between the geometric mean mass value ($m_{\mathrm{c},i}$) and boundary mass value ($m_{\mathrm{medium}}$ or $m_{\mathrm{large}}$). Small-size class: $m_{\mathrm{c},i} < m_{\mathrm{medium}}$.
 Medium-size class: $m_{\mathrm{medium}} \leq m_{\mathrm{c},i} \leq m_{\mathrm{large}}$.
@@ -340,12 +340,12 @@ Fish & Small & Medium & Large & Small & Medium & Large \\
 Small pelagic fish & 0 & 0 & / & 0 & 0 & / \\
 Mesopelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & / & 0 & 0 & / \\
 Large pelagic fish & 0 & 0 & 0 and $z_{\mathrm{dvm}}$ & 0 & 0 & 0 \\
-Bathypelagic fish & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & 0 & 0 & $z_{\mathrm{dvm}}$ \\
+Midwater predators & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & $z_{\mathrm{dvm}}$ & 0 & 0 & $z_{\mathrm{dvm}}$ \\
 Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{bottom}}$$^b$ \\
 
 \hline
 \multicolumn{7}{l}{\footnotesize $^a$ Zooplankton include small and large mesozooplankton} \\
-\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$), resulting a normal distribution centered at the middle of the water column. In such cases, $z_{\mathrm{dvmdem}}=0$.}
+\multicolumn{7}{p{\dimexpr\linewidth-2\tabcolsep}}{\footnotesize $^b$ If the water column is shallower than the photic zone depth ($z_{\mathrm{bottom}} \leq z_{\mathrm{photic}}$), large demersal fish migrate over the water column (two  $z_{\mathrm{loc},\mathrm{x},i}$ for each day and night: $z_{\mathrm{dvmdem}}$ and $z_{\mathrm{bottom}}$). In such cases, $z_{\mathrm{dvmdem}}=0$.}
 
 \end{tabular}
 \end{table}
@@ -363,7 +363,7 @@ Demersal fish & 0 & $z_{\mathrm{bottom}}$ & $z_{\mathrm{dvmdem}}$$^b$ & 0 & $z_{
 
 * Medium demersal fish only feed on benthos and themselves (cannibalism). Therefore, their feeding preference on zooplankton and all fish excluding themselves is corrected to 0.
 
-* Large demersal fish eat both pelagic and benthic organisms in shallow water ($<~200$ m). They are less efficient at attacking pelagic prey and hence their feeding preference on forage fish is down-regulated: $\theta_{\mathrm{A}} \cdot \theta_{\mathrm{D}} \cdot \theta_{i,j}$; similarly for their feeding preference on large pelagic fish: $\theta_{\mathrm{D}} \cdot \theta_{i,j}$. In deeper waters ($>200$ m), large demersal fish only feed on benthos, medium demersals, and themselves.
+* Large demersal fish eat both pelagic and benthic organisms in shallow water ($<~200$ m). They are less efficient at attacking pelagic prey and hence their feeding preference on small pelagic fish is down-regulated: $\theta_{\mathrm{A}} \cdot \theta_{\mathrm{D}} \cdot \theta_{i,j}$; similarly for their feeding preference on large pelagic fish: $\theta_{\mathrm{D}} \cdot \theta_{i,j}$. In deeper waters ($>200$ m), large demersal fish only feed on benthos, medium demersals, and themselves.
 
 `setupVertical and setupVertical2`
 
@@ -377,7 +377,7 @@ During daytime, the vertical overlap of all small and large pelagics on all prey
 
 *	The feeding preference of medium and large demersal fish to zooplankton resources are set to 0.
 
-* All large-size classes of pelagic-living functional fish groups (large pelagic fish, bathypelagic fish, and demersal fish) have reduced feeding preference on medium-size forage fish and medium-size mesopelagic fish ($\theta_{i,j}=\theta_{i,j} \cdot \theta_{\mathrm{A}}$). 
+* All large-size classes of pelagic-living functional fish groups (large pelagic fish, midwater predators, and demersal fish) have reduced feeding preference on medium-size small pelagic fish and medium-size mesopelagic fish ($\theta_{i,j}=\theta_{i,j} \cdot \theta_{\mathrm{A}}$). 
 
 
 ## Fishing mortality
@@ -590,7 +590,7 @@ $\mu_\mathrm{b}$ & Background mortality & \multicolumn{4}{c}{0.1} & yr$^{-1}$ \\
 $F_{\mathrm{max}}$ & Maximum fishing mortality rate & \multicolumn{4}{c}{0$^b$} & yr$^{-1}$ \\
 $\eta_{\mathrm{mature}}$ & half-maturation size coefficient & /$^c$ & \multicolumn{3}{c}{0.25} & / \\
 $\eta_{\mathrm{fishing}}$ & half-harvesting size coefficient & /$^d$ & \multicolumn{3}{c}{0.05} & / \\
-$\theta_\mathrm{A}$ & Large fish preference on forage fish$^e$ & \multicolumn{4}{c}{0.5} & / \\
+$\theta_\mathrm{A}$ & Large fish preference on small pelagic fish$^e$ & \multicolumn{4}{c}{0.5} & / \\
 $\theta_\mathrm{D}$ & Large demersal fish preference on pelagic prey & \multicolumn{2}{c}{0.75} & / & / & / \\
 $\omega_0$ & baseline range of the vertical distribution & \multicolumn{2}{c}{/} & \multicolumn{2}{c}{10} & / \\
 $\tau$ & range-increasing factor of vertical distribution & \multicolumn{2}{c}{/} & \multicolumn{2}{c}{10} & / \\

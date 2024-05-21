@@ -291,7 +291,7 @@ derivativesFEISTYR = function(t,              # current time
 #' \item totGrazing: a matrix containing the total grazing [g/m2/year] of each functional type over each time point, Cmax * f (maximum consumption rate * feeding level)
 #' To be simply, the food intake before assimilation.
 #' \item totLoss: a matrix containing all biomass loss [g/m2/year] of each functional type over each time point, including unassimilated food and metabolism.
-#' The losses are released to the environment. where is energy loss from reproduction (1-epsRepro), to be fixed.
+#' The losses are released to the environment.
 #' \item totRepro: a matrix containing the total energy used for reproduction [g/m2] of each functional type over each time point.
 #' \item totRecruit: a matrix containing the total recruitment [g/m2] of each functional type over each time point. 
 #' TotRecruit = TotRepro * epsRepro (reproduction efficiency)
@@ -611,7 +611,7 @@ simulateFEISTY = function(p      = setupBasic(),
   # total grazing of each functional group [g/m2/year], Cmax * f (maximum consumption rate * feeding level), the food intake before assimilation.
   col_totGrazing=grep("^totGrazing", colnames(u), value = TRUE)
   sim$totGrazing=u[,col_totGrazing]
-  # total biomass loss of each functional group [g/m2/year], including unassimilated food and metabolism. They are released to environments. where is energy loss from reproduction (1-epsRepro), to be fixed.
+  # total biomass loss of each functional group [g/m2/year], including unassimilated food and metabolism. They are released to environments.
   col_totLoss=grep("^totLoss", colnames(u), value = TRUE)
   sim$totLoss=u[,col_totLoss]
   # total energy used for reproduction of each functional group [g/m2]
