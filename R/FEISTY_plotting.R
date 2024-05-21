@@ -262,17 +262,17 @@ plotSpectra = function(sim) {
 
 #' Food web plot
 #' 
-#' Makes a plot with all feeding interactions of fish functional groups and 
+#' Makes a plot with all feeding interactions of fish functional types and 
 #' resources. 
 #' 
 #' @details
-#' The round patterns and lines between them represent biomass and feeding fluxes.
-#' The size of the round patterns (biomass) and lines (feeding fluxes) are divided by 
+#' The solid colored circles and lines between the fish size-classes and functional types represent biomass and feeding fluxes.
+#' The size of the circles (biomass) and lines (feeding fluxes) are divided by 
 #' the maximum biomass or flux and re-scaled with the cube root.
 #' The function works on the four prepared setups or revised versions based on these four setups. 
 #' If customized setups by users have more resources and/or fish functional types, this plot function may not work.
-#' In setupBasic and setupBasic2, There is no Y-axis.
-#' In setypVertical and setupVertcal2, Y-axis represent locations of relative surface and bottom to avoid overlap of dot symbols.
+#' In setupBasic and setupBasic2, there is no Y-axis.
+#' In setupVertical and setupVertical2, Y-axis represents the locations of relative surface and bottom to avoid overlap of dot symbols.
 #' 
 #' @author CCCC, BBBB, DDDD
 #'
