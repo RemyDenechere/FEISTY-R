@@ -11,7 +11,7 @@ min_mort    <- 1E-2 # minimum mortality in plotRates mortality
 
 #' Spawning stock biomass plot
 #' 
-#' It displays the time series of spawning stock biomass (SSB) for each functional type.
+#' Displays the time series of spawning stock biomass (SSB) for each functional type.
 #' 
 #' @details X-axis is time. Y-axis is the SSB data in the log10 scale.
 #' 
@@ -124,7 +124,7 @@ plotYieldtime = function(sim) {
 
 #' Total biomass plot
 #' 
-#' It displays the time series of total biomass for each fish functional type and zooplankton
+#' Displays the time series of total biomass for each fish functional type and zooplankton
 #' and benthic resources.
 #' 
 #' @details X-axis is time. Y-axis is the biomass data in the log10 scale.
@@ -183,7 +183,7 @@ plotBiomasstime = function(sim) {
 
 #' Biomass spectra plot
 #' 
-#' It makes a plot of the biomass of all functional types over the size spectrum.
+#' Makes a plot of the biomass of all functional types over the size spectrum.
 #' Data is averaged over the last 40\% simulation time.
 #' 
 #' @details The X-axis is individual weight on a log10 scale. The Y-axis is 
@@ -266,7 +266,7 @@ plotSpectra = function(sim) {
 #' resources. 
 #' 
 #' @details
-#' The solid colored circles and lines between the fish size-classes and functional types represent biomass and feeding fluxes.
+#' The solid circles represent biomass of fish size-classes and functional types and the lines between the solid circles represent feeding fluxes.
 #' The size of the circles (biomass) and lines (feeding fluxes) are divided by 
 #' the maximum biomass or flux and re-scaled with the cube root.
 #' The function works on the four prepared setups or revised versions based on these four setups. 
@@ -425,8 +425,8 @@ plotNetwork <- function(sim) {
 #' and/or fish functional types, this plot function needs to be updated.
 #' 
 #' @details
-#' Each column indicates the feeding level ranging from 0 to 1 of a predator. 
-#' The sub-columns with different colors in a column represent the proportions of each prey in the predator's diet.
+#' Each bar indicates the feeding level ranging from 0 to 1 of a predator. 
+#' The different colors in each bar represent the proportions of each prey in the predator's diet.
 #' 
 #' @author CCCC, BBBB, DDDD
 #'
@@ -623,12 +623,12 @@ plotDiet <- function(sim) {
 #' Plots growth rate (1/year), mortality (1/year), and feeding level (dimensionless) over the size spectrum.
 #' 
 #' @details 
-#' Note the growth rate here denotes the fraction of the available energy can be invested in growth (Eq. 15 in vignette), 
+#' The growth rate here denotes the fraction of the available energy that can be invested in growth (Eq. 15 in vignette), 
 #' which is not the growth rate from a size class to the next neighboring class (Eq. 16 in vignette).
 #' 
-#' Mortality panel displays the total mortality, background mortality, fishing mortality and predation mortality. 
+#' The mortality panel displays the total mortality, which is the sum of background mortality, fishing mortality and predation mortality. 
 #'
-#' Feeding levels calculation is in Eq. 10 in vignettes.
+#' The feeding level calculation is in Eq. 10 in vignettes.
 #' 
 #' Data are averaged over a selected time period (last 40% of the simulation time).
 #' 
@@ -674,7 +674,7 @@ plotRates = function(sim) {
 #' @examples 
 #' sim=simulateFEISTY()
 #' plotSimulation(sim)
-#' # We provide a short cut to call plotSimulation(sim).
+#' # A short cut to call plotSimulation(sim) is provided.
 #' plot(sim)
 #' 
 #' @aliases plotSimulation
@@ -817,7 +817,7 @@ plotSimulationShiny = function(sim) {
   return(plots)
 }
 
-# Support functions: -----
+# Internal support functions: -----
  
 # creates empty ggplot as default
 defaultplot = function() {
