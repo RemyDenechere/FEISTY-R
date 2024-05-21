@@ -268,7 +268,7 @@ derivativesFEISTYR = function(t,              # current time
 #' \code{\link{setupBasic}}, \code{\link{setupBasic2}}, \code{\link{setupVertical}}, and \code{\link{setupVertical2}}, and customized setups by modelers. \cr
 #' The simulation can be conducted by a FORTRAN-based approach or an R-based approach. Both methods rely on the \link{deSolve} package for ODE solving. 
 #' For efficiency, FORTRAN dll should be used. For model development, the R-version is preferred.
-#' Simulations based on customized setups  can only be done with the FORTRAN-based approach.
+#' Simulations based on customized setups can only be done with the FORTRAN-based approach.
 #'
 #' @return
 #' A list containing the simulation results:
