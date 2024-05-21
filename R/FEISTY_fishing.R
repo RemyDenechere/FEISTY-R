@@ -15,12 +15,12 @@
 #' }
 #' 
 #' @details The function sets fishing mortality for all fish.
-#' For each specified groups, it calculates the selectivity \code{psi} using the standard trawl selectivity formula from Andersen (2019) \bold{Fig 5.2}. 
-#' The fishing mortality \code{mortF} for specified groups is then updated based on the calculated selectivity \code{psi} and the baseline fishing mortality rate \code{F}.
+#' For each specified group, it calculates the selectivity \code{psi} using the standard trawl selectivity formula from Andersen (2019) \bold{Fig 5.2}. 
+#' The fishing mortality \code{mortF} for specified groups is then updated based on the calculated selectivity \code{psi} and the baseline fishing mortality rate \code{Fmax}.
 #'
 #' @examples
-#' p = setupBasic2(F=0) # No fishing mortality
-#' p = setFishing(p, F = 1, etaF = 0.05, groupidx=c(3)) # add fishing mortality to demersals only.
+#' p = setupBasic2(Fmax=0) # No fishing mortality
+#' p = setFishing(p, Fmax = 1, etaF = 0.05, groupidx=c(3)) # add fishing mortality to demersals only.
 #'
 #' @references
 #' Andersen, K. H. (2019). Fish ecology, evolution, and exploitation: a new theoretical synthesis. Princeton University Press.
