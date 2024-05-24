@@ -10,7 +10,7 @@ Imports: deSolve, ggplot2, pracma, scales, cowplot, shiny, shinyjs
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 Description: A size- and trait-based model of higher trophic level dynamics.
-License: MIT
+License: MIT + file LICENSE
 LazyData: yes
 NeedsCompilation: yes
 RoxygenNote: 7.3.1
