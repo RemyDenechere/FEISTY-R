@@ -1,5 +1,5 @@
 #
-# Compare the total biomass of each functional types for four setups.
+# Compare the total biomass of each functional type in the last year of the simulation for the four setups.
 #
 
 # Baseline values are from R methods (USEdll=F)
@@ -30,21 +30,35 @@ test_that('setupBasic total biomass', {
                   Tb     = 8)
   
   # Test with USEdll = T and bCust = F
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupBasic,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = F")
   
   # Test with USEdll = T and bCust = T
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = T)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = T)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupBasic,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = T")
   
   # Test with USEdll = F
-  sim <- simulateFEISTY(p = p, USEdll = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupBasic,
                tolerance = 1E-2,
@@ -67,21 +81,35 @@ test_that('setupBasic2 total biomass', {
                    bET  = TRUE)
   
   # Test with USEdll = T and bCust = F
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = F)
+  sim <- simulateFEISTY(p = p,
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupBasic2,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = F")
   
   # Test with USEdll = T and bCust = T
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = T)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = T)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupBasic2,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = T")
   
   # Test with USEdll = F
-  sim <- simulateFEISTY(p = p, USEdll = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupBasic2,
                tolerance = 1E-2,
@@ -90,29 +118,43 @@ test_that('setupBasic2 total biomass', {
 
 
 test_that('setupVertical total biomass', {
-  p <- setupVertical(szprod= 80,
+  p <- setupVertical(szprod = 80,
                      lzprod = 80,
-                     dfpho   = 350,
+                     dfpho  = 350,
                      region = 4,
-                     depth = 800,
+                     depth  = 800,
                      photic = 150)
   
   # Test with USEdll = T and bCust = F
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupVertical,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = F")
   
   # Test with USEdll = T and bCust = T
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = T)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = T)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupVertical,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = T")
   
   # Test with USEdll = F
-  sim <- simulateFEISTY(p = p, USEdll = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupVertical,
                tolerance = 1E-2,
@@ -121,37 +163,51 @@ test_that('setupVertical total biomass', {
 
 
 test_that('setupVertical2 total biomass', {
-  p <- setupVertical2(szprod= 80,
+  p <- setupVertical2(szprod = 80,
                       lzprod = 80,
                       dfpho  = 350,
-                      nStages=9,
+                      nStages = 9,
                       Tp = 10,
                       Tm = 10,
                       Tb = 10,
-                      depth=800,
-                      photic=150,
-                      shelfdepth=250,
-                      visual=1.5,
+                      depth = 800,
+                      photic = 150,
+                      shelfdepth = 250,
+                      visual = 1.5,
                       etaMature = 0.25,
-                      Fmax=0,
-                      etaF=0.05)
+                      Fmax = 0,
+                      etaF = 0.05)
   
   # Test with USEdll = T and bCust = F
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupVertical2,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = F")
   
   # Test with USEdll = T and bCust = T
-  sim <- simulateFEISTY(p = p, USEdll = T, bCust = T)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = T, 
+                        bCust  = T)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupVertical2,
                tolerance = 1E-2,
                info = "Failure with USEdll = T and bCust = T")
   
   # Test with USEdll = F
-  sim <- simulateFEISTY(p = p, USEdll = F)
+  sim <- simulateFEISTY(p = p, 
+                        tEnd   = 500,
+                        tStep  = 1,
+                        yini   = p$u0,
+                        USEdll = F)
   expect_equal(sim$totBiomass[sim$nTime,], 
                totB_setupVertical2,
                tolerance = 1E-2,
