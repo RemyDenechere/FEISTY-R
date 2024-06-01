@@ -54,13 +54,14 @@ A list containing the simulation results:
 \item Fout: a matrix containing the biomass flux out of each size class over each time point [g/m2/year]. Resources not included.
 \item totMort: a matrix containing the total mortality [g/m2/year] of each functional type over each time point, 
 which includes predation mortality, background mortality, and fishing mortality.
-\item totGrazing: a matrix containing the total grazing [g/m2/year] of each functional type over each time point, Cmax * f (maximum consumption rate * feeding level)
-To be simply, the food intake before assimilation.
-\item totLoss: a matrix containing all biomass loss [g/m2/year] of each functional type over each time point, including unassimilated food and metabolism.
-The losses are released to the environment.
-\item totRepro: a matrix containing the total energy used for reproduction [g/m2] of each functional type over each time point.
-\item totRecruit: a matrix containing the total recruitment [g/m2] of each functional type over each time point. 
-TotRecruit = TotRepro * epsRepro (reproduction efficiency)
+\item totGrazing: a matrix containing the total grazing (food intake before assimilation) [g/m2/year] of each functional type over each time point.
+Cmax * f * u (maximum consumption rate * feeding level * biomass).
+\item totLoss: a matrix containing all biomass loss [g/m2/year] of each functional type over each time point, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
+The reproduction cost here also include the energy loss (1-epsRepro) from the flux out of the last size class (invested in reproduction) of each functional type. 
+These losses are supposed to be released to environments.
+\item totRepro: a matrix containing the total energy used for reproduction [g/m2/year] of each functional type over each time point (before multiplying the reproduction efficiency epsRepro).
+\item totRecruit: a matrix containing the total recruitment [g/m2/year] of each functional type over each time point. 
+totRecruit = totRepro * epsRepro (reproduction efficiency)
 \item totBiomass: a matrix containing the total biomass [g/m2] of each functional type over each time point.
 \item `SSBAMean`, `SSBGMean`, `SSBMin`, `SSBMax`, and `SSB` can be found in \code{\link{calcSSB}}. \cr
 `yieldAMean`, `yieldGMean`, `yieldMin`, `yieldMax`, and `yield` can be found in \code{\link{calcYield}}.

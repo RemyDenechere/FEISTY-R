@@ -27,7 +27,7 @@ If \code{FullOutput} is 'TRUE', a list containing the following components:
 \item Fout: Biomass flux out of each size class [g/m2/year]. Resources not included.
 \item totMort: a vector containing total mortality [g/m2/year] of each functional type, 
 which includes predation mortality, background mortality, and fishing mortality.
-\item totGrazing: a vector containing total grazing (food intake before assimilation) [g/m2/year] of each functional type, Cmax * f (maximum consumption rate * feeding level).
+\item totGrazing: a vector containing total grazing (food intake before assimilation) [g/m2/year] of each functional type. Cmax * f * u (maximum consumption rate * feeding level * biomass).
 \item totLoss: a vector containing total biomass loss [g/m2/year] of each functional type, including unassimilated food, basal metabolism and reproduction cost (1-epsRepro). 
 The reproduction cost here also include the energy loss (1-epsRepro) from the flux out of the last size class (invested in reproduction) of each functional type.
 These losses are supposed to be released to environments.
