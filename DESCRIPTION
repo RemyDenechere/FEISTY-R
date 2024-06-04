@@ -1,9 +1,14 @@
 Package: FEISTY
 Version: 1.0.0
 Title: FishErIes Size and functional TYpe model (FEISTY)
-Author: AAAA <email@email.com>
-        EEEE <email@email.com>
-        DDDD <email@email.com>
+Authors@R: c(
+  person("AAAAfirstname", "AAAAlastname", email = "email@email.com", role = "aut"),
+  person("EEEE", "EEEE", email = "email@email.com", role = "aut"),
+  person("DDDD", "DDDD", email = "email@email.com", role = c("aut", "cre")),
+  person("CCCC", "CCCC", email = "email@email.com", role = "aut"),
+  person("BBBB", "BBBB", email = "email@email.com", role = "aut"),
+  person("FFFF", "FFFF", email = "email@email.com", role = "ctb")
+  )
 Maintainer: DDDD <email@email.com>
 Depends: R (>= 3.5.0)
 Imports: 

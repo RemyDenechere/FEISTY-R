@@ -48,8 +48,6 @@
 #' 
 #' Soetaert, K., Petzoldt, T., & Setzer, R. W. (2010). Solving differential equations in R: package deSolve. Journal of statistical software, 33, 1-25.
 #' 
-#' @author AAAA,DDDD,EEEE
-#' 
 #' @seealso 
 #' Setups and simulations: \cr
 #' \code{\link{setupBasic}} The setup following Petrik et al. (2019) \cr
