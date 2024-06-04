@@ -1,6 +1,6 @@
 ---
 title: "FishErIes Size and functional TYpe model (FEISTY) in R"
-author: "DDDD, AAAA, CCCC, and EEEE"
+author: "DDDD, CCCC, EEEE, and AAAA"
 date: " 2024"
 output:
   pdf_document:

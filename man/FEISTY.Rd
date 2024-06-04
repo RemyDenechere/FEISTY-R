@@ -81,6 +81,3 @@ Parameters: \cr
 
 \code{\link{derivativesFEISTYR}} The derivative function of FEISTY
 }
-\author{
-AAAA,DDDD,EEEE
-}
