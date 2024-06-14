@@ -350,7 +350,7 @@ plotNetwork <- function(sim) {
               rep(p$SpId[5], length(p$ix[[5]])))
     
     # Specify depth axis text:
-    yaxis <- c("Surface   ", "     Bottom")
+    yaxis <- c("Epipelagic   ", "     Bottom")
   }
   
   # Marker size depends on biomass following a cubic square transformation
@@ -1001,7 +1001,7 @@ getRates = function(sim) {
     theme(legend.position = "bottom",legend.key = element_blank()) +  
     guides(color = guide_legend(nrow = 2)) +
     annotate("text", x=fcrit$mc[2],y=fcrit$fc[1]-0.02,label="crit. f",
-             color = "darkgrey")
+             color = "black")
   
   return(list(growth,mort,flevel)) 
 }  

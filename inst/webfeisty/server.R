@@ -117,8 +117,8 @@ server <- function(input, output) {
       }
       
       # Simulate
-      return( simulateFEISTY(bCust    = FALSE,
-                             p, 
+      return( simulateFEISTY(bCust  = TRUE,
+                             p      = p, 
                              tEnd   = 500,
                              tStep  = 1,
                              times  = seq(from=0, to=500, by=1), #to=tEnd but must give a number directly
