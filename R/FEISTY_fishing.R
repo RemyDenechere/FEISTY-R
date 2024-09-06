@@ -101,10 +101,10 @@ calcYield = function(
     yield[,iGroup]= rowSums(yieldAllgrid[,ix-length(p$ixR)])
     
     #deltaM = p$mUpper[ix]-p$mLower[ix]
-    yieldAMean[iGroup] = mean(rowSums(yieldAllgrid[ixTime,ix-max(p$ixR)]))
-    yieldGMean[iGroup] = exp(mean(log(rowSums(yieldAllgrid[ixTime,ix-max(p$ixR)]))))
-    yieldMin[iGroup] = min(rowSums( yieldAllgrid[ixTime,ix-max(p$ixR)] ))
-    yieldMax[iGroup] = max(rowSums( yieldAllgrid[ixTime,ix-max(p$ixR)] ))
+    yieldAMean[iGroup] = mean(rowSums(yieldAllgrid[ixTime,ix-max(p$ixR),drop=FALSE]))
+    yieldGMean[iGroup] = exp(mean(log(rowSums(yieldAllgrid[ixTime,ix-max(p$ixR),drop=FALSE]))))
+    yieldMin[iGroup] = min(rowSums( yieldAllgrid[ixTime,ix-max(p$ixR),drop=FALSE] ))
+    yieldMax[iGroup] = max(rowSums( yieldAllgrid[ixTime,ix-max(p$ixR),drop=FALSE] ))
   }
   
   sim$yieldAMean=yieldAMean
@@ -174,10 +174,10 @@ calcSSB = function(
     SSB[,iGroup]= rowSums(SSBAllgrid[,ix-length(p$ixR)])
     #deltaM = p$mUpper[ix]-p$mLower[ix]
     
-    SSBAMean[iGroup] = mean(rowSums(SSBAllgrid[ixTime,ix-max(p$ixR)]))
-    SSBGMean[iGroup] = exp(mean(log(rowSums(SSBAllgrid[ixTime,ix-max(p$ixR)]))))
-    SSBMin[iGroup] = min(rowSums( SSBAllgrid[ixTime,ix-max(p$ixR)] ))
-    SSBMax[iGroup] = max(rowSums( SSBAllgrid[ixTime,ix-max(p$ixR)] ))
+    SSBAMean[iGroup] = mean(rowSums(SSBAllgrid[ixTime,ix-max(p$ixR),drop=FALSE]))
+    SSBGMean[iGroup] = exp(mean(log(rowSums(SSBAllgrid[ixTime,ix-max(p$ixR),drop=FALSE]))))
+    SSBMin[iGroup] = min(rowSums( SSBAllgrid[ixTime,ix-max(p$ixR),drop=FALSE] ))
+    SSBMax[iGroup] = max(rowSums( SSBAllgrid[ixTime,ix-max(p$ixR),drop=FALSE] ))
   }
   
   sim$SSBAMean=SSBAMean
