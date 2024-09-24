@@ -224,7 +224,7 @@ plotSpectra = function(sim, norm=T) {
   spec = matrix(nrow=p$nGroups, ncol=max(sapply(p$ix, length)),data=0)
   if (norm==T) {
   for (i in 1:p$nGroups) {
-    spec[i,1:length(p$ix[[i]])] = colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1]/log(p$mUpper[p$ix[[i]]]/p$mLower[p$ix[[i]]]))
+    spec[i,1:length(p$ix[[i]])] = colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1]/log10(p$mUpper[p$ix[[i]]]/p$mLower[p$ix[[i]]]))
    }
   }else if (norm==F){
    for (i in 1:p$nGroups) {
