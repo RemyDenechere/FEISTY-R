@@ -187,17 +187,20 @@ plotBiomasstime = function(sim) {
 #' Data is averaged over the last 40\% simulation time.
 #' 
 #' @details The X-axis is individual weight on a log10 scale. The Y-axis is 
-#' biomass on a log10 scale.
+#' biomass on a log10 scale. If the logical flag "norm" is set to TRUE, the biomass is normalized by dividing it by \eqn{log(m_{u,i}/m_{l,i}}, 
+#' where \eqn{m_{u,i}} and \eqn{m_{l,i}} are upper and lower boundary sizes of the size bin \eqn{i}, respectively.
 #' 
 #' @author BBBB, DDDD
 #'
 #' @usage plotSpectra(sim)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
+#' @param norm Logic flag, controlling whether plots the normalized biomass. Default is TRUE.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
-#' plotSpectra(sim)
+#' plotSpectra(sim, norm=T)
+#' plotSpectra(sim, norm=F)
 #' 
 #' @aliases plotSpectra
 #' 
@@ -207,7 +210,7 @@ plotBiomasstime = function(sim) {
 #' @export
 #' 
 
-plotSpectra = function(sim) {
+plotSpectra = function(sim, norm=T) {
   p <- sim$p
   Bpositive <- sim$B
   Bpositive[Bpositive<0] <- 0
@@ -219,9 +222,16 @@ plotSpectra = function(sim) {
   
 # get all biomass spectra
   spec = matrix(nrow=p$nGroups, ncol=max(sapply(p$ix, length)),data=0)
+  if (norm==T) {
   for (i in 1:p$nGroups) {
+    spec[i,1:length(p$ix[[i]])] = colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1]/log(p$mUpper[p$ix[[i]]]/p$mLower[p$ix[[i]]]))
+   }
+  }else if (norm==F){
+   for (i in 1:p$nGroups) {
     spec[i,1:length(p$ix[[i]])] = colMeans(Bpositive[round(0.6*iTime):iTime,p$ix[[i]]-p$ixFish[1]+1])
+   } 
   }
+  #if p$z[-p$nResources] warning("The result could be wrong. Check the ")
   spec <- rbind(colSums(spec,na.rm=T),spec)
   spec <- data.frame(group = rep(c("total",p$groupnames[fish]),each = max(sapply(p$ix, length))),
              bio   = as.vector(t(spec)),
@@ -253,9 +263,12 @@ plotSpectra = function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    xlab("Weight (g)") + ylab(expression("Biomass (g m"^"-2"*")"))+
+    xlab("Weight (g)") +
     theme(legend.key = element_blank())
-
+  
+  # ylabel
+  if (norm==T) plots<- plots + ylab(expression("Normalized biomass (g m"^"-2"*")"))
+  if (norm==F) plots<- plots + ylab(expression("Biomass (g m"^"-2"*")"))
   
   return(plots)
 }
