@@ -56,7 +56,7 @@ plotSSBtime = function(sim) {
                        values = p$my_palette[fishexistname],
                        breaks = fishexistname,
                        labels = p$my_names[fishexistname]) +
-    annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
+    annotation_logticks(sides = "l",linewidth = 0.4,colour = "darkgrey") +
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$SSB)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
@@ -112,7 +112,7 @@ plotYieldtime = function(sim) {
                        values = p$my_palette[fishexistname],
                        breaks = fishexistname,
                        labels = p$my_names[fishexistname]) +
-    annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
+    annotation_logticks(sides = "l",linewidth = 0.4,colour = "darkgrey") +
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$yield)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
@@ -171,7 +171,7 @@ plotBiomasstime = function(sim) {
                        values = p$my_palette[allexistname],
                        breaks = allexistname,
                        labels = p$my_names[allexistname]) +
-    annotation_logticks(sides = "l",size = 0.2,colour = "darkgrey") +
+    annotation_logticks(sides = "l",linewidth = 0.4,colour = "darkgrey") +
     coord_cartesian(ylim = c(min_bio,max(min_bio*100,max(series$bio)*5))) + 
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
@@ -257,7 +257,7 @@ plotSpectra = function(sim, norm=T) {
                        values = c("total" = "black", p$my_palette[fishexistname]),
                        breaks = c("total",fishexistname),
                        labels = c("total"= "Total", p$my_names[fishexistname])) +
-    annotation_logticks(sides = "bl",size = 0.2,colour = "darkgrey") +
+    annotation_logticks(sides = "bl",linewidth = 0.4,colour = "darkgrey") +
     coord_cartesian(ylim = c(min_bspec,max(min_bspec*100,max(spec$bio)*10))) + 
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
@@ -415,7 +415,7 @@ plotNetwork <- function(sim) {
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_continuous(breaks = seq(0, round(-p$bottom - 1), by = -p$bottom), labels = yaxis) +
-    annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") +
+    annotation_logticks(sides = "b",linewidth = 0.4,colour = "darkgrey") +
     labs(x ="Weight (g)", y = "", color = "Groups") +
     guides(size = "none",
            color = guide_legend(override.aes = list(size = 5),
@@ -938,7 +938,7 @@ getRates = function(sim) {
                        breaks = p$groupnames[fish],
                        labels = p$my_names[p$groupnames[fish]]) +
     coord_cartesian(ylim = c(min_g,max(min_g*100,max(rates$g)*5)),xlim=x_lim) + 
-    annotation_logticks(sides = "bl",size = 0.2,colour = "darkgrey") +
+    annotation_logticks(sides = "bl",linewidth = 0.4,colour = "darkgrey") +
     scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
@@ -974,7 +974,7 @@ getRates = function(sim) {
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                   labels = trans_format("log10", math_format(10^.x)))+
-    annotation_logticks(sides = "bl",size = 0.2,colour = "darkgrey") + 
+    annotation_logticks(sides = "bl",linewidth = 0.4,colour = "darkgrey") + 
     xlab("") + ylab(expression("Mortality (yr"^"-1"*")")) +
     geom_line(data = mort0_line,
               aes(x = mc, y = mort0, color = "darkgrey"),
@@ -1006,7 +1006,7 @@ getRates = function(sim) {
     coord_cartesian(ylim = c(0,1),xlim=x_lim) + 
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
                   labels = trans_format("log10", math_format(10^.x))) +
-    annotation_logticks(sides = "b",size = 0.2,colour = "darkgrey") + 
+    annotation_logticks(sides = "b",linewidth = 0.4,colour = "darkgrey") + 
     xlab("Weight (g)") + ylab("Feeding level, f") +
     geom_line(data = fcrit,
               aes(x = mc, y = fc, color = "darkgrey"),
