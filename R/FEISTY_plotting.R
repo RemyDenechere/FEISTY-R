@@ -279,19 +279,25 @@ plotSpectra = function(sim, norm=T) {
 #' resources. 
 #' 
 #' @details
-#' The solid circles represent biomass of fish size-classes and functional types and the lines between the solid circles represent feeding fluxes.
-#' The size of the circles (biomass) and lines (feeding fluxes) are divided by 
-#' the maximum biomass or flux and re-scaled with the cube root.
+#' The solid circles represent the biomass of fish size-classes and functional types and the lines between the solid circles represent feeding fluxes.
+#' The size of circles (biomass) scales with either the cube root of the biomass divided by the maximum biomass or
+#' the square root of the biomass divided by reference biomass ('ref_b', see below).
+#' The width of lines (feeding fluxes) is the cube root of the flux divided by the maximum flux always.
 #' The function works on the four prepared setups or revised versions based on these four setups. 
 #' If customized setups by users have more resources and/or fish functional types, this plot function may not work.
 #' In setupBasic and setupBasic2, there is no Y-axis.
-#' In setupVertical and setupVertical2, Y-axis represents the locations of relative surface and bottom to avoid overlap of dot symbols.
+#' In setupVertical and setupVertical2, the Y-axis represents the locations of the relative surface and bottom to avoid overlap of dot symbols.
 #' 
 #' @author CCCC, BBBB, DDDD
 #'
 #' @usage plotNetwork(sim)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
+#' @param manual_scale_b Logical flag, controlling whether the circle sizes are based on maximum biomass or reference biomass ('ref_b'). 
+#' It is suggested turned on when users want to compare different simulations. The default is TRUE. 
+#' @param ref_b Reference biomass. It is used when 'manual_scale_b' is TRUE. 
+#' Then the circle size scales with the square root of the normalized biomass (biomass divided by 'ref_b').
+#' The default is 50 gWW per square meter.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
@@ -305,7 +311,7 @@ plotSpectra = function(sim, norm=T) {
 #' @export
 #'
 
-plotNetwork <- function(sim) {
+plotNetwork <- function(sim, manual_scale_b=T, ref_b = 50) {
   p <- sim$p
   u <- sim$u
   
@@ -367,9 +373,12 @@ plotNetwork <- function(sim) {
   }
   
   # Marker size depends on biomass following a cubic square transformation
-  Msize <- Bi / max(Bi)
+  Max_bio <- ifelse(manual_scale_b, ref_b, max(Bi, na.rm = T))
+  Msize <- Bi / Max_bio
   Msize[Msize == 0] <- NA
-  Msize <- Msize^(1/3)
+  if(manual_scale_b==T) Msize <- 1.2*Msize^(1/2)
+  if(manual_scale_b==F) Msize <- Msize^(1/3)
+  Max_size = max(Msize, na.rm = T)
   
   # Create line width: 
   Flux <- getFeeding(sim)
@@ -411,7 +420,7 @@ plotNetwork <- function(sim) {
     geom_point(data = df, aes(x = mc, y = depth, color = SpId, size = Msize), stroke = 0, shape = 16) +
     scale_color_manual(values = p$my_palette[attr(p$my_palette, "names") %in% df$SpId], 
                        labels = p$my_names[attr(p$my_palette, "names") %in% df$SpId]) +
-    scale_radius(limits = c(0, NA), range = c(0, 10)) +
+    scale_radius(limits = c(0, NA), range = c(0, (8* Max_size))) +
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                   labels = trans_format("log10", math_format(10^.x))) +
     scale_y_continuous(breaks = seq(0, round(-p$bottom - 1), by = -p$bottom), labels = yaxis) +
