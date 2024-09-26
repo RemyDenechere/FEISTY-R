@@ -409,7 +409,7 @@ simulateFEISTY = function(p      = setupBasic(),
                           yini   = p$u0,  
                           USEdll = TRUE,
                           Rmodel = derivativesFEISTYR,
-                          bCust    = TRUE)
+                          bCust  = TRUE)
 {
   
   nR      <- p$nResources[1]  # no of resources. [1] to make sure that this is only one number

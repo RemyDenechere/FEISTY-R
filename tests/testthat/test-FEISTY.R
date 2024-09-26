@@ -6,9 +6,9 @@
 totB_setupBasic <- c(totBiomass.smallPel = 0.5946745, 
                      totBiomass.largePel = 4.0246085, 
                      totBiomass.demersals = 2.9236847)
-totB_setupBasic2 <- c(totBiomass.smallPel = 13.155201, 
-                      totBiomass.largePel = 12.596843, 
-                      totBiomass.demersals = 4.715339)
+totB_setupBasic2 <- c(totBiomass.smallPel = 19.386488, 
+                      totBiomass.largePel = 11.767436, 
+                      totBiomass.demersals = 6.737946)
 
 totB_setupVertical <- c(totBiomass.smallPel = 2.847370, 
                         totBiomass.mesoPel = 6.582644, 
@@ -16,11 +16,11 @@ totB_setupVertical <- c(totBiomass.smallPel = 2.847370,
                         totBiomass.midwPred = 1.862001,
                         totBiomass.demersals = 2.870958)
 
-totB_setupVertical2 <- c(totBiomass.smallPel = 5.2442065, 
-                         totBiomass.mesoPel = 8.8442285, 
-                         totBiomass.largePel = 6.3042523, 
-                         totBiomass.midwPred = 0.9813705,
-                         totBiomass.demersals = 2.8422796)
+totB_setupVertical2 <- c(totBiomass.smallPel = 5.6498799, 
+                         totBiomass.mesoPel = 8.2751911, 
+                         totBiomass.largePel = 6.6280410, 
+                         totBiomass.midwPred = 0.3130051,
+                         totBiomass.demersals = 4.5417196)
 
 test_that('setupBasic total biomass', {
   p <- setupBasic(szprod = 100,
