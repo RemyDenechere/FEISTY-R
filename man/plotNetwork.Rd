@@ -8,19 +8,27 @@ plotNetwork(sim)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
+
+\item{manual_scale_b}{Logical flag, controlling whether the circle sizes are based on maximum biomass or reference biomass ('ref_b'). 
+It is suggested turned on when users want to compare different simulations. The default is TRUE.}
+
+\item{ref_b}{Reference biomass. It is used when 'manual_scale_b' is TRUE. 
+Then the circle size scales with the square root of the normalized biomass (biomass divided by 'ref_b').
+The default is 50 gWW per square meter.}
 }
 \description{
 Makes a plot with all feeding interactions of fish functional types and 
 resources.
 }
 \details{
-The solid circles represent biomass of fish size-classes and functional types and the lines between the solid circles represent feeding fluxes.
-The size of the circles (biomass) and lines (feeding fluxes) are divided by 
-the maximum biomass or flux and re-scaled with the cube root.
+The solid circles represent the biomass of fish size-classes and functional types and the lines between the solid circles represent feeding fluxes.
+The size of circles (biomass) scales with either the cube root of the biomass divided by the maximum biomass or
+the square root of the biomass divided by reference biomass ('ref_b', see below).
+The width of lines (feeding fluxes) is the cube root of the flux divided by the maximum flux always.
 The function works on the four prepared setups or revised versions based on these four setups. 
 If customized setups by users have more resources and/or fish functional types, this plot function may not work.
 In setupBasic and setupBasic2, there is no Y-axis.
-In setupVertical and setupVertical2, Y-axis represents the locations of relative surface and bottom to avoid overlap of dot symbols.
+In setupVertical and setupVertical2, the Y-axis represents the locations of the relative surface and bottom to avoid overlap of dot symbols.
 }
 \examples{
 sim=simulateFEISTY()

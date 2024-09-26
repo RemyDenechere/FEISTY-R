@@ -53,7 +53,7 @@ If users want to assign fishing mortality to specific functional types with diff
 
 \item{etaF}{The coefficient determining the fish size \code{mFishing} with 50\% fishing selectivity. See source code of \code{\link{setFishing}}.}
 
-\item{bET}{Logical flag, controlling whether use effective temperature effects on the large demersal fish. See Petrik et al., 2019. See `updateET` source code in FEISTY_parms.R.}
+\item{bET}{Logical flag, controlling whether turns on the effective temperature effects on the large demersal fish. See Petrik et al., 2019. See `updateET` source code in FEISTY_parms.R.}
 }
 \value{
 Additional parameters added by the function \code{\link{paramInit}}:

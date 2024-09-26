@@ -8,6 +8,8 @@ plotSpectra(sim)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
+
+\item{norm}{Logic flag, controlling whether plots the normalized biomass. Default is TRUE.}
 }
 \description{
 Makes a plot of the biomass of all functional types over the size spectrum.
@@ -15,11 +17,13 @@ Data is averaged over the last 40\% simulation time.
 }
 \details{
 The X-axis is individual weight on a log10 scale. The Y-axis is 
-biomass on a log10 scale.
+biomass on a log10 scale. If the logical flag "norm" is set to TRUE, the biomass is normalized by dividing it by \eqn{log(m_{u,i}/m_{l,i}}, 
+where \eqn{m_{u,i}} and \eqn{m_{l,i}} are upper and lower boundary sizes of the size bin \eqn{i}, respectively.
 }
 \examples{
 sim=simulateFEISTY()
-plotSpectra(sim)
+plotSpectra(sim, norm=T)
+plotSpectra(sim, norm=F)
 
 }
 \seealso{
