@@ -304,7 +304,7 @@ contains
             call formmassvector(spec, iGroup, mc, mL, mU)
          end select
       end do
-      mc(1:nResources) = [2.d-06*sqrt(500.d0), 1.d-3*sqrt(500.d0), 0.5d-03*sqrt(250000.d0), 0.25d0*sqrt(500.d0)] ! overwrite by resource mass
+      mc(1:nResources) = [2.d-06*sqrt(500.d0), 1.d-3*sqrt(500.d0), 1.d-4*sqrt(250000.d0), 0.25d0*sqrt(500.d0)] ! overwrite by resource mass
       !mU = c(2e-06*sqrt(500), 0.001*sqrt(500), 0.5e-03*sqrt(250000), 0.25*sqrt(500)) ! weight central size
       !mL = c(2e-06,0.001, 0.5e-03, 0.25) ! weight lower limit)
 
@@ -986,7 +986,7 @@ contains
          end select
       end do
       !from baseparameters.m
-      mc(1:nResources) = [2.d-06*sqrt(500.d0), 1.d-3*sqrt(500.d0), 0.5d-03*sqrt(250000.d0), 0.25d0*sqrt(500.d0)] ! resource central mass
+      mc(1:nResources) = [2.d-06*sqrt(500.d0), 1.d-3*sqrt(500.d0), 1.d-4*sqrt(250000.d0), 0.25d0*sqrt(500.d0)] ! resource central mass
       mU(1:nResources) = [0.001d0, 0.5d0, 125.d0, 125.d0]  ! resource mass upper limit
       mL(1:nResources) = [2.d-6, 0.001d0, 0.5d-3, 0.25d0] ! resource mass lower limit
 !! basic feeding preference matrix theta
