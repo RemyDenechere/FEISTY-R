@@ -509,7 +509,7 @@ simulateFEISTY = function(p      = setupBasic(),
     }
     else
     {     # for fixed setups
-      # Oct 2023 Transmit input file path to Fortran library
+      # Transmit input file path to Fortran library
       passpath <- function() {
         sys=Sys.info()['sysname']
         
@@ -526,6 +526,11 @@ simulateFEISTY = function(p      = setupBasic(),
             sLibname = system.file("libs/i386", "FEISTY.dll", package = "FEISTY")
           }
         }
+        
+        # Reload dll to avoid crash?
+        if (is.loaded("setupbasic")) { # "setupbasic" is a function name of fortran dll
+          dyn.unload(sLibname)
+          dyn.load(sLibname)}
         
         file_path=system.file("extdata", "input.nml", package = "FEISTY")
         dummy=.C("passpath", length=nchar(file_path), file_path_in = charToRaw(file_path))
