@@ -836,7 +836,7 @@ plotSimulationShiny = function(sim) {
   
   # create left and right and bottom 
   plots  <- align_plots(p_biomasstime,p_spectra,p_rates[[1]],p_rates[[2]],p_rates[[3]],align="v")
-  plots  <- plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]],plots[[5]],rel_heights = c(1.1,1,1,1,1),ncol=1)
+  plots  <- plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]],plots[[5]],rel_heights = c(1.1,1.1,1,1,1),ncol=1)
   plots  <- plot_grid(plots,legend,ncol=1,rel_heights = c(10,1))
   
   return(plots)
