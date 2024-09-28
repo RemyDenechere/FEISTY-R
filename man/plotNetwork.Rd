@@ -13,7 +13,7 @@ plotNetwork(sim)
 It is suggested turned on when users want to compare different simulations. The default is TRUE.}
 
 \item{ref_b}{Reference biomass. It is used when 'manual_scale_b' is TRUE. 
-Then the circle size scales with the square root of the normalized biomass (biomass divided by 'ref_b').
+Then the circle size scales with the normalized biomass (biomass divided by 'ref_b'). See Box V in Andersen and Visser (2023).
 The default is 50 gWW per square meter.}
 }
 \description{
@@ -22,11 +22,11 @@ resources.
 }
 \details{
 The solid circles represent the biomass of fish size-classes and functional types and the lines between the solid circles represent feeding fluxes.
-The size of circles (biomass) scales with either the cube root of the biomass divided by the maximum biomass or
-the square root of the biomass divided by reference biomass ('ref_b', see below).
-The width of lines (feeding fluxes) is the cube root of the flux divided by the maximum flux always.
+The size of circles (biomass) scales with the normalized biomass, i.e., the biomass divided by the maximum biomass or
+the reference biomass (see 'ref_b' in Arguments).
+The width of lines (feeding fluxes) scales with the cube root of the flux divided by the maximum flux always.\cr
 The function works on the four prepared setups or revised versions based on these four setups. 
-If customized setups by users have more resources and/or fish functional types, this plot function may not work.
+If customized setups by users have more resources and/or fish functional types, this plot function may not work.\cr
 In setupBasic and setupBasic2, there is no Y-axis.
 In setupVertical and setupVertical2, the Y-axis represents the locations of the relative surface and bottom to avoid overlap of dot symbols.
 }
@@ -34,6 +34,9 @@ In setupVertical and setupVertical2, the Y-axis represents the locations of the 
 sim=simulateFEISTY()
 plotNetwork(sim)
 
+}
+\references{
+Andersen, K. H., & Visser, A. W. (2023). From cell size and first principles to structure and function of unicellular plankton communities. Progress in Oceanography, 213, 102995.
 }
 \seealso{
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
