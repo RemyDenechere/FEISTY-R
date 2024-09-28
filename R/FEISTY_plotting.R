@@ -762,7 +762,7 @@ plotSimulation = function(sim) {
               
   # create left and right and bottom 
   left  <- align_plots(p_spectra,p_rates[[1]],p_rates[[2]],p_rates[[3]],align="v")
-  left  <- plot_grid(left[[1]],left[[2]],left[[3]],left[[4]],rel_heights = c(1,1.1,1.1,1.3),ncol=1)
+  left  <- plot_grid(left[[1]],left[[2]],left[[3]],left[[4]],rel_heights = c(1.2,1,1,1.1),ncol=1)
   right <- align_plots(p_network,p_biomasstime,align = 'v')
   right <- plot_grid(right[[1]],right[[2]],ncol=1,rel_heights = c(3.2,1.3))
   plots <- plot_grid(left,right,nrow=1,rel_widths = c(1,1.4))  
