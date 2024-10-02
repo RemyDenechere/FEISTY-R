@@ -987,8 +987,8 @@ contains
       end do
       !from baseparameters.m
       mc(1:nResources) = [2.d-06*sqrt(500.d0), 1.d-3*sqrt(500.d0), 1.d-4*sqrt(250000.d0), 0.25d0*sqrt(500.d0)] ! resource central mass
-      mU(1:nResources) = [0.001d0, 0.5d0, 125.d0, 125.d0]  ! resource mass upper limit
-      mL(1:nResources) = [2.d-6, 0.001d0, 0.5d-3, 0.25d0] ! resource mass lower limit
+      mU(1:nResources) = [0.001d0, 0.5d0, 25.d0, 125.d0]  ! resource mass upper limit
+      mL(1:nResources) = [2.d-6, 0.001d0, 1.d-4, 0.25d0] ! resource mass lower limit
 !! basic feeding preference matrix theta
 !      do i = idxF, nGrid
 !         do j = 1, nGrid

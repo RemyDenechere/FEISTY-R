@@ -1058,8 +1058,8 @@ setupVertical2 = function(szprod = 80, # small zoo production
     K    = c(szprod, lzprod, bprod, 0),  # g ww/m2  - maximum resource concentration
     r    = c(1, 1, 1, 1),              # [/yr] nudging coefficient
     mc   = c(2e-06*sqrt(500), 0.001*sqrt(500), 1e-04*sqrt(250000), 0.25*sqrt(500)),
-    mLower = c(2e-06,0.001, 0.5e-03, 0.25), # weight lower limit
-    mUpper = c(0.001, 0.5, 125, 125),
+    mLower = c(2e-06,0.001, 1e-04, 0.25), # weight lower limit
+    mUpper = c(0.001, 0.5, 25, 125),
     u0     = c(0.5,0.5,0.5,0))
   
   #------------------  
