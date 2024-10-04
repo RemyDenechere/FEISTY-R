@@ -306,6 +306,7 @@ plotSpectra = function(sim, norm=T) {
 #' @examples 
 #' sim = simulateFEISTY()
 #' plotNetwork(sim)
+#' plotNetwork(sim, manual_scale_b = T, ref_b = 60)
 #' plotNetwork(sim, manual_scale_b = F)
 #' 
 #' @aliases plotNetwork

@@ -33,6 +33,7 @@ In setupVertical and setupVertical2, the Y-axis represents the locations of the 
 \examples{
 sim = simulateFEISTY()
 plotNetwork(sim)
+plotNetwork(sim, manual_scale_b = T, ref_b = 60)
 plotNetwork(sim, manual_scale_b = F)
 
 }
