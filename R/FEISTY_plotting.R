@@ -189,13 +189,14 @@ plotBiomasstime = function(sim) {
 #' @details The X-axis is individual weight on a log10 scale. The Y-axis is 
 #' biomass on a log10 scale. If the logical flag "norm" is set to TRUE, the biomass is normalized by dividing it by \eqn{log(m_{u,i}/m_{l,i}}, 
 #' where \eqn{m_{u,i}} and \eqn{m_{l,i}} are upper and lower boundary sizes of the size bin \eqn{i}, respectively.
+#' See Box V in Andersen and Visser (2023).
 #' 
 #' @author BBBB, DDDD
 #'
-#' @usage plotSpectra(sim)
+#' @usage plotSpectra(sim, norm = T)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
-#' @param norm Logic flag, controlling whether plots the normalized biomass. Default is TRUE.
+#' @param norm Logic flag, controlling whether to plot the normalized biomass. The default is TRUE.
 #' 
 #' @examples 
 #' sim=simulateFEISTY()
@@ -206,6 +207,9 @@ plotBiomasstime = function(sim) {
 #' 
 #' @seealso 
 #' \code{\link{simulateFEISTY}} Run FEISTY model simulations
+#' 
+#' @references 
+#' Andersen, K. H., & Visser, A. W. (2023). From cell size and first principles to structure and function of unicellular plankton communities. Progress in Oceanography, 213, 102995.
 #' 
 #' @export
 #' 
@@ -290,26 +294,24 @@ plotSpectra = function(sim, norm=T) {
 #' 
 #' @author CCCC, BBBB, DDDD
 #'
-#' @usage plotNetwork(sim)
+#' @usage plotNetwork(sim, manual_scale_b = T, ref_b = 50)
 #' 
 #' @param sim The data frame of FEISTY simulation results.
 #' @param manual_scale_b Logical flag, controlling whether the circle sizes are based on maximum biomass or reference biomass ('ref_b'). 
 #' It is suggested turned on when users want to compare different simulations. The default is TRUE. 
 #' @param ref_b Reference biomass. It is used when 'manual_scale_b' is TRUE. 
-#' Then the circle size scales with the normalized biomass (biomass divided by 'ref_b'). See Box V in Andersen and Visser (2023).
+#' Then the circle size scales with the normalized biomass (biomass divided by 'ref_b').
 #' The default is 50 gWW per square meter.
 #' 
 #' @examples 
-#' sim=simulateFEISTY()
+#' sim = simulateFEISTY()
 #' plotNetwork(sim)
+#' plotNetwork(sim, manual_scale_b = F)
 #' 
 #' @aliases plotNetwork
 #' 
 #' @seealso 
 #' \code{\link{simulateFEISTY}} Run FEISTY model simulations
-#' 
-#' @references
-#' Andersen, K. H., & Visser, A. W. (2023). From cell size and first principles to structure and function of unicellular plankton communities. Progress in Oceanography, 213, 102995.
 #' 
 #' @export
 #'

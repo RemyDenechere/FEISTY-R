@@ -4,7 +4,7 @@
 \alias{plotNetwork}
 \title{Food web plot}
 \usage{
-plotNetwork(sim)
+plotNetwork(sim, manual_scale_b = T, ref_b = 50)
 }
 \arguments{
 \item{sim}{The data frame of FEISTY simulation results.}
@@ -13,7 +13,7 @@ plotNetwork(sim)
 It is suggested turned on when users want to compare different simulations. The default is TRUE.}
 
 \item{ref_b}{Reference biomass. It is used when 'manual_scale_b' is TRUE. 
-Then the circle size scales with the normalized biomass (biomass divided by 'ref_b'). See Box V in Andersen and Visser (2023).
+Then the circle size scales with the normalized biomass (biomass divided by 'ref_b').
 The default is 50 gWW per square meter.}
 }
 \description{
@@ -31,12 +31,10 @@ In setupBasic and setupBasic2, there is no Y-axis.
 In setupVertical and setupVertical2, the Y-axis represents the locations of the relative surface and bottom to avoid overlap of dot symbols.
 }
 \examples{
-sim=simulateFEISTY()
+sim = simulateFEISTY()
 plotNetwork(sim)
+plotNetwork(sim, manual_scale_b = F)
 
-}
-\references{
-Andersen, K. H., & Visser, A. W. (2023). From cell size and first principles to structure and function of unicellular plankton communities. Progress in Oceanography, 213, 102995.
 }
 \seealso{
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
