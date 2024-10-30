@@ -41,5 +41,5 @@ plotNetwork(sim, manual_scale_b = F)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-CCCC, BBBB, DDDD
+Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 }

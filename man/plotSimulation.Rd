@@ -32,5 +32,5 @@ plot(sim)
 \code{\link{plotBiomasstime}} Time series of biomass \cr
 }
 \author{
-BBBB, FFFF, DDDD
+P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
 }

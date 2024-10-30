@@ -42,5 +42,5 @@ Tab 'Diet' shows fish diet results based on the averaged data of the last 40\% o
 \code{\link{plotDiet}} Diet plot
 }
 \author{
-EEEE, DDDD
+Karline Soetaert, Yixin Zhao
 }

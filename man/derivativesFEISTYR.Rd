@@ -70,5 +70,5 @@ de Roos, A. M., Schellekens, T., Van Kooten, T., Van De Wolfshaar, K., Claessen,
 \code{\link{simulateFEISTY}} The main function for running FEISTY simulations
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

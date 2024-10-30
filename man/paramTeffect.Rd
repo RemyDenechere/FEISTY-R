@@ -86,5 +86,5 @@ van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emer
 \code{\link{setupBasic2}} A revised setup based on `setupBasic`
 }
 \author{
-DDDD
+Yixin Zhao
 }

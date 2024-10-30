@@ -12,7 +12,7 @@
 #'
 #' Tab 'Diet' shows fish diet results based on the averaged data of the last 40\% of simulation time. See \code{\link{plotDiet}} in FEISTY_plotting.R.
 #'
-#' @author EEEE, DDDD
+#' @author Karline Soetaert, Yixin Zhao
 #'
 #' @usage
 #' webFEISTY(...)

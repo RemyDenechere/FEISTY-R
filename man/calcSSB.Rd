@@ -35,5 +35,5 @@ This function has been integrated into \code{\link{simulateFEISTY}}. It cannot b
 \code{\link{paramAddGroup}} 	Add parameters of one functional type
 }
 \author{
-DDDD
+Yixin Zhao
 }

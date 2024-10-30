@@ -15,7 +15,7 @@ min_mort    <- 1E-2 # minimum mortality in plotRates mortality
 #' 
 #' @details X-axis is time. Y-axis is the SSB data in the log10 scale.
 #' 
-#' @author BBBB, DDDD
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotSSBtime(sim)
 #' 
@@ -72,7 +72,7 @@ plotSSBtime = function(sim) {
 #' 
 #' @details X-axis is time. Y-axis is the fishing yield data in the log10 scale.
 #' 
-#' @author BBBB, DDDD
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotYieldtime(sim)
 #' 
@@ -129,7 +129,7 @@ plotYieldtime = function(sim) {
 #' 
 #' @details X-axis is time. Y-axis is the biomass data in the log10 scale.
 #' 
-#' @author BBBB, DDDD
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotBiomasstime(sim)
 #' 
@@ -191,7 +191,7 @@ plotBiomasstime = function(sim) {
 #' where \eqn{m_{u,i}} and \eqn{m_{l,i}} are upper and lower boundary sizes of the size bin \eqn{i}, respectively.
 #' See Box V in Andersen and Visser (2023).
 #' 
-#' @author BBBB, DDDD
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotSpectra(sim, norm = T)
 #' 
@@ -292,7 +292,7 @@ plotSpectra = function(sim, norm=T) {
 #' In setupBasic and setupBasic2, there is no Y-axis.
 #' In setupVertical and setupVertical2, the Y-axis represents the locations of the relative surface and bottom to avoid overlap of dot symbols.
 #' 
-#' @author CCCC, BBBB, DDDD
+#' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotNetwork(sim, manual_scale_b = T, ref_b = 50)
 #' 
@@ -456,7 +456,7 @@ plotNetwork <- function(sim, manual_scale_b=T, ref_b = 50) {
 #' Each bar indicates the feeding level ranging from 0 to 1 of a predator. 
 #' The different colors in each bar represent the proportions of each prey in the predator's diet.
 #' 
-#' @author CCCC, BBBB, DDDD
+#' @author Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotDiet(sim)
 #' 
@@ -660,7 +660,7 @@ plotDiet <- function(sim) {
 #' 
 #' Data are averaged over a selected time period (last 40% of the simulation time).
 #' 
-#' @author BBBB, DDDD
+#' @author P. Daniël van Denderen, Yixin Zhao
 #'
 #' @usage plotRates(sim)
 #' 
@@ -693,7 +693,7 @@ plotRates = function(sim) {
 #' @details It makes a plot combo for the simulation results, including \code{\link{plotSpectra}}, \code{\link{plotRates}},
 #' \code{\link{plotNetwork}} and \code{\link{plotBiomasstime}}. 
 #' 
-#' @author BBBB, FFFF, DDDD
+#' @author P. Daniël van Denderen, Rémy Denéchère, Yixin Zhao
 #'
 #' @usage plotSimulation(sim)
 #' 
@@ -782,7 +782,7 @@ plotSimulation = function(sim) {
 #' @details It makes a plot combo displayed in the `General` tab in the Shiny App, 
 #' including \code{\link{plotBiomasstime}}, \code{\link{plotSpectra}}, and \code{\link{plotRates}}.
 #' 
-#' @author DDDD
+#' @author Yixin Zhao
 #'
 #' @usage plotSimulationShiny(sim)
 #' 

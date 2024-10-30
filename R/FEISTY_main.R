@@ -74,7 +74,7 @@
 #' 
 #' de Roos, A. M., Schellekens, T., Van Kooten, T., Van De Wolfshaar, K., Claessen, D., & Persson, L. (2008). Simplifying a physiologically structured population model to a stage-structured biomass model. Theoretical population biology, 73(1), 47-62.
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @aliases derivativesFEISTYR
 #' 
@@ -379,7 +379,7 @@ derivativesFEISTYR = function(t,              # current time
 #' 
 #' Soetaert, K., Petzoldt, T., & Setzer, R. W. (2010). Solving differential equations in R: package deSolve. Journal of statistical software, 33, 1-25.
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @aliases simulateFEISTY
 #' 

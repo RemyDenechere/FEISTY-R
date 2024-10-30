@@ -82,5 +82,5 @@ p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0
 \code{\link{paramSizepref}} Size Preference Matrix Calculation
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

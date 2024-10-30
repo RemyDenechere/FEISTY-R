@@ -28,5 +28,5 @@ plotDiet(sim)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-CCCC, BBBB, DDDD
+Daniel Ottmann Riera, P. Daniël van Denderen, Yixin Zhao
 }

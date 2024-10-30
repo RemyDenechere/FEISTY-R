@@ -133,12 +133,13 @@
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={FishErIes Size and functional TYpe model (FEISTY) in R},
-  pdfauthor={DDDD, BBBB, EEEE, and AAAA},
+  pdfauthor={Yixin Zhao, P. Daniël van Denderen, Karline Soetaert, and Ken H. Andersen},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
 \title{FishErIes Size and functional TYpe model (FEISTY) in R}
-\author{DDDD, BBBB, EEEE, and AAAA}
+\author{Yixin Zhao, P. Daniël van Denderen, Karline Soetaert, and Ken H.
+Andersen}
 \date{2024}
 
 \begin{document}
@@ -221,10 +222,11 @@ are: \begin{equation}
   \end{cases}
 \end{equation} where \(\epsilon_r\) is the reproduction efficiency. The
 flux into the smallest size class (\(i=1\)) is from the reproduction of
-each size class of mature fish plus the biomass flux out of the size
-class of a functional type (\(J_{\mathrm{out},n}\)). For all other size
-classes (\(i > 1\)), the growth flux into the size class \(i\) is from
-the growth of the previous neighboring size class (\(i-1\)).
+each size class of mature fish plus the biomass flux out of the maximum
+size class (\(i=n\)) of a functional type (\(J_{\mathrm{out},n}\)). For
+all other size classes (\(i > 1\)), the growth flux into the size class
+\(i\) is from the growth of the previous neighboring size class
+(\(i-1\)).
 
 \hypertarget{resource-dynamics}{%
 \subsubsection{Resource dynamics}\label{resource-dynamics}}
@@ -329,8 +331,8 @@ of a functional type, which means fish reach 50\% maturity level at
 \(m_{\mathrm{mature}}\). \begin{equation}
 m_{\mathrm{mature}} = \eta_{\mathrm{mature}} M
 \end{equation} where \(\eta_{\mathrm{mature}}\) is the coefficient
-determining the half-maturation size relative to the max size of a
-functional type.
+determining the half-maturation size relative to the maximum size
+(boundary size) of a functional type (\(M\)).
 
 \(\kappa_{i}\) represents the fraction of the available energy
 (\(\nu_{i}\)) invested in growth: \begin{equation}
@@ -1094,7 +1096,7 @@ collection:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-3-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-3-1.pdf}
 
 This figure collection includes \texttt{plotSpectra()},
 \texttt{plotRates()}, \texttt{plotNetwork()}, and
@@ -1107,7 +1109,7 @@ For instance:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-4-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-4-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1115,7 +1117,7 @@ For instance:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-5-1.pdf}
 
 \hypertarget{fishing-mortality-assignment}{%
 \subsection{Fishing mortality
@@ -1199,7 +1201,7 @@ demersals\_9 & 0 & 0.2991638 \\
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-6-1.pdf}
 
 Since fishing mortality was assigned manually to two of three fish
 functional types, which is not the ready-to-use function
@@ -1226,7 +1228,7 @@ stock biomass changes over time.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-8-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1234,7 +1236,7 @@ stock biomass changes over time.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 \hypertarget{bottom-up-control-examples}{%
 \subsection{Bottom-up control
@@ -1264,7 +1266,7 @@ are low and do not provide enough food for them (panel d).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-11-1.pdf}
 
 On the contrary, in the eutrophic water, high resource productions
 support the existence of all five functional types (panel f). All fish
@@ -1278,7 +1280,7 @@ have feeding levels that are higher than their critical feeding levels
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{C:/Users/Admin/Desktop/pkg-oct/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-12-1.pdf}
+\includegraphics{C:/Users/Admin/Desktop/FEISTY_MEE/FEISTY/vignettes/FEISTY_files/figure-latex/unnamed-chunk-12-1.pdf}
 
 \newpage
 

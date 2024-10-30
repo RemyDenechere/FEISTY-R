@@ -34,5 +34,5 @@ Andersen, K. H., & Visser, A. W. (2023). From cell size and first principles to 
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-BBBB, DDDD
+P. Daniël van Denderen, Yixin Zhao
 }

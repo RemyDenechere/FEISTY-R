@@ -12,7 +12,7 @@
 #' @details The setupBasic makes a basic three-species setup (small pelagic fish, large pelagic fish, and demersal fish) as described in Petrik et al. (2019). 
 #' There are three resources: small mesozooplankton, large mesozooplankton, benthos, and a spare position in the state variable vector.
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @usage setupBasic(szprod = 100, 
 #'                   lzprod = 100, 
@@ -223,7 +223,7 @@ setupBasic = function(szprod = 100, # small zoo production
 #' 
 #' }
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @usage setupBasic2(szprod = 100, 
 #'                    lzprod = 100, 
@@ -456,7 +456,7 @@ setupBasic2 = function(szprod = 100, # small zoo production?
 #' @details The setupVertical makes a basic five-species setup (small pelagic fish, mesopelagic fish, large pelagic fish, midwater predators, and demersal fish) as described in van Denderen et al. (2021). 
 #' There are three resources: small mesozooplankton, large mesozooplankton, benthos, and a spare position in the state variable vector. \cr
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @usage setupVertical(szprod = 80, 
 #'                      lzprod = 80, 
@@ -879,7 +879,7 @@ setupVertical = function(szprod = 80, # small zoo production
 #' \item Allowing the size-based fishing mortality. See \code{\link{setFishing}}.
 #' }
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @usage setupVertical2(szprod = 80, lzprod = 80, 
 #'                       bprodin = NA, 

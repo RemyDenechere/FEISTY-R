@@ -33,5 +33,5 @@ This function has been integrated into \code{\link{simulateFEISTY}}. It cannot b
 \code{\link{setFishing}} 	Set fishing mortality
 }
 \author{
-DDDD
+Yixin Zhao
 }

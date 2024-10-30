@@ -44,5 +44,5 @@ p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150,
 \code{\link{paramAddResource}} Add Resource Parameters
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

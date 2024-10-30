@@ -25,5 +25,5 @@ plotBiomasstime(sim)
 \code{\link{simulateFEISTY}} Run FEISTY model simulations
 }
 \author{
-BBBB, DDDD
+P. Daniël van Denderen, Yixin Zhao
 }

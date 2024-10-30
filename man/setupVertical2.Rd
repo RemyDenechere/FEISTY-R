@@ -158,5 +158,5 @@ van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emer
 \code{\link{simulateFEISTY}} The main function to run FEISTY simulations
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

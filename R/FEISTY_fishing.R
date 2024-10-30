@@ -25,7 +25,7 @@
 #' @references
 #' Andersen, K. H. (2019). Fish ecology, evolution, and exploitation: a new theoretical synthesis. Princeton University Press.
 #' 
-#' @author DDDD
+#' @author Yixin Zhao
 #' 
 #' @aliases setFishing
 #' 
@@ -71,7 +71,7 @@ setFishing = function(p, Fmax=0, etaF=0.05, groupidx=c(1:p$nGroups)) {
 #'
 # @examples
 #'
-#' @author DDDD
+#' @author Yixin Zhao
 #' 
 #' @seealso 
 #' \code{\link{setFishing}} 	Set fishing mortality
@@ -144,7 +144,7 @@ calcYield = function(
 # @examples
 #' 
 #'
-#' @author DDDD
+#' @author Yixin Zhao
 #' 
 #' @aliases calcSSB
 #' 

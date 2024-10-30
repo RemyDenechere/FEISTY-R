@@ -43,5 +43,5 @@ Andersen, K. H. (2019). Fish ecology, evolution, and exploitation: a new theoret
 \code{\link{calcYield}} Yield calculation
 }
 \author{
-DDDD
+Yixin Zhao
 }

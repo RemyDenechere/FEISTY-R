@@ -1,8 +1,8 @@
 !
 ! FEISTY model
 ! References: Petrik et al., 2019; van Denderen et al., 2020.
-! The library follows MATLAB/R codes from AAAA; BBBB; FFFF; CCCC ...
-! Programmed by DDDD, August 2022.
+! The library follows MATLAB/R codes from Ken H. Andersen; P. Daniël van Denderen; Rémy Denéchère; Daniel Ottmann Riera ...
+! Programmed by Yixin Zhao, August 2022.
 !
 Module setup
    use globals
@@ -44,7 +44,7 @@ Module setup
    real(dp), allocatable:: K(:), rr(:)   ! Carrying capacity of resources and growth rate of resources
 
 !=======================================================================================================
-! New from EEEE package   (Oct 2023 added)
+! New from Karline Soetaert package   (Oct 2023 added)
          integer:: nFGrid        ! Total number of fish size grids
 
          integer :: Rtype   ! resource dynamics, 1=chemostat; 2=logistic
@@ -238,7 +238,7 @@ contains
    end subroutine setupbasic
 
 ! --------------------------------------
-! Setup by AAAA based on Petrik et al. (2019).
+! Setup by Ken H. Andersen based on Petrik et al. (2019).
 ! --------------------------------------
    subroutine setupbasic2(szprod,lzprod, bprodin, dfbot, nStages, depth, Ts, Tb, etaMature,Fmax,etaF,bETin) !
       real(dp), intent(in) :: szprod,lzprod, bprodin, dfbot, Ts, Tb, depth ! bprodin: benthic productivity, dfbot: detrital flux reaching the sea floor
@@ -1384,7 +1384,7 @@ contains
    end subroutine setupVertical2
 
 ! --------------------------------------
-! Setup of vertical overlap (van Denderen et al., 2020) squid FFFF
+! Setup of vertical overlap (van Denderen et al., 2020) squid Rémy Denéchère
 ! --------------------------------------
    subroutine setupsquid(szprod,lzprod, bottom, nStages)
       real(dp), intent(in) :: szprod,lzprod !
@@ -2081,7 +2081,7 @@ contains
 
 
 ! Oct 2023
-! assign parameter set from DDDD library to vectors in EEEE package
+! assign parameter set from Yixin Zhao library to vectors in Karline Soetaert package
 subroutine set2vec
  integer :: iGroup
 

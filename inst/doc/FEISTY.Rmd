@@ -1,6 +1,6 @@
 ---
 title: "FishErIes Size and functional TYpe model (FEISTY) in R"
-author: "DDDD, BBBB, EEEE, and AAAA"
+author: "Yixin Zhao, P. Daniël van Denderen, Karline Soetaert, and Ken H. Andersen"
 date: " 2024"
 output:
   pdf_document:
@@ -67,7 +67,7 @@ where $\gamma_i$ is the growth rate (year$^{-1}$). The growth flux into a size c
 \end{equation} 
 where $\epsilon_r$ is the reproduction efficiency. The flux
 into the smallest size class ($i=1$) is from the reproduction of each
-size class of mature fish plus the biomass flux out of the size class of a functional type ($J_{\mathrm{out},n}$). For all other size classes ($i > 1$), the growth flux into the size class $i$ is
+size class of mature fish plus the biomass flux out of the maximum size class ($i=n$) of a functional type ($J_{\mathrm{out},n}$). For all other size classes ($i > 1$), the growth flux into the size class $i$ is
 from the growth of the previous neighboring size class ($i-1$).
 
 ### Resource dynamics
@@ -169,8 +169,8 @@ means fish reach 50% maturity level at $m_{\mathrm{mature}}$.
 m_{\mathrm{mature}} = \eta_{\mathrm{mature}} M
 \end{equation}
 where $\eta_{\mathrm{mature}}$ is the
-coefficient determining the half-maturation size relative to the max
-size of a functional type.
+coefficient determining the half-maturation size relative to the maximum
+size (boundary size) of a functional type ($M$).
 
 $\kappa_{i}$ represents the fraction of the available energy ($\nu_{i}$) invested in growth: 
 \begin{equation}

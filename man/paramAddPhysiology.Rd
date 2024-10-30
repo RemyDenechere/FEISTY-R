@@ -88,5 +88,5 @@ p <- paramAddPhysiology(p,
 \code{\link{paramTeffect}} Add temperature effects
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

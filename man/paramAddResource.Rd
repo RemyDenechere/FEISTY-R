@@ -83,5 +83,5 @@ p = paramAddResource (p=p, K=c(50,100,150,200,250), r=c(1,1,1,1,1), dynamics="ch
 \code{\link{paramAddGroup}} Add parameters for one functional type
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

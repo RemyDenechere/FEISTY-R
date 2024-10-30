@@ -25,5 +25,5 @@ plotSSBtime(sim)
 \code{\link{calcSSB}} 	Spawning stock biomass calculation
 }
 \author{
-BBBB, DDDD
+P. Daniël van Denderen, Yixin Zhao
 }

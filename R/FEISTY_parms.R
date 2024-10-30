@@ -72,7 +72,7 @@
 #' # Plot dynamics of resources and small fish.
 #'       
 #'
-#' @author DDDD
+#' @author Yixin Zhao
 #' 
 #' @references 
 #' van Denderen, P. D., Petrik, C. M., Stock, C. A., & Andersen, K. H. (2021). Emergent global biogeography of marine fish food webs. Global Ecology and Biogeography, 30(9), 1822-1834.
@@ -166,7 +166,7 @@ paramSizepref <- function(
 #' p <- paramInit(waterdepth = 600, maturesize = 250, photicdepth = 150,
 #'                 mediumsize = 250) # add four extra parameters to the list
 #' 
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #' 
 #' @aliases paramInit
 #'
@@ -308,7 +308,7 @@ makeGrid = function(mMin,         # min size, gram
 #'    names=c("smallZoo", "largeZoo", "smallBenthos", "largeBenthos", "Phytoplankton"), 
 #'    u0=c(100,100,200,200,200))
 #'
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @aliases paramAddResource
 #' 
@@ -421,7 +421,7 @@ paramAddResource = function(p,        # parameter to be updated
 #' p <- paramAddGroup(p, nStages = 6, mMin = 0.1, mMax = 100000, mMature = 100000*0.25, 
 #'                    mortF=0, mort0 = 0.1, name = "largefish")
 #'
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @aliases paramAddGroup
 #' 
@@ -569,7 +569,7 @@ paramAddGroup = function(p ,           # list of parameters to be updated
 #'      epsRepro = 0.01, 
 #'      epsAssim = 0.7)
 #'
-#' @author AAAA, EEEE, DDDD
+#' @author Ken H. Andersen, Karline Soetaert, Yixin Zhao
 #'
 #' @aliases paramAddPhysiology
 #' 
@@ -702,7 +702,7 @@ paramAddPhysiology = function (p,
 #' p1$Cmax
 #' p2$Cmax
 #' 
-#' @author DDDD
+#' @author Yixin Zhao
 #' 
 #' @references
 #' Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.
@@ -808,7 +808,7 @@ paramTeffect = function (p, # only for setupbasic & 2
 # Therefore it works when the functions paramAddPhysiology and paramTeffect are used.
 # `Tp` and `Tb` are required in the input parameter list, or this function will not work.
 #
-# author DDDD
+# author Yixin Zhao
 #
 # references
 # Petrik, C. M., Stock, C. A., Andersen, K. H., van Denderen, P. D., & Watson, J. R. (2019). Bottom-up drivers of global patterns of demersal, forage, and pelagic fishes. Progress in oceanography, 176, 102124.

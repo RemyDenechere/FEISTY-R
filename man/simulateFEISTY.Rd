@@ -174,5 +174,5 @@ Soetaert, K., Petzoldt, T., & Setzer, R. W. (2010). Solving differential equatio
 \code{\link{plotSimulation}} Plot simulation results including rates, biomass, and SSB data
 }
 \author{
-AAAA, EEEE, DDDD
+Ken H. Andersen, Karline Soetaert, Yixin Zhao
 }

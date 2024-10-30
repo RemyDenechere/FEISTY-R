@@ -25,5 +25,5 @@ plotYieldtime(sim)
 \code{\link{calcYield}} Fishing yield calculation
 }
 \author{
-BBBB, DDDD
+P. Daniël van Denderen, Yixin Zhao
 }

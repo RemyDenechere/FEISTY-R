@@ -24,5 +24,5 @@ including \code{\link{plotBiomasstime}}, \code{\link{plotSpectra}}, and \code{\l
 \code{\link{plotRates}} Plots for growth rate, mortality, and feeding level \cr
 }
 \author{
-DDDD
+Yixin Zhao
 }
