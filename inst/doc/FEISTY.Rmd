@@ -20,14 +20,13 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE) # for printing the examples
-if (!require(FEISTY)) devtools::install_github("Kenhasteandersen/FEISTY@R-Package")
 library(FEISTY)
 library(ggplot2)
 palette("ggplot2")  # ggplot2-style palette
 ```
 
 # Introduction
-This vignette provides a comprehensive description of the model equations, parameters, and numerical implementation used in the FishErIes Size and functional TYpe (FEISTY) model system [@petrik2019bottom; @van2021emergent; @thesubmittedpaper]. This text is followed by several examples illustrating how to use the model within R.
+This vignette provides a comprehensive description of the model equations, parameters, and numerical implementation used in the FishErIes Size and functional TYpe (FEISTY) model system [@petrik2019bottom; @van2021emergent]. This text is followed by several examples illustrating how to use the model within R.
 
 # The FEISTY model
 

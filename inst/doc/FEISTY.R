@@ -1,6 +1,5 @@
 ## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE) # for printing the examples
-if (!require(FEISTY)) devtools::install_github("Kenhasteandersen/FEISTY@R-Package")
 library(FEISTY)
 library(ggplot2)
 palette("ggplot2")  # ggplot2-style palette
